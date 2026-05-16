@@ -8,3 +8,5 @@ dev/backend/fieldlot.db
 dev/backend/uploads/
 **/__pycache__/
 dev/backend/.venv/
+
+.vercel

@@ -1,7 +1,15 @@
 /* Fieldlot — каталог */
 
 .catalog-hero {
-	padding: 40px 0 24px;
+	padding: 32px 0 24px;
+}
+
+.catalog-hero-panel {
+	padding: 28px 32px;
+	border-radius: var(--fl-radius-xl);
+	background: var(--fl-white);
+	border: 1px solid var(--fl-line);
+	box-shadow: var(--fl-shadow);
 }
 
 .demo-banner {

@@ -56,7 +56,10 @@
 	function initFarmers() {
 		if (!IMG) return;
 		const avatar = document.getElementById('farmer-avatar-img');
-		if (avatar) avatar.src = IMG.farmer;
+		if (avatar) {
+			avatar.src = IMG.farmer;
+			avatar.alt = 'Профил на фермер с доверие';
+		}
 		const row = document.getElementById('top-farmers');
 		if (!row || !IMG.farmers) return;
 		row.innerHTML = IMG.farmers

@@ -109,8 +109,14 @@
 	position: absolute;
 	inset: 0;
 	background:
-		linear-gradient(105deg, rgba(15, 51, 38, 0.94) 0%, rgba(26, 77, 58, 0.82) 38%, rgba(15, 26, 20, 0.72) 100%),
-		var(--hero-bg, url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1800&q=82&auto=format&fit=crop")) center / cover;
+		linear-gradient(
+			105deg,
+			rgba(15, 51, 38, 0.97) 0%,
+			rgba(26, 77, 58, 0.9) 42%,
+			rgba(15, 26, 20, 0.88) 100%
+		),
+		var(--hero-bg, url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1800&q=82&auto=format&fit=crop"))
+			center / cover;
 }
 
 .hero-eco-inner {
@@ -173,11 +179,18 @@
 	content: "";
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(0deg, rgba(15, 26, 20, 0.5) 0%, transparent 45%);
+	background: linear-gradient(0deg, rgba(15, 26, 20, 0.65) 0%, transparent 50%);
 }
 
 .hero-eco-content {
 	position: relative;
+}
+
+/* Hero е винаги видим — не чака scroll reveal */
+.hero-eco .hero-eco-content.reveal,
+.hero-eco .hero-eco-gallery.reveal {
+	opacity: 1;
+	transform: none;
 }
 
 .hero-eco-badge {
@@ -197,11 +210,13 @@
 
 .hero-eco h1 {
 	margin: 16px 0 0;
-	max-width: 14ch;
+	max-width: 16ch;
 	font-size: clamp(32px, 5.5vw, 52px);
 	font-weight: 700;
 	line-height: 1.08;
 	letter-spacing: -0.03em;
+	color: #fff;
+	text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
 }
 
 .hero-eco-lead {
@@ -278,6 +293,7 @@
 	font-size: clamp(24px, 3.5vw, 32px);
 	font-weight: 700;
 	letter-spacing: -0.02em;
+	color: var(--fl-ink);
 }
 
 .eco-section-head p {
@@ -694,6 +710,8 @@
 	margin: 0 0 12px;
 	font-size: 26px;
 	font-weight: 700;
+	color: #fff;
+	text-shadow: 0 1px 12px rgba(0, 0, 0, 0.2);
 }
 
 .farmer-spotlight p {

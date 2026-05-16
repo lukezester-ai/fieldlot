@@ -115,7 +115,15 @@
 		}
 
 		.catalog-hero {
-			padding: 40px 0 28px;
+			padding: 32px 0 28px;
+		}
+
+		.catalog-hero-panel {
+			padding: 28px 32px;
+			border-radius: 14px;
+			background: var(--fl-white);
+			border: 1px solid var(--fl-line);
+			box-shadow: var(--fl-shadow);
 		}
 
 		.demo-banner {
@@ -124,16 +132,21 @@
 			align-items: center;
 			justify-content: space-between;
 			gap: 12px;
-			margin-bottom: 24px;
+			margin-bottom: 20px;
 			padding: 14px 18px;
 			border-radius: 10px;
-			border: 1px solid var(--fl-navy-strong);
-			background: linear-gradient(135deg, var(--fl-navy-mid) 0%, var(--fl-navy) 100%);
-			color: var(--fl-navy-ink);
+			border: 1px solid var(--fl-line);
+			border-left: 4px solid var(--yp-yellow-bar);
+			background: var(--yp-yellow-soft);
+			color: var(--fl-ink);
 			font-size: 14px;
+			line-height: 1.5;
 		}
 
-		.demo-banner strong { color: var(--yp-yellow-dark); text-shadow: 0 0 20px var(--yp-glow); }
+		.demo-banner strong {
+			color: var(--fl-brand-deep);
+			text-shadow: none;
+		}
 
 		.demo-banner .btn-secondary {
 			border-color: var(--fl-navy-strong);
@@ -144,15 +157,16 @@
 		.catalog-hero h1 {
 			margin: 0;
 			font-size: clamp(32px, 5vw, 48px);
+			font-weight: 800;
 			letter-spacing: -0.04em;
 			line-height: 1.05;
-			color: var(--fl-navy-ink);
+			color: var(--fl-ink);
 		}
 
 		.catalog-hero p {
 			margin: 12px 0 0;
 			max-width: 640px;
-			color: var(--muted);
+			color: var(--fl-muted);
 			line-height: 1.65;
 			font-size: 16px;
 		}
@@ -532,22 +546,23 @@
 				<a href="/">Начало</a>
 				<a href="/catalog.html" aria-current="page">Каталог</a>
 				<a href="/#cta">Ранен достъп</a>
-			</motion>
+			</div>
 			<a class="nav-cta" href="/#cta">Включи се</a>
 		</nav>
 	</header>
 
 	<main class="container">
 		<section class="catalog-hero">
-			<div class="demo-banner" role="status">
-				<span><strong>Жълти страници · демо</strong> — обявите са в жълт стил като класическия каталог. Реалните оферти идват след старт на платформата.</span>
-				<a class="btn btn-secondary" href="/#cta">Искам достъп</a>
-			</motion>
-
-			<h1>Каталог на оферти</h1>
-			<p>
-				Прегледай демо партиди по култура, регион и тип (продажба или търсене). Филтрирай и отвори детайли — в пълната версия тук ще изпращаш директно запитване.
-			</p>
+			<div class="catalog-hero-panel">
+				<div class="demo-banner" role="status">
+					<span><strong>Жълти страници · демо</strong> — обявите са в жълт стил като класическия каталог. Реалните оферти идват след старт на платформата.</span>
+					<a class="btn btn-secondary" href="/#cta">Искам достъп</a>
+				</div>
+				<h1>Каталог на оферти</h1>
+				<p>
+					Прегледай демо партиди по култура, регион и тип (продажба или търсене). Филтрирай и отвори детайли — в пълната версия тук ще изпращаш директно запитване.
+				</p>
+			</div>
 		</section>
 
 		<form class="toolbar" id="filters" role="search" aria-label="Филтри на каталога">
@@ -590,9 +605,9 @@
 		<div class="results-meta">
 			<span id="results-count"><strong>0</strong> оферти</span>
 			<span>Сортиране: най-нови (демо)</span>
-		</motion>
+		</div>
 
-		<div class="catalog-grid" id="catalog-grid" aria-live="polite"></motion>
+		<div class="catalog-grid" id="catalog-grid" aria-live="polite"></div>
 	</main>
 
 	<div class="detail-backdrop" id="detail-backdrop" hidden></div>
@@ -601,21 +616,21 @@
 			<div>
 				<p class="board-eyebrow">Оферта</p>
 				<h2 id="detail-title">—</h2>
-			</motion>
+			</div>
 			<button type="button" class="detail-close" id="detail-close" aria-label="Затвори">×</button>
-		</motion>
-		<div class="detail-body" id="detail-body"></motion>
+		</div>
+		<div class="detail-body" id="detail-body"></div>
 		<div class="detail-foot">
 			<a class="btn btn-primary" id="detail-cta" href="/#cta">Запитване (ранен достъп)</a>
 			<button type="button" class="btn btn-secondary" id="detail-close-2">Затвори</button>
-		</motion>
+		</div>
 	</aside>
 
 	<footer class="site-footer">
 		<div class="container">
 			<p>© Fieldlot · Демо каталог</p>
 			<p>Контакт: <a href="mailto:info@agrinexus.eu">info@agrinexus.eu</a> · <a href="/">Към началото</a></p>
-		</motion>
+		</div>
 	</footer>
 
 	<script src="/scripts/fieldlot-api-status.js"></script>
@@ -812,7 +827,7 @@
 					<p class="meta">${escapeHtml(item.incoterm)}</p>
 				</div>
 				<div class="listing-card-foot">
-					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></motion>
+					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
 					<span class="tag demo">Демо</span>
 				</div>
 			`;
@@ -847,17 +862,17 @@
 			detailBody.innerHTML = `
 				${heroPhoto}
 				<div class="detail-highlight">
-					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></motion>
+					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
 					<p class="meta" style="margin:6px 0 0;font-size:13px;color:var(--yp-muted)">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
 				</div>
 				<dl class="detail-dl">
-					<div><dt>Локация</dt><dd>${escapeHtml(item.subtitle)}</dd></motion>
-					<div><dt>Количество</dt><dd>${escapeHtml(item.qty)}</dd></motion>
-					<div><dt>Цена</dt><dd>${escapeHtml(item.price)} ${escapeHtml(item.priceUnit)}</dd></motion>
-					<div><dt>Условие</dt><dd>${escapeHtml(item.incoterm)}</dd></motion>
-					<div><dt>Реколта / сезон</dt><dd>${escapeHtml(item.harvest)}</dd></motion>
-					<div><dt>Качество</dt><dd>${escapeHtml(item.quality)}</dd></motion>
-					<div><dt>Контакт</dt><dd>${escapeHtml(item.contact)}</dd></motion>
+					<div><dt>Локация</dt><dd>${escapeHtml(item.subtitle)}</dd></div>
+					<div><dt>Количество</dt><dd>${escapeHtml(item.qty)}</dd></div>
+					<div><dt>Цена</dt><dd>${escapeHtml(item.price)} ${escapeHtml(item.priceUnit)}</dd></div>
+					<div><dt>Условие</dt><dd>${escapeHtml(item.incoterm)}</dd></div>
+					<div><dt>Реколта / сезон</dt><dd>${escapeHtml(item.harvest)}</dd></div>
+					<div><dt>Качество</dt><dd>${escapeHtml(item.quality)}</dd></div>
+					<div><dt>Контакт</dt><dd>${escapeHtml(item.contact)}</dd></div>
 				</dl>
 				<p class="detail-note">Това е демо запис. В пълната версия ще изпратиш запитване директно към обявителя през Fieldlot.</p>
 			`;
