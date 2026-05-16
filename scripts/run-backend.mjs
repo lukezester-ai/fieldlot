@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const backendDir = path.join(root, 'backend');
+const backendDir = path.join(root, 'dev', 'backend');
 const port = process.env.FIELDLOT_BACKEND_PORT || '8000';
 
 const seedOnly = process.argv.includes('--seed-only');

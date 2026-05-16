@@ -30,8 +30,14 @@ Repo: **https://github.com/roxsonltd-droid/fieldlot**
 
 | Поле | Стойност |
 |------|----------|
-| **Application Preset** | **Other** ← НЕ „Services“, НЕ „FastAPI“ |
+| **Application Preset** | **Other** (най-сигурно) или **Vite** |
 | **Root Directory** | `.` (празно / root) |
+
+### Ако виждаш дърво `backend` (FastAPI) + `frontend` (Vite)
+
+1. **Махни backend услугата** — иконка кош / Remove до `backend` (остави само `frontend` на `/`).
+2. Или смени preset на **Other** и провери, че deploy-ва само root.
+3. Python API е в `dev/backend/` — **не** се качва на Vercel.
 | **Build Command** | `npm run build` |
 | **Output Directory** | `dist` |
 | **Install Command** | `npm install --no-audit --no-fund` |

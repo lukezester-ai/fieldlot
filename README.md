@@ -25,7 +25,7 @@ cp .env.example .env
 
 `npm run dev` стартира и backend автоматично. Swagger: http://127.0.0.1:8000/docs
 
-Виж `backend/README.md` за demo акаунти и endpoints.
+Виж `dev/backend/README.md` за demo акаунти (Python — само локално, не на Vercel).
 
 **Демо каталог:** http://localhost:5174/catalog.html
 

@@ -46,7 +46,7 @@ def seed_if_empty() -> None:
 		db.add_all([farmer, buyer, logistics_user])
 		db.flush()
 
-		listings_path = Path(__file__).resolve().parents[2] / "data" / "demo-listings.json"
+		listings_path = Path(__file__).resolve().parents[3] / "data" / "demo-listings.json"
 		if listings_path.is_file():
 			raw = json.loads(listings_path.read_text(encoding="utf-8"))
 			for item in raw:
