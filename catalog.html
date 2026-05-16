@@ -532,7 +532,7 @@
 				<a href="/">Начало</a>
 				<a href="/catalog.html" aria-current="page">Каталог</a>
 				<a href="/#cta">Ранен достъп</a>
-			</div>
+			</motion>
 			<a class="nav-cta" href="/#cta">Включи се</a>
 		</nav>
 	</header>
@@ -542,7 +542,7 @@
 			<div class="demo-banner" role="status">
 				<span><strong>Жълти страници · демо</strong> — обявите са в жълт стил като класическия каталог. Реалните оферти идват след старт на платформата.</span>
 				<a class="btn btn-secondary" href="/#cta">Искам достъп</a>
-			</div>
+			</motion>
 
 			<h1>Каталог на оферти</h1>
 			<p>
@@ -590,9 +590,9 @@
 		<div class="results-meta">
 			<span id="results-count"><strong>0</strong> оферти</span>
 			<span>Сортиране: най-нови (демо)</span>
-		</div>
+		</motion>
 
-		<div class="catalog-grid" id="catalog-grid" aria-live="polite"></div>
+		<div class="catalog-grid" id="catalog-grid" aria-live="polite"></motion>
 	</main>
 
 	<div class="detail-backdrop" id="detail-backdrop" hidden></div>
@@ -601,23 +601,24 @@
 			<div>
 				<p class="board-eyebrow">Оферта</p>
 				<h2 id="detail-title">—</h2>
-			</div>
+			</motion>
 			<button type="button" class="detail-close" id="detail-close" aria-label="Затвори">×</button>
-		</div>
-		<div class="detail-body" id="detail-body"></div>
+		</motion>
+		<div class="detail-body" id="detail-body"></motion>
 		<div class="detail-foot">
 			<a class="btn btn-primary" id="detail-cta" href="/#cta">Запитване (ранен достъп)</a>
 			<button type="button" class="btn btn-secondary" id="detail-close-2">Затвори</button>
-		</div>
+		</motion>
 	</aside>
 
 	<footer class="site-footer">
 		<div class="container">
 			<p>© Fieldlot · Демо каталог</p>
 			<p>Контакт: <a href="mailto:info@agrinexus.eu">info@agrinexus.eu</a> · <a href="/">Към началото</a></p>
-		</div>
+		</motion>
 	</footer>
 
+	<script src="/scripts/fieldlot-api-status.js"></script>
 	<script src="/scripts/fieldlot-images.js"></script>
 	<script>
 		const DEMO_LISTINGS = [
@@ -811,7 +812,7 @@
 					<p class="meta">${escapeHtml(item.incoterm)}</p>
 				</div>
 				<div class="listing-card-foot">
-					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
+					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></motion>
 					<span class="tag demo">Демо</span>
 				</div>
 			`;
@@ -846,17 +847,17 @@
 			detailBody.innerHTML = `
 				${heroPhoto}
 				<div class="detail-highlight">
-					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
+					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></motion>
 					<p class="meta" style="margin:6px 0 0;font-size:13px;color:var(--yp-muted)">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
 				</div>
 				<dl class="detail-dl">
-					<div><dt>Локация</dt><dd>${escapeHtml(item.subtitle)}</dd></div>
-					<div><dt>Количество</dt><dd>${escapeHtml(item.qty)}</dd></div>
-					<div><dt>Цена</dt><dd>${escapeHtml(item.price)} ${escapeHtml(item.priceUnit)}</dd></div>
-					<div><dt>Условие</dt><dd>${escapeHtml(item.incoterm)}</dd></div>
-					<div><dt>Реколта / сезон</dt><dd>${escapeHtml(item.harvest)}</dd></div>
-					<div><dt>Качество</dt><dd>${escapeHtml(item.quality)}</dd></div>
-					<div><dt>Контакт</dt><dd>${escapeHtml(item.contact)}</dd></div>
+					<div><dt>Локация</dt><dd>${escapeHtml(item.subtitle)}</dd></motion>
+					<div><dt>Количество</dt><dd>${escapeHtml(item.qty)}</dd></motion>
+					<div><dt>Цена</dt><dd>${escapeHtml(item.price)} ${escapeHtml(item.priceUnit)}</dd></motion>
+					<div><dt>Условие</dt><dd>${escapeHtml(item.incoterm)}</dd></motion>
+					<div><dt>Реколта / сезон</dt><dd>${escapeHtml(item.harvest)}</dd></motion>
+					<div><dt>Качество</dt><dd>${escapeHtml(item.quality)}</dd></motion>
+					<div><dt>Контакт</dt><dd>${escapeHtml(item.contact)}</dd></motion>
 				</dl>
 				<p class="detail-note">Това е демо запис. В пълната версия ще изпратиш запитване директно към обявителя през Fieldlot.</p>
 			`;

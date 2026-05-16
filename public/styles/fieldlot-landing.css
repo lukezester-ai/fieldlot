@@ -590,6 +590,30 @@ textarea:focus {
 
 .form-status.ok { color: var(--fl-accent); }
 .form-status.err { color: #b91c1c; }
+.form-status.warn { color: #92400e; }
+
+.fieldlot-preview-banner {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	padding: 10px 16px;
+	font-size: 13px;
+	line-height: 1.45;
+	text-align: center;
+	background: #fef3c7;
+	color: #78350f;
+	border-bottom: 1px solid #f59e0b;
+}
+
+.fieldlot-preview-banner a {
+	color: var(--fl-brand);
+	font-weight: 600;
+}
+
+.fieldlot-preview-banner em {
+	font-style: normal;
+	font-weight: 700;
+}
 
 .fine-print {
 	margin-top: 16px;
@@ -641,6 +665,20 @@ textarea:focus {
 	gap: 12px;
 	padding: 16px;
 	border-bottom: 1px solid var(--fl-line);
+}
+
+.llm-status.is-offline {
+	color: #b45309;
+	font-weight: 700;
+}
+
+.llm-panel--offline .llm-hint {
+	color: #92400e;
+}
+
+.llm-panel--offline .llm-foot textarea:disabled {
+	opacity: 0.65;
+	cursor: not-allowed;
 }
 
 .llm-status {

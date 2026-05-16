@@ -29,6 +29,15 @@ cp .env.example .env
 
 **Демо каталог:** http://localhost:5174/catalog.html
 
+## Lovable / static preview
+
+Каталогът е достъпен на **`/catalog.html`** (статичен JSON + UI).
+
+Backend API-тата (**`/api/register-interest`**, **`/api/fieldlot-chat`**) **няма да отговарят** в Lovable preview — няма Node/Vercel functions там.
+
+- Формата и AI чатът показват **`offline`** и жълт banner отгоре.
+- За пълна функционалност: `npm run dev` локално или deploy на **Vercel** с env vars.
+
 ## API
 
 | Метод | Път | Описание |

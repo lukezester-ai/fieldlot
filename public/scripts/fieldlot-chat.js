@@ -22,6 +22,7 @@
 
 		const messages = [];
 		const page = opts.page || defaultPage();
+		let apiOnline = false;
 
 		function buildContext() {
 			const base = { page };
@@ -49,23 +50,57 @@
 			msgs.scrollTop = msgs.scrollHeight;
 		}
 
-		async function checkStatus() {
-			try {
-				const res = await fetch('/api/fieldlot-chat');
-				const data = await res.json();
-				if (data.ragEnabled) {
-					statusEl.textContent = data.llmConfigured
-						? `RAG · ${data.listingCount ?? 0} обяви`
-						: 'RAG · без LLM';
-				} else {
-					statusEl.textContent = data.llmConfigured ? 'онлайн' : 'без LLM';
-				}
-			} catch {
-				statusEl.textContent = 'офлайн';
+		function applyOfflineUi() {
+			apiOnline = false;
+			statusEl.textContent = 'offline';
+			statusEl.classList.add('is-offline');
+			panel.classList.add('llm-panel--offline');
+			input.disabled = true;
+			sendBtn.disabled = true;
+			input.placeholder = 'Чатът е offline в preview — пусни backend или Vercel.';
+		}
+
+		function applyOnlineUi(data) {
+			apiOnline = true;
+			statusEl.classList.remove('is-offline');
+			panel.classList.remove('llm-panel--offline');
+			input.disabled = false;
+			sendBtn.disabled = false;
+			input.placeholder = 'Напр. Каква е цената на пшеницата?';
+			if (data?.ragEnabled) {
+				statusEl.textContent = data.llmConfigured
+					? `RAG · ${data.listingCount ?? 0} обяви`
+					: 'RAG · без LLM';
+			} else {
+				statusEl.textContent = data?.llmConfigured ? 'онлайн' : 'без LLM';
 			}
 		}
 
+		async function checkStatus() {
+			try {
+				const res = await fetch('/api/fieldlot-chat');
+				if (!res.ok) throw new Error('bad status');
+				const data = await res.json();
+				applyOnlineUi(data);
+			} catch {
+				applyOfflineUi();
+			}
+		}
+
+		document.addEventListener('fieldlot-api-status', (e) => {
+			const d = e.detail;
+			if (d?.chat) checkStatus();
+			else applyOfflineUi();
+		});
+
 		async function send() {
+			if (!apiOnline) {
+				addMsg(
+					'assistant',
+					'Чатът е offline в този преглед (Lovable/static). Каталогът на /catalog.html работи. За AI — пусни npm run dev или deploy на Vercel с API.',
+				);
+				return;
+			}
 			const text = input.value.trim();
 			if (!text) return;
 			input.value = '';
@@ -88,8 +123,11 @@
 				messages.push({ role: 'assistant', content: data.reply });
 				waiting.textContent = data.reply;
 			} catch (err) {
+				const msg = err instanceof Error ? err.message : 'Чатът временно не отговаря.';
 				waiting.textContent =
-					err instanceof Error ? err.message : 'Чатът временно не отговаря.';
+					msg === 'Failed to fetch' || msg.includes('NetworkError')
+						? 'Offline — /api/fieldlot-chat не е достъпен в preview.'
+						: msg;
 			} finally {
 				sendBtn.disabled = false;
 			}

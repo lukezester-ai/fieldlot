@@ -284,59 +284,10 @@
 		</div>
 	</div>
 
+	<script src="/scripts/fieldlot-api-status.js"></script>
 	<script src="/scripts/fieldlot-images.js"></script>
 	<script src="/scripts/ecosystem-home.js"></script>
-	<script>
-		(() => {
-			const openedAt = Date.now();
-			const form = document.getElementById('lead-form');
-			const submit = document.getElementById('lead-submit');
-			const status = document.getElementById('lead-status');
-			const PHONE_OK = /^\+[1-9]\d{7,14}$/;
-			let formReady = false;
-			const errMap = {
-				'Too fast': 'Изчакай 2 секунди.',
-				'Too many requests': 'Твърде много заявки.',
-				'Valid business email required': 'Невалиден имейл.',
-				'Valid phone required': 'Телефон +359… или празно.',
-			};
-			function leadErr(e, h) { return (e && errMap[e]) || e || h || 'Грешка.'; }
-			function upd() {
-				submit.disabled = !formReady || !document.getElementById('businessEmail').value.trim() || document.getElementById('fullName').value.trim().length < 2;
-			}
-			submit.disabled = true;
-			setTimeout(() => { formReady = true; submit.textContent = 'Изпрати заявка'; upd(); }, 2100);
-			form.addEventListener('input', upd);
-			form.addEventListener('submit', async (ev) => {
-				ev.preventDefault();
-				if (Date.now() - openedAt < 2000) { status.className = 'form-status err'; status.textContent = 'Изчакай 2 сек.'; return; }
-				let phone = document.getElementById('phone').value.trim();
-				if (phone) { phone = '+' + phone.replace(/\D/g, ''); if (!PHONE_OK.test(phone)) { status.className = 'form-status err'; status.textContent = errMap['Valid phone required']; return; } }
-				status.textContent = 'Изпращане…';
-				submit.disabled = true;
-				try {
-					const res = await fetch('/api/register-interest', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-						fullName: document.getElementById('fullName').value.trim(),
-						businessEmail: document.getElementById('businessEmail').value.trim(),
-						companyName: document.getElementById('companyName').value.trim(),
-						phone,
-						marketFocus: document.getElementById('marketFocus').value.trim(),
-						subscribeAlerts: document.getElementById('subscribeAlerts').checked,
-						hpCompanyWebsite: document.getElementById('hpCompanyWebsite').value,
-						formOpenedAt: openedAt,
-					}) });
-					const data = await res.json().catch(() => ({}));
-					if (!res.ok || data.ok === false) throw new Error(leadErr(data.error, data.hint));
-					status.className = 'form-status ok';
-					status.textContent = data.mailDelivery === 'sent' ? 'Готово — изпратихме известие.' : 'Заявката е записана.';
-					form.reset();
-				} catch (e) {
-					status.className = 'form-status err';
-					status.textContent = e instanceof Error ? e.message : 'Грешка.';
-				} finally { upd(); }
-			});
-		})();
-	</script>
+	<script src="/scripts/fieldlot-lead-form.js"></script>
 	<script src="/scripts/fieldlot-chat.js"></script>
 	<script>
 		FieldlotChat.mount({
