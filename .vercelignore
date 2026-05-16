@@ -1,0 +1,4 @@
+backend/
+.local/
+*.db
+node_modules/.cache/

@@ -63,12 +63,62 @@ npm run dev   # друг терминал
 npm test      # smoke към API 8789
 ```
 
-## Deploy (Vercel)
+## Deploy на Vercel
 
-1. Import на repo `fieldlot`
-2. Env vars от `.env.example`
-3. Build: `npm run build`, output `dist`
-4. API: `api/register-interest.ts`, `api/fieldlot-chat.ts`
+### 1. Import проект
+
+1. https://vercel.com/new → **Import Git Repository**
+2. Избери **`roxsonltd-droid/fieldlot`** (branch `main`)
+3. Framework: **Other** (или Vite — `vercel.json` вече задава build)
+
+### 2. Build настройки (автоматични от `vercel.json`)
+
+| Поле | Стойност |
+|------|----------|
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Install Command | `npm install` |
+
+### 3. Environment Variables (Vercel → Settings → Environment Variables)
+
+**Задължително за формата:**
+
+| Key | Пример |
+|-----|--------|
+| `FIELDLOT_INBOX_EMAIL` | `info@agrinexus.eu` |
+| `RESEND_API_KEY` | ключ от [resend.com](https://resend.com) |
+| `RESEND_FROM` | `Fieldlot <onboarding@yourdomain.com>` |
+
+**За AI чат (поне един):**
+
+| Key | Пример |
+|-----|--------|
+| `MISTRAL_API_KEY` | … |
+| или `OPENAI_API_KEY` | … |
+
+**Опционално:**
+
+| Key | Описание |
+|-----|----------|
+| `FIELDLOT_STORE_LEADS` | `1` — не работи на Vercel serverless (няма persistent disk); за лог ползвай Resend |
+
+### 4. След deploy
+
+- Начало: `https://твой-проект.vercel.app/`
+- Каталог: `https://твой-проект.vercel.app/catalog.html` или `/catalog`
+- API: `/api/fieldlot-chat`, `/api/register-interest`
+
+**FastAPI** (`/api/v1`, Python backend) **не** се хоства на този Vercel проект — отделно Railway/Render, ако го искаш по-късно.
+
+### 5. CLI (по избор)
+
+```bash
+npm i -g vercel
+cd fieldlot
+vercel login
+vercel link
+vercel --prod
+```
 
 ## SQL
 
