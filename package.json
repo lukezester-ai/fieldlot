@@ -7,13 +7,18 @@
 		"node": ">=20"
 	},
 	"scripts": {
-		"dev": "concurrently -k \"vite\" \"tsx watch server/dev-api.ts\"",
+		"dev": "concurrently -k \"vite\" \"tsx watch server/dev-api.ts\" \"npm run backend:dev\"",
+		"backend:dev": "node scripts/run-backend.mjs",
+		"backend:seed": "node scripts/run-backend.mjs --seed-only",
 		"build": "vite build",
 		"preview": "concurrently -k \"vite preview --port 5174 --strictPort\" \"tsx server/dev-api.ts\"",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"test": "npm run typecheck && node scripts/smoke-api.mjs",
+		"test:backend": "node scripts/smoke-backend.mjs"
 	},
 	"devDependencies": {
 		"@types/node": "^22.10.1",
+		"@vercel/node": "^5.5.28",
 		"concurrently": "^9.1.2",
 		"dotenv": "^16.4.7",
 		"tsx": "^4.19.2",

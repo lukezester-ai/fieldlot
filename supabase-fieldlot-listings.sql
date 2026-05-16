@@ -1,5 +1,6 @@
--- Fieldlot: публикувани обяви (POST /api/fieldlot-listings, GET публичен списък)
--- Изпълни в Supabase SQL Editor. Сървърът ползва service role (bypass RLS).
+-- Fieldlot (бъдеща фаза): публикувани обяви
+-- Няма имплементация в този repo още — само схема за Supabase.
+-- Изпълни в SQL Editor, когато добавиш backend за listings.
 
 create table if not exists public.fieldlot_listings (
   id uuid primary key default gen_random_uuid(),
@@ -11,22 +12,18 @@ create table if not exists public.fieldlot_listings (
   company_name text not null default '',
   business_email text not null,
   phone text not null default '',
-  subscribe_alerts boolean not null default false
+  subscribe_alerts boolean not null default false,
+  user_id uuid references auth.users (id) on delete set null
 );
 
 create index if not exists fieldlot_listings_created_at_idx
   on public.fieldlot_listings (created_at desc);
-
--- Връзка към Supabase Auth (същият акаунт като в AgriNexus).
-alter table public.fieldlot_listings
-  add column if not exists user_id uuid references auth.users (id) on delete set null;
 
 create index if not exists fieldlot_listings_user_id_idx
   on public.fieldlot_listings (user_id);
 
 alter table public.fieldlot_listings enable row level security;
 
--- Блокира директен достъп през PostgREST с anon key; запис/четене само от backend (service role).
 create policy "fieldlot_listings_block_anon"
   on public.fieldlot_listings
   for all

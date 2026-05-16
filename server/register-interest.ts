@@ -93,10 +93,10 @@ function buildRegisterEmailHtml(input: {
 	marketFocus: string;
 	subscribeAlerts: boolean;
 }): string {
-	const empty = '—';
+	const empty = '-';
 	const yn = input.subscribeAlerts ? 'да' : 'не';
 	return `
-    <h2>Fieldlot — заявка за ранен достъп</h2>
+    <h2>Fieldlot - заявка за ранен достъп</h2>
     <p><strong>Име:</strong> ${escapeHtml(input.fullName)}</p>
     <p><strong>Фирма:</strong> ${escapeHtml(input.companyName)}</p>
     <p><strong>Имейл:</strong> ${escapeHtml(input.businessEmail)}</p>
@@ -114,10 +114,10 @@ function buildRegisterEmailText(input: {
 	marketFocus: string;
 	subscribeAlerts: boolean;
 }): string {
-	const empty = '—';
+	const empty = '-';
 	const yn = input.subscribeAlerts ? 'да' : 'не';
 	return [
-		'Fieldlot — заявка за ранен достъп',
+		'Fieldlot - заявка за ранен достъп',
 		'',
 		`Име: ${input.fullName}`,
 		`Фирма: ${input.companyName}`,
@@ -136,7 +136,7 @@ export async function handleRegisterInterestPost(
 	| { ok: false; status: number; error: string; hint?: string }
 > {
 	if (!rawBody || typeof rawBody !== 'object') {
-		return { ok: false, status: 400, error: 'Invalid JSON body' };
+		return { ok: false, status: 400, error: 'Невалидно JSON тяло' };
 	}
 	const b = rawBody as Record<string, unknown>;
 	const anti = assertLeadFormAntiBot(b, { clientIp: ctx?.clientIp ?? null });
@@ -152,14 +152,14 @@ export async function handleRegisterInterestPost(
 	const subscribeAlerts = Boolean(b.subscribeAlerts);
 
 	if (!businessEmail || !EMAIL_RE.test(businessEmail)) {
-		return { ok: false, status: 400, error: 'Valid business email required' };
+		return { ok: false, status: 400, error: 'Невалиден имейл' };
 	}
 	if (phone && !PHONE_RE.test(phone)) {
 		return {
 			ok: false,
 			status: 400,
-			error: 'Valid phone required',
-			hint: 'Provide phone in E.164 format, e.g. +359881234567.',
+			error: 'Невалиден телефон',
+			hint: 'Използвай формат E.164, напр. +359888123456, или остави празно.',
 		};
 	}
 
@@ -168,7 +168,7 @@ export async function handleRegisterInterestPost(
 			? rawFullName
 			: (businessEmail.includes('@') ? businessEmail.split('@')[0] : '') || 'User';
 	const resolvedCompany = companyName || 'Не е посочено';
-	const resolvedMarket = marketFocus || '—';
+	const resolvedMarket = marketFocus || '-';
 
 	const preview = `${derivedFullName} · ${resolvedCompany} · ${businessEmail} · ${resolvedMarket} · alerts:${subscribeAlerts ? 'yes' : 'no'} · ${phone || 'no phone'}`;
 
@@ -178,7 +178,7 @@ export async function handleRegisterInterestPost(
 		companyName: resolvedCompany,
 		businessEmail,
 		phone,
-		marketFocus: resolvedMarket === '—' ? '' : resolvedMarket,
+		marketFocus: resolvedMarket === '-' ? '' : resolvedMarket,
 		subscribeAlerts,
 	});
 
@@ -211,6 +211,6 @@ export async function handleRegisterInterestPost(
 		return { ok: true, preview, mailDelivery: sent === 'sent' ? 'sent' : 'skipped' };
 	} catch (e) {
 		const msg = e instanceof Error ? e.message : 'Email delivery failed';
-		return { ok: false, status: 502, error: 'Email delivery failed', hint: msg };
+		return { ok: false, status: 502, error: 'Изпращането на имейл не успя', hint: msg };
 	}
 }

@@ -28,15 +28,20 @@ export function assertLeadFormAntiBot(
 	const now = Date.now();
 	const bucket = pruneHits(ip, now);
 	if (bucket.length >= RATE_MAX_PER_WINDOW) {
-		return { ok: false, status: 429, error: 'Too many requests', hint: 'Please try again later.' };
+		return {
+			ok: false,
+			status: 429,
+			error: 'Твърде много заявки',
+			hint: 'Опитай отново след няколко минути.',
+		};
 	}
 
 	const hpRaw = raw[LEAD_FORM_HP_FIELD];
 	if (hpRaw != null && typeof hpRaw !== 'string') {
-		return { ok: false, status: 400, error: 'Request could not be processed' };
+		return { ok: false, status: 400, error: 'Заявката не мина проверката' };
 	}
 	if (typeof hpRaw === 'string' && hpRaw.trim().length > 0) {
-		return { ok: false, status: 400, error: 'Request could not be processed' };
+		return { ok: false, status: 400, error: 'Заявката не мина проверката' };
 	}
 
 	const opened = raw[LEAD_FORM_OPENED_AT_FIELD];
@@ -47,26 +52,26 @@ export function assertLeadFormAntiBot(
 				? Number(opened.trim())
 				: NaN;
 	if (!Number.isFinite(t) || t < 1_600_000_000_000 || t > 10_000_000_000_000) {
-		return { ok: false, status: 400, error: 'Request could not be processed' };
+		return { ok: false, status: 400, error: 'Заявката не мина проверката' };
 	}
 	if (t > now + 120_000) {
-		return { ok: false, status: 400, error: 'Request could not be processed' };
+		return { ok: false, status: 400, error: 'Заявката не мина проверката' };
 	}
 	const elapsed = now - t;
 	if (elapsed < MIN_FORM_MS) {
 		return {
 			ok: false,
 			status: 429,
-			error: 'Too fast',
-			hint: 'Please wait a moment and try again.',
+			error: 'Твърде бързо',
+			hint: 'Изчакай 2 секунди след зареждане и опитай пак.',
 		};
 	}
 	if (elapsed > MAX_FORM_MS) {
 		return {
 			ok: false,
 			status: 400,
-			error: 'Session expired',
-			hint: 'Please refresh the page and try again.',
+			error: 'Сесията изтече',
+			hint: 'Презареди страницата и попълни формата отново.',
 		};
 	}
 

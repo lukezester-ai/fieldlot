@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="bg">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Каталог — Fieldlot</title>
+	<meta name="description" content="Демо каталог с агро оферти в България — Fieldlot B2B пазар." />
+	<link rel="stylesheet" href="/styles/fieldlot-theme.css" />
+	<style>
+
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+			color: var(--fl-ink);
+			background:
+				linear-gradient(rgba(45, 122, 184, 0.06) 1px, transparent 1px),
+				linear-gradient(90deg, rgba(45, 122, 184, 0.06) 1px, transparent 1px),
+				linear-gradient(180deg, var(--fl-surface) 0%, var(--fl-white) 100%);
+			background-size: 48px 48px, 48px 48px, auto;
+		}
+
+		a { color: inherit; text-decoration: none; }
+		button, input, select { font: inherit; }
+
+		.site-header {
+			position: sticky;
+			top: 0;
+			z-index: 30;
+			border-bottom: 1px solid var(--fl-line);
+			background: rgba(255, 255, 255, 0.92);
+			backdrop-filter: blur(20px);
+			box-shadow: 0 1px 0 rgba(45, 122, 184, 0.08);
+		}
+
+		.nav {
+			width: min(1180px, calc(100% - 32px));
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			padding: 14px 0;
+		}
+
+		.brand { display: inline-flex; align-items: center; gap: 12px; }
+		.brand-mark {
+			width: 42px;
+			height: 42px;
+			border-radius: 9px;
+			display: grid;
+			place-items: center;
+			background: linear-gradient(145deg, var(--fl-navy-mid) 0%, var(--fl-navy-strong) 100%);
+			color: var(--fl-navy-ink);
+			border: 1px solid var(--fl-line);
+		}
+		.brand-title { display: block; font-weight: 950; letter-spacing: 0.18em; font-size: 15px; }
+		.brand-sub {
+			display: block;
+			margin-top: 2px;
+			color: var(--fl-emerald);
+			font-size: 11px;
+			font-weight: 800;
+			letter-spacing: 0.22em;
+			text-transform: uppercase;
+		}
+
+		.nav-links {
+			display: flex;
+			align-items: center;
+			gap: 20px;
+			font-size: 14px;
+			font-weight: 750;
+			color: var(--fl-navy-ink);
+		}
+
+		.nav-links a:hover,
+		.nav-links a[aria-current="page"] { color: var(--fl-emerald); }
+
+		.nav-cta,
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 44px;
+			padding: 0 16px;
+			border-radius: 8px;
+			border: 1px solid transparent;
+			font-weight: 850;
+			cursor: pointer;
+		}
+
+		.nav-cta,
+		.btn-primary {
+			background: linear-gradient(135deg, var(--yp-yellow) 0%, var(--yp-yellow-mid) 100%);
+			color: var(--yp-ink);
+			border: 2px solid var(--yp-yellow-dark);
+			box-shadow: 0 10px 32px var(--yp-glow);
+		}
+
+		.btn-secondary {
+			border-color: var(--fl-navy-strong);
+			background: var(--fl-white);
+			color: var(--fl-navy-ink);
+		}
+
+		.btn-secondary:hover {
+			border-color: var(--fl-navy-deep);
+			background: var(--fl-navy);
+		}
+
+		.container {
+			width: min(1180px, calc(100% - 32px));
+			margin: 0 auto;
+		}
+
+		.catalog-hero {
+			padding: 40px 0 28px;
+		}
+
+		.demo-banner {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-bottom: 24px;
+			padding: 14px 18px;
+			border-radius: 10px;
+			border: 1px solid var(--fl-navy-strong);
+			background: linear-gradient(135deg, var(--fl-navy-mid) 0%, var(--fl-navy) 100%);
+			color: var(--fl-navy-ink);
+			font-size: 14px;
+		}
+
+		.demo-banner strong { color: var(--yp-yellow-dark); text-shadow: 0 0 20px var(--yp-glow); }
+
+		.demo-banner .btn-secondary {
+			border-color: var(--fl-navy-strong);
+			background: var(--fl-white);
+			color: var(--fl-navy-ink);
+		}
+
+		.catalog-hero h1 {
+			margin: 0;
+			font-size: clamp(32px, 5vw, 48px);
+			letter-spacing: -0.04em;
+			line-height: 1.05;
+			color: var(--fl-navy-ink);
+		}
+
+		.catalog-hero p {
+			margin: 12px 0 0;
+			max-width: 640px;
+			color: var(--muted);
+			line-height: 1.65;
+			font-size: 16px;
+		}
+
+		.toolbar {
+			display: grid;
+			grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr)) auto;
+			gap: 10px;
+			margin: 28px 0 20px;
+			padding: 16px;
+			border: 1px solid rgba(15, 23, 42, 0.1);
+			border-radius: 12px;
+			background: white;
+			box-shadow: 0 8px 32px rgba(11, 18, 32, 0.06);
+		}
+
+		.toolbar label {
+			display: grid;
+			gap: 6px;
+			font-size: 11px;
+			font-weight: 800;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			color: var(--muted);
+		}
+
+		.toolbar input,
+		.toolbar select {
+			min-height: 42px;
+			padding: 0 12px;
+			border: 1px solid var(--line);
+			border-radius: 8px;
+			background: var(--paper);
+		}
+
+		.toolbar input:focus,
+		.toolbar select:focus {
+			outline: none;
+			border-color: rgba(15, 107, 69, 0.45);
+			box-shadow: 0 0 0 3px rgba(15, 107, 69, 0.12);
+		}
+
+		.results-meta {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			margin-bottom: 16px;
+			font-size: 14px;
+			color: var(--muted);
+		}
+
+		.results-meta strong { color: var(--ink); }
+
+		.catalog-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			gap: 14px;
+			padding: 20px;
+			padding-bottom: 48px;
+			border-radius: 14px;
+			background: linear-gradient(180deg, var(--yp-shelf) 0%, #e5dfc8 100%);
+			border: 2px solid rgba(11, 37, 69, 0.08);
+			border: 1px solid rgba(26, 26, 26, 0.08);
+			box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.04);
+		}
+
+		.listing-photo {
+			position: relative;
+			height: 168px;
+			overflow: hidden;
+			background: #e8e2d0;
+		}
+
+		.listing-photo img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+		.detail-photo {
+			margin: -4px -4px 16px;
+			border-radius: 10px;
+			overflow: hidden;
+			height: 200px;
+		}
+
+		.detail-photo img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+		.listing-card {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			border: 2px solid var(--yp-border);
+			border-radius: 4px;
+			background: linear-gradient(165deg, var(--yp-yellow) 0%, var(--yp-yellow-mid) 55%, var(--yp-yellow-soft) 100%);
+			overflow: hidden;
+			box-shadow:
+				0 3px 0 rgba(0, 0, 0, 0.16),
+				0 10px 32px var(--yp-glow),
+				0 0 0 1px rgba(255, 143, 0, 0.35);
+			transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+			cursor: pointer;
+			color: var(--yp-ink);
+		}
+
+		.listing-card::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 4px;
+			background: linear-gradient(90deg, var(--yp-yellow-dark), var(--yp-yellow));
+		}
+
+		.listing-card:hover {
+			transform: translateY(-4px) scale(1.01);
+			border-color: rgba(26, 26, 26, 0.28);
+			box-shadow:
+				0 5px 0 rgba(0, 0, 0, 0.18),
+				0 20px 48px var(--yp-glow),
+				0 0 0 2px var(--yp-yellow-dark);
+		}
+
+		.listing-card-top {
+			padding: 18px 16px 0;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+		}
+
+		.tag {
+			font-size: 10px;
+			font-weight: 900;
+			padding: 4px 8px;
+			border-radius: 3px;
+			background: rgba(26, 26, 26, 0.88);
+			color: var(--yp-yellow);
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+		}
+
+		.tag.buy {
+			background: #1e3a5f;
+			color: #fff;
+		}
+
+		.tag.sell {
+			background: var(--fl-navy-ink);
+			color: #fff;
+		}
+
+		.tag.demo {
+			background: var(--yp-yellow-dark);
+			color: var(--yp-ink);
+		}
+
+		.listing-card-body {
+			padding: 12px 16px 16px;
+			flex: 1;
+		}
+
+		.listing-card h2 {
+			margin: 0 0 6px;
+			font-size: 19px;
+			font-weight: 900;
+			letter-spacing: -0.02em;
+			color: var(--yp-ink);
+			line-height: 1.2;
+		}
+
+		.listing-card .meta {
+			margin: 0;
+			font-size: 13px;
+			color: rgba(26, 26, 26, 0.72);
+			line-height: 1.5;
+			font-weight: 550;
+		}
+
+		.listing-card-foot {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 12px 16px 14px;
+			border-top: 2px solid rgba(26, 26, 26, 0.1);
+			background: rgba(255, 214, 0, 0.65);
+		}
+
+		.price {
+			font-size: 24px;
+			font-weight: 950;
+			color: var(--yp-ink);
+			letter-spacing: -0.03em;
+		}
+
+		.price small {
+			font-size: 12px;
+			font-weight: 800;
+			color: rgba(26, 26, 26, 0.55);
+		}
+
+		.empty-state {
+			grid-column: 1 / -1;
+			text-align: center;
+			padding: 48px 24px;
+			border: 1px dashed var(--line);
+			border-radius: 12px;
+			color: var(--muted);
+		}
+
+		/* Detail panel */
+		.detail-backdrop {
+			position: fixed;
+			inset: 0;
+			z-index: 50;
+			background: rgba(11, 18, 32, 0.45);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.25s ease;
+		}
+
+		.detail-backdrop.open {
+			opacity: 1;
+			pointer-events: auto;
+		}
+
+		.detail-panel {
+			position: fixed;
+			top: 0;
+			right: 0;
+			z-index: 51;
+			width: min(100%, 440px);
+			height: 100%;
+			background: linear-gradient(180deg, var(--yp-yellow) 0%, var(--yp-yellow-soft) 100%);
+			border-left: 3px solid var(--yp-yellow-dark);
+			box-shadow: -12px 0 48px rgba(0, 0, 0, 0.2);
+			color: var(--yp-ink);
+			transform: translateX(100%);
+			transition: transform 0.3s ease;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+		}
+
+		.detail-panel.open { transform: translateX(0); }
+
+		.detail-head {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 20px 20px 12px;
+			border-bottom: 2px solid rgba(26, 26, 26, 0.12);
+			background: linear-gradient(135deg, var(--fl-navy-mid) 0%, var(--fl-navy-strong) 100%);
+			color: var(--fl-navy-ink);
+		}
+
+		.detail-head .board-eyebrow { color: var(--fl-emerald) !important; }
+		.detail-head h2 { color: var(--fl-navy-ink); }
+		.detail-close { color: var(--fl-muted); }
+
+		.detail-head h2 {
+			margin: 8px 0 0;
+			font-size: 22px;
+			letter-spacing: -0.03em;
+		}
+
+		.detail-close {
+			border: none;
+			background: transparent;
+			font-size: 28px;
+			line-height: 1;
+			cursor: pointer;
+			color: var(--muted);
+			padding: 4px;
+		}
+
+		.detail-body {
+			flex: 1;
+			overflow-y: auto;
+			padding: 16px 20px 24px;
+		}
+
+		.detail-dl {
+			display: grid;
+			gap: 14px;
+			margin: 0;
+		}
+
+		.detail-dl div {
+			display: grid;
+			gap: 4px;
+		}
+
+		.detail-dl dt {
+			font-size: 11px;
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			color: var(--muted);
+		}
+
+		.detail-dl dd {
+			margin: 0;
+			font-size: 15px;
+			line-height: 1.5;
+		}
+
+		.detail-note {
+			margin-top: 20px;
+			padding: 12px 14px;
+			border-radius: 4px;
+			border: 1px solid rgba(26, 26, 26, 0.12);
+			background: rgba(255, 255, 255, 0.55);
+			font-size: 13px;
+			line-height: 1.55;
+			color: var(--yp-ink);
+		}
+
+		.detail-foot {
+			padding: 16px 20px 24px;
+			border-top: 2px solid rgba(26, 26, 26, 0.12);
+			background: rgba(255, 255, 255, 0.4);
+			display: grid;
+			gap: 10px;
+		}
+
+		.site-footer {
+			border-top: 1px solid var(--line);
+			padding: 28px 0 40px;
+			color: var(--muted);
+			font-size: 14px;
+		}
+
+		.site-footer p { margin: 0 0 6px; }
+		.site-footer a { color: var(--fl-emerald); font-weight: 600; }
+
+		@media (max-width: 900px) {
+			.toolbar {
+				grid-template-columns: 1fr 1fr;
+			}
+			.toolbar label:first-child { grid-column: 1 / -1; }
+			.nav-links { display: none; }
+			.nav-cta { display: none; }
+		}
+
+		@media (max-width: 520px) {
+			.toolbar { grid-template-columns: 1fr; }
+			.catalog-grid { grid-template-columns: 1fr; }
+		}
+	</style>
+</head>
+<body>
+	<header class="site-header">
+		<nav class="nav" aria-label="Основна навигация">
+			<a class="brand" href="/">
+				<span class="brand-mark" aria-hidden="true">
+					<svg width="23" height="23" viewBox="0 0 24 24" fill="none">
+						<path d="M6 15c5.8.4 9.5-2.8 11.4-8.9C11.1 6 6.8 9.3 6 15Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+					</svg>
+				</span>
+				<span>
+					<span class="brand-title">FIELDLOT</span>
+					<span class="brand-sub">Agro market access</span>
+				</span>
+			</a>
+			<div class="nav-links">
+				<a href="/">Начало</a>
+				<a href="/catalog.html" aria-current="page">Каталог</a>
+				<a href="/#cta">Ранен достъп</a>
+			</div>
+			<a class="nav-cta" href="/#cta">Включи се</a>
+		</nav>
+	</header>
+
+	<main class="container">
+		<section class="catalog-hero">
+			<div class="demo-banner" role="status">
+				<span><strong>Жълти страници · демо</strong> — обявите са в жълт стил като класическия каталог. Реалните оферти идват след старт на платформата.</span>
+				<a class="btn btn-secondary" href="/#cta">Искам достъп</a>
+			</div>
+
+			<h1>Каталог на оферти</h1>
+			<p>
+				Прегледай демо партиди по култура, регион и тип (продажба или търсене). Филтрирай и отвори детайли — в пълната версия тук ще изпращаш директно запитване.
+			</p>
+		</section>
+
+		<form class="toolbar" id="filters" role="search" aria-label="Филтри на каталога">
+			<label>
+				Търсене
+				<input type="search" id="q" placeholder="пшеница, Добруджа, слънчоглед…" autocomplete="off" />
+			</label>
+			<label>
+				Категория
+				<select id="category">
+					<option value="">Всички</option>
+					<option value="grain">Зърно</option>
+					<option value="oilseed">Маслодайни</option>
+					<option value="feed">Фураж</option>
+					<option value="fruit">Плодове</option>
+					<option value="veg">Зеленчуци</option>
+				</select>
+			</label>
+			<label>
+				Регион
+				<select id="region">
+					<option value="">Всички</option>
+					<option value="dobrudzha">Добруджа</option>
+					<option value="north">Север</option>
+					<option value="south">Юг</option>
+					<option value="west">Запад</option>
+				</select>
+			</label>
+			<label>
+				Тип
+				<select id="role">
+					<option value="">Всички</option>
+					<option value="sell">Продажба</option>
+					<option value="buy">Търсене / купувач</option>
+				</select>
+			</label>
+			<button type="button" class="btn btn-secondary" id="reset-filters">Изчисти</button>
+		</form>
+
+		<div class="results-meta">
+			<span id="results-count"><strong>0</strong> оферти</span>
+			<span>Сортиране: най-нови (демо)</span>
+		</div>
+
+		<div class="catalog-grid" id="catalog-grid" aria-live="polite"></div>
+	</main>
+
+	<div class="detail-backdrop" id="detail-backdrop" hidden></div>
+	<aside class="detail-panel" id="detail-panel" aria-label="Детайли на оферта" aria-hidden="true">
+		<div class="detail-head">
+			<div>
+				<p class="board-eyebrow">Оферта</p>
+				<h2 id="detail-title">—</h2>
+			</div>
+			<button type="button" class="detail-close" id="detail-close" aria-label="Затвори">×</button>
+		</div>
+		<div class="detail-body" id="detail-body"></div>
+		<div class="detail-foot">
+			<a class="btn btn-primary" id="detail-cta" href="/#cta">Запитване (ранен достъп)</a>
+			<button type="button" class="btn btn-secondary" id="detail-close-2">Затвори</button>
+		</div>
+	</aside>
+
+	<footer class="site-footer">
+		<div class="container">
+			<p>© Fieldlot · Демо каталог</p>
+			<p>Контакт: <a href="mailto:info@agrinexus.eu">info@agrinexus.eu</a> · <a href="/">Към началото</a></p>
+		</div>
+	</footer>
+
+	<script src="/scripts/fieldlot-images.js"></script>
+	<script>
+		const DEMO_LISTINGS = [
+			{
+				id: 'wheat-dobr',
+				title: 'Пшеница фуражна',
+				subtitle: 'Силистра · Добруджа',
+				category: 'grain',
+				region: 'dobrudzha',
+				role: 'sell',
+				qty: '85 т',
+				price: '420',
+				priceUnit: 'лв/т',
+				incoterm: 'FCA стопанство',
+				harvest: '2025',
+				quality: 'Хлебен индекс ~58, влага при предаване по договор',
+				contact: 'Производител · документи при запитване',
+				tags: ['Зърно', 'Продажба'],
+			},
+			{
+				id: 'sun-pl',
+				title: 'Слънчоглед',
+				subtitle: 'Плевен · Север',
+				category: 'oilseed',
+				region: 'north',
+				role: 'sell',
+				qty: '~120 т',
+				price: 'по дог.',
+				priceUnit: 'индикативно',
+				incoterm: 'EXW силоз',
+				harvest: '2025 · жътва юли',
+				quality: 'Масленост по проба; сорт по спецификация',
+				contact: 'Директно от стопанство',
+				tags: ['Маслодайни', 'Продажба'],
+			},
+			{
+				id: 'corn-buy',
+				title: 'Царевица — търсене',
+				subtitle: 'Шумен · Североизток',
+				category: 'grain',
+				region: 'north',
+				role: 'buy',
+				qty: '200+ т',
+				price: 'заявка',
+				priceUnit: 'купувач',
+				incoterm: 'Доставка до база',
+				harvest: 'Кампания 2025',
+				quality: 'Фуражна или ЕС стандарт — по оферта',
+				contact: 'Търговец · верифициран интерес',
+				tags: ['Зърно', 'Търсене'],
+			},
+			{
+				id: 'barley-sz',
+				title: 'Ечемик пивоварен',
+				subtitle: 'Стара Загора · Юг',
+				category: 'grain',
+				region: 'south',
+				role: 'sell',
+				qty: '45 т',
+				price: '395',
+				priceUnit: 'лв/т',
+				incoterm: 'FCA',
+				harvest: '2025',
+				quality: 'Протеин и енергия по договорена спецификация',
+				contact: 'Производител',
+				tags: ['Зърно', 'Продажба'],
+			},
+			{
+				id: 'apple-plov',
+				title: 'Ябълки идared',
+				subtitle: 'Пловдив · Юг',
+				category: 'fruit',
+				region: 'south',
+				role: 'sell',
+				qty: '18 т',
+				price: '1.85',
+				priceUnit: 'лв/кг',
+				incoterm: 'EXW градина',
+				harvest: 'Есен 2025',
+				quality: 'Калибър 70+, опаковане по договор',
+				contact: 'Овощевъд · снимки при запитване',
+				tags: ['Плодове', 'Продажба'],
+			},
+			{
+				id: 'pepper-buy',
+				title: 'Лют пипер — търсене',
+				subtitle: 'Пазарджик · Юг',
+				category: 'veg',
+				region: 'south',
+				role: 'buy',
+				qty: '8–12 т/седм.',
+				price: 'оферта',
+				priceUnit: 'купувач',
+				incoterm: 'Доставка до преработка',
+				harvest: 'Сезон 2025',
+				quality: 'Пресни, определен сорт',
+				contact: 'Преработвател',
+				tags: ['Зеленчуци', 'Търсене'],
+			},
+			{
+				id: 'rapeseed-vt',
+				title: 'Рапица',
+				subtitle: 'Монтана · Северозапад',
+				category: 'oilseed',
+				region: 'west',
+				role: 'sell',
+				qty: '62 т',
+				price: '510',
+				priceUnit: 'лв/т',
+				incoterm: 'FCA',
+				harvest: '2025',
+				quality: 'Масленост и примеси по стандарт на купувача',
+				contact: 'Производител · силоз на място',
+				tags: ['Маслодайни', 'Продажба'],
+			},
+			{
+				id: 'hay-vid',
+				title: 'Сено фуражно',
+				subtitle: 'Видин · Северозапад',
+				category: 'feed',
+				region: 'west',
+				role: 'sell',
+				qty: '200 бали',
+				price: '18',
+				priceUnit: 'лв/бала',
+				incoterm: 'EXW',
+				harvest: '2025',
+				quality: 'Сухо, складирано под навес',
+				contact: 'Стопанство · доставка по договаряне',
+				tags: ['Фураж', 'Продажба'],
+			},
+		];
+
+		const grid = document.getElementById('catalog-grid');
+		const countEl = document.getElementById('results-count');
+		const qEl = document.getElementById('q');
+		const catEl = document.getElementById('category');
+		const regEl = document.getElementById('region');
+		const roleEl = document.getElementById('role');
+		const backdrop = document.getElementById('detail-backdrop');
+		const panel = document.getElementById('detail-panel');
+		const detailTitle = document.getElementById('detail-title');
+		const detailBody = document.getElementById('detail-body');
+		const detailCta = document.getElementById('detail-cta');
+
+		function escapeHtml(s) {
+			return String(s)
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;');
+		}
+
+		function filterListings() {
+			const q = qEl.value.trim().toLowerCase();
+			const cat = catEl.value;
+			const reg = regEl.value;
+			const role = roleEl.value;
+			return DEMO_LISTINGS.filter((item) => {
+				if (cat && item.category !== cat) return false;
+				if (reg && item.region !== reg) return false;
+				if (role && item.role !== role) return false;
+				if (!q) return true;
+				const hay = [item.title, item.subtitle, item.quality, item.contact, ...(item.tags || [])]
+					.join(' ')
+					.toLowerCase();
+				return hay.includes(q);
+			});
+		}
+
+		function renderCard(item) {
+			const roleClass = item.role === 'buy' ? 'buy' : 'sell';
+			const roleLabel = item.role === 'buy' ? 'Търсене' : 'Продажба';
+			const photoSrc = window.FieldlotImages ? FieldlotImages.forListing(item) : '';
+			const photoHtml = photoSrc
+				? `<div class="listing-photo"><img src="${photoSrc}" alt="${escapeHtml(item.title)}" loading="lazy" /></div>`
+				: '';
+			const article = document.createElement('article');
+			article.className = 'listing-card';
+			article.tabIndex = 0;
+			article.dataset.id = item.id;
+			article.innerHTML = `
+				${photoHtml}
+				<div class="listing-card-top">
+					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
+					${(item.tags || []).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+				</div>
+				<div class="listing-card-body">
+					<h2>${escapeHtml(item.title)}</h2>
+					<p class="meta">${escapeHtml(item.subtitle)} · ${escapeHtml(item.qty)}</p>
+					<p class="meta">${escapeHtml(item.incoterm)}</p>
+				</div>
+				<div class="listing-card-foot">
+					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
+					<span class="tag demo">Демо</span>
+				</div>
+			`;
+			article.addEventListener('click', () => openDetail(item));
+			article.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					openDetail(item);
+				}
+			});
+			return article;
+		}
+
+		function render() {
+			const items = filterListings();
+			grid.innerHTML = '';
+			if (items.length === 0) {
+				grid.innerHTML =
+					'<div class="empty-state"><p>Няма оферти за избраните филтри.</p><p>Опитай друга комбинация или <a href="/#cta">заяви ранен достъп</a>.</p></div>';
+			} else {
+				items.forEach((item) => grid.appendChild(renderCard(item)));
+			}
+			countEl.innerHTML = `<strong>${items.length}</strong> оферт${items.length === 1 ? 'а' : 'и'}`;
+		}
+
+		function openDetail(item) {
+			detailTitle.textContent = item.title;
+			const photoSrc = window.FieldlotImages ? FieldlotImages.forListing(item) : '';
+			const heroPhoto = photoSrc
+				? `<div class="detail-photo"><img src="${photoSrc}" alt="${escapeHtml(item.title)}" /></div>`
+				: '';
+			detailBody.innerHTML = `
+				${heroPhoto}
+				<div class="detail-highlight">
+					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
+					<p class="meta" style="margin:6px 0 0;font-size:13px;color:var(--yp-muted)">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
+				</div>
+				<dl class="detail-dl">
+					<div><dt>Локация</dt><dd>${escapeHtml(item.subtitle)}</dd></div>
+					<div><dt>Количество</dt><dd>${escapeHtml(item.qty)}</dd></div>
+					<div><dt>Цена</dt><dd>${escapeHtml(item.price)} ${escapeHtml(item.priceUnit)}</dd></div>
+					<div><dt>Условие</dt><dd>${escapeHtml(item.incoterm)}</dd></div>
+					<div><dt>Реколта / сезон</dt><dd>${escapeHtml(item.harvest)}</dd></div>
+					<div><dt>Качество</dt><dd>${escapeHtml(item.quality)}</dd></div>
+					<div><dt>Контакт</dt><dd>${escapeHtml(item.contact)}</dd></div>
+				</dl>
+				<p class="detail-note">Това е демо запис. В пълната версия ще изпратиш запитване директно към обявителя през Fieldlot.</p>
+			`;
+			detailCta.href = `/#cta?listing=${encodeURIComponent(item.id)}`;
+			backdrop.hidden = false;
+			panel.setAttribute('aria-hidden', 'false');
+			requestAnimationFrame(() => {
+				backdrop.classList.add('open');
+				panel.classList.add('open');
+			});
+			document.body.style.overflow = 'hidden';
+		}
+
+		function closeDetail() {
+			backdrop.classList.remove('open');
+			panel.classList.remove('open');
+			panel.setAttribute('aria-hidden', 'true');
+			document.body.style.overflow = '';
+			setTimeout(() => {
+				backdrop.hidden = true;
+			}, 280);
+		}
+
+		document.getElementById('detail-close').addEventListener('click', closeDetail);
+		document.getElementById('detail-close-2').addEventListener('click', closeDetail);
+		backdrop.addEventListener('click', closeDetail);
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') closeDetail();
+		});
+
+		[qEl, catEl, regEl, roleEl].forEach((el) => el.addEventListener('input', render));
+		[qEl, catEl, regEl, roleEl].forEach((el) => el.addEventListener('change', render));
+		document.getElementById('reset-filters').addEventListener('click', () => {
+			qEl.value = '';
+			catEl.value = '';
+			regEl.value = '';
+			roleEl.value = '';
+			render();
+		});
+
+		render();
+	</script>
+</body>
+</html>

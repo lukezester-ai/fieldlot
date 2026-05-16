@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import http from 'node:http';
 import { handleFieldlotChatPost } from './fieldlot-chat-handler.js';
+import { getAllListings } from './fieldlot-rag.js';
 import { handleRegisterInterestPost } from './register-interest.js';
 import { isAnyLlmConfigured } from './llm-upstream.js';
 
@@ -63,6 +64,8 @@ const server = http.createServer(async (req, res) => {
 				ok: true,
 				path: '/api/fieldlot-chat',
 				llmConfigured: isAnyLlmConfigured(),
+				ragEnabled: true,
+				listingCount: getAllListings().length,
 			});
 			return;
 		}
@@ -75,7 +78,7 @@ const server = http.createServer(async (req, res) => {
 			}
 			const result = await handleFieldlotChatPost(body);
 			if (result.ok) {
-				send(res, 200, { reply: result.reply });
+				send(res, 200, { reply: result.reply, rag: result.rag });
 				return;
 			}
 			send(res, result.status, { error: result.error, hint: result.hint });

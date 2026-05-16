@@ -1,0 +1,64 @@
+/**
+ * Fieldlot — дигитална агро екосистема
+ * Тъмно зелено · земни тонове · злато · бяло
+ */
+:root {
+	--fl-ink: #0f1a14;
+	--fl-muted: #5c6b62;
+	--fl-line: #dde5df;
+	--fl-surface: #f6f8f5;
+	--fl-surface-2: #ecefe9;
+	--fl-white: #ffffff;
+
+	--fl-brand: #1a4d3a;
+	--fl-brand-hover: #236b4f;
+	--fl-brand-deep: #0f3326;
+	--fl-brand-soft: #e8f2ec;
+
+	--fl-earth: #8b7355;
+	--fl-earth-soft: #f3ede4;
+
+	--fl-gold: #c9a227;
+	--fl-gold-soft: #faf6e8;
+
+	--fl-accent: #2d6a4f;
+	--fl-accent-hover: #1f5a40;
+	--fl-accent-soft: #e8f0eb;
+
+	--fl-up: #15803d;
+	--fl-down: #b91c1c;
+
+	--fl-radius: 8px;
+	--fl-radius-lg: 12px;
+	--fl-radius-xl: 16px;
+
+	--fl-shadow-sm: 0 1px 3px rgba(15, 26, 20, 0.06);
+	--fl-shadow: 0 8px 28px rgba(15, 26, 20, 0.08);
+	--fl-shadow-lg: 0 20px 50px rgba(15, 26, 20, 0.12);
+
+	/* Жълти страници — само в каталога */
+	--yp-yellow: #f0dba8;
+	--yp-yellow-mid: #e5c97a;
+	--yp-yellow-soft: #faf6ec;
+	--yp-yellow-bar: #c9a227;
+	--yp-ink: #292524;
+	--yp-muted: #57534e;
+	--yp-border: rgba(41, 37, 36, 0.14);
+	--yp-shelf: #e8e6e1;
+
+	--ink: var(--fl-ink);
+	--muted: var(--fl-muted);
+	--line: var(--fl-line);
+	--paper: var(--fl-white);
+	--soft: var(--fl-surface-2);
+	--field: var(--fl-accent);
+	--field-dark: var(--fl-accent-hover);
+	--white: var(--fl-white);
+	--shadow: var(--fl-shadow);
+
+	--fl-navy: var(--fl-brand);
+	--fl-navy-mid: var(--fl-brand-hover);
+	--fl-navy-ink: var(--fl-brand);
+	--fl-emerald: var(--fl-accent);
+	--fl-emerald-dark: var(--fl-accent-hover);
+}

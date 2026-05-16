@@ -2,3 +2,9 @@ node_modules/
 dist/
 .env
 .env*.local
+.local/
+backend/.env
+backend/fieldlot.db
+backend/uploads/
+backend/**/__pycache__/
+backend/.venv/

@@ -1,4 +1,8 @@
 import {
+	buildFieldlotRagContext,
+	parseFieldlotChatContext,
+} from './fieldlot-rag.js';
+import {
 	chatProviderLabel,
 	openAIMessageContentToString,
 	resolveTextChatUpstream,
@@ -12,19 +16,17 @@ const MAX_REPLY_CHARS = 4000;
 
 function truncate(s: string, max: number): string {
 	if (s.length <= max) return s;
-	return `${s.slice(0, max)}\n…`;
+	return `${s.slice(0, max)}\n...`;
 }
 
-const FIELDLOT_SYSTEM = `Ти си „Fieldlot Guide“ — LLM асистент за концепцията **Fieldlot** (field + lot — партиди от полето): български B2B каталог за агро оферти (производители ↔ купувачи), ранна фаза **без** escrow и без плащания през платформата.
+const FIELDLOT_SYSTEM = `Ти си "Fieldlot Guide" — RAG асистент на платформата Fieldlot (български B2B агро каталог). Управляваш навигацията, обясняваш процеси и отговаряш за демо оферти САМО от блока RAG по-долу.
 
-Това е самостоятелен проект Fieldlot. За официални въпроси към екипа насочвай към контактния имейл от футъра на сайта (ако потребителят не го е посочил), без да измисляш други организации.
+Отговаряй на български, професионално и кратко. Можеш да:
+- търсиш и описваш оферти от RAG (с id);
+- насочваш към /catalog.html, /#cta, филтри;
+- помагаш с текст на оферта и подготовка за запитване.
 
-Правила:
-- Отговаряй на **български**. Ясно и полезно: обикновено 3–10 изречения, освен ако потребителят иска повече структура.
-- В обхват: как би работела такава платформа, как да се опише оферта, какво да подготви производител или купувач, общи съвети за доверие, комуникация и преговори в агро сектора в **България**.
-- Извън обхват: конкретни пазарни цени в реално време, правни заключения, митнически процедури — кажи че не можеш да гарантираш и насочи към специалист или институция.
-- **Не измисляй** функции извън описаното: няма escrow, няма задържане на пари от Fieldlot, няма арбитраж в първата фаза.
-- Без огради от код (no markdown fences). Можеш кратки списъци с тире или номера.`;
+Не измисляй оферти, цени или функции извън RAG. Не давай правни/митнически гаранции. Без markdown code fences.`;
 
 function isTurn(v: unknown): v is FieldlotChatTurn {
 	if (!v || typeof v !== 'object') return false;
@@ -35,7 +37,8 @@ function isTurn(v: unknown): v is FieldlotChatTurn {
 export async function handleFieldlotChatPost(
 	rawBody: unknown,
 ): Promise<
-	{ ok: true; reply: string } | { ok: false; status: number; error: string; hint?: string }
+	| { ok: true; reply: string; rag?: { listingIds: string[]; knowledgeIds: string[] } }
+	| { ok: false; status: number; error: string; hint?: string }
 > {
 	const upstream = resolveTextChatUpstream();
 	if (!upstream) {
@@ -74,8 +77,12 @@ export async function handleFieldlotChatPost(
 		return { ok: false, status: 400, error: 'Последното съобщение трябва да е от потребителя' };
 	}
 
+	const sessionContext = parseFieldlotChatContext(body.context);
+	const rag = buildFieldlotRagContext(last.content, sessionContext);
+	const systemContent = `${FIELDLOT_SYSTEM}\n\n${rag.systemContext}`;
+
 	const chatMessages = [
-		{ role: 'system' as const, content: FIELDLOT_SYSTEM },
+		{ role: 'system' as const, content: systemContent },
 		...cleaned.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content })),
 	];
 
@@ -149,5 +156,9 @@ export async function handleFieldlotChatPost(
 		return { ok: false, status: 502, error: 'Празно съдържание от модела' };
 	}
 
-	return { ok: true, reply: truncate(rawReply.trim(), MAX_REPLY_CHARS) };
+	return {
+		ok: true,
+		reply: truncate(rawReply.trim(), MAX_REPLY_CHARS),
+		rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
+	};
 }
