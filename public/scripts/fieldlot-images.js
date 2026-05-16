@@ -22,7 +22,7 @@
 			},
 			"cucumbers": {
 				"path": "/images/hero/cucumbers.jpg",
-				"alt": "Краставици — пресни"
+				"alt": "Краставица на лоза с цвят"
 			}
 		}
 	},
@@ -101,7 +101,7 @@
 	"logistics": {
 		"transport": {
 			"path": "/images/logistics/transport.jpg",
-			"alt": "Транспорт — хладилен камион"
+			"alt": "Транспорт — камиони на рампи в логистичен център"
 		},
 		"warehouse": {
 			"path": "/images/logistics/warehouse.jpg",

@@ -143,23 +143,6 @@ function scoreListing(
 	return score;
 }
 
-function scoreKnowledge(
-	chunk: (typeof KNOWLEDGE)[number],
-	queryTokens: string[],
-): number {
-	const hay = `${chunk.id} ${chunk.topics.join(' ')} ${chunk.text}`.toLowerCase();
-	let score = 0;
-	for (const t of queryTokens) {
-		if (hay.includes(t)) score += 12;
-	}
-	for (const topic of chunk.topics) {
-		for (const t of queryTokens) {
-			if (topic.includes(t) || t.includes(topic)) score += 8;
-		}
-	}
-	return score;
-}
-
 function listingImagePath(id: string): string {
 	const map = imageManifest.listings as Record<string, string>;
 	return map[id] ?? '';
