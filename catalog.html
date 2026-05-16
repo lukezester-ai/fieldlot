@@ -5,13 +5,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Каталог — Fieldlot</title>
 	<meta name="description" content="Демо каталог с агро оферти в България — Fieldlot B2B пазар." />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
 	<link rel="stylesheet" href="/styles/fieldlot-theme.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-ui.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-catalog.css" />
 	<style>
 
 		* { box-sizing: border-box; }
 		body {
 			margin: 0;
-			font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 			color: var(--fl-ink);
 			background:
 				linear-gradient(rgba(45, 122, 184, 0.06) 1px, transparent 1px),
@@ -54,14 +58,14 @@
 			color: var(--fl-navy-ink);
 			border: 1px solid var(--fl-line);
 		}
-		.brand-title { display: block; font-weight: 950; letter-spacing: 0.18em; font-size: 15px; }
+		.brand-title { display: block; font-weight: 700; letter-spacing: 0.14em; font-size: 14px; }
 		.brand-sub {
 			display: block;
 			margin-top: 2px;
-			color: var(--fl-emerald);
+			color: var(--fl-muted);
 			font-size: 11px;
-			font-weight: 800;
-			letter-spacing: 0.22em;
+			font-weight: 500;
+			letter-spacing: 0.06em;
 			text-transform: uppercase;
 		}
 
@@ -70,8 +74,8 @@
 			align-items: center;
 			gap: 20px;
 			font-size: 14px;
-			font-weight: 750;
-			color: var(--fl-navy-ink);
+			font-weight: 500;
+			color: var(--fl-ink);
 		}
 
 		.nav-links a:hover,
@@ -86,7 +90,7 @@
 			padding: 0 16px;
 			border-radius: 8px;
 			border: 1px solid transparent;
-			font-weight: 850;
+			font-weight: 600;
 			cursor: pointer;
 		}
 
@@ -177,19 +181,20 @@
 
 		.catalog-hero h1 {
 			margin: 0;
-			font-size: clamp(32px, 5vw, 48px);
-			font-weight: 800;
-			letter-spacing: -0.04em;
-			line-height: 1.05;
+			font-size: clamp(28px, 4vw, 40px);
+			font-weight: 700;
+			letter-spacing: -0.03em;
+			line-height: 1.1;
 			color: var(--fl-ink);
 		}
 
 		.catalog-hero p {
-			margin: 12px 0 0;
-			max-width: 640px;
+			margin: 10px 0 0;
+			max-width: 560px;
 			color: var(--fl-muted);
-			line-height: 1.65;
-			font-size: 16px;
+			line-height: 1.6;
+			font-size: 15px;
+			font-weight: 400;
 		}
 
 		.toolbar {
@@ -208,7 +213,7 @@
 			display: grid;
 			gap: 6px;
 			font-size: 11px;
-			font-weight: 800;
+			font-weight: 600;
 			letter-spacing: 0.12em;
 			text-transform: uppercase;
 			color: var(--muted);
@@ -341,7 +346,7 @@
 
 		.tag {
 			font-size: 10px;
-			font-weight: 900;
+			font-weight: 700;
 			padding: 4px 8px;
 			border-radius: 3px;
 			background: rgba(26, 26, 26, 0.88);
@@ -372,11 +377,11 @@
 
 		.listing-card h2 {
 			margin: 0 0 6px;
-			font-size: 19px;
-			font-weight: 900;
-			letter-spacing: -0.02em;
+			font-size: 17px;
+			font-weight: 600;
+			letter-spacing: -0.01em;
 			color: var(--yp-ink);
-			line-height: 1.2;
+			line-height: 1.25;
 		}
 
 		.listing-card .meta {
@@ -384,7 +389,7 @@
 			font-size: 13px;
 			color: rgba(26, 26, 26, 0.72);
 			line-height: 1.5;
-			font-weight: 550;
+			font-weight: 500;
 		}
 
 		.listing-card-foot {
@@ -399,14 +404,14 @@
 
 		.price {
 			font-size: 24px;
-			font-weight: 950;
+			font-weight: 700;
 			color: var(--yp-ink);
 			letter-spacing: -0.03em;
 		}
 
 		.price small {
 			font-size: 12px;
-			font-weight: 800;
+			font-weight: 600;
 			color: rgba(26, 26, 26, 0.55);
 		}
 
@@ -505,7 +510,7 @@
 
 		.detail-dl dt {
 			font-size: 11px;
-			font-weight: 800;
+			font-weight: 600;
 			text-transform: uppercase;
 			letter-spacing: 0.1em;
 			color: var(--muted);

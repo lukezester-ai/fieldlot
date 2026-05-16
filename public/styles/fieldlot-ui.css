@@ -6,7 +6,7 @@ html { scroll-behavior: smooth; }
 
 body {
 	margin: 0;
-	font-family: "DM Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	font-family: var(--fl-font);
 	font-size: 16px;
 	line-height: 1.5;
 	color: var(--fl-ink);

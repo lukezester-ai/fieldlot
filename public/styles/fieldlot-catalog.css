@@ -1,4 +1,18 @@
-/* Fieldlot — каталог */
+/* Fieldlot — каталог (типография като началната страница) */
+
+body {
+	font-family: var(--fl-font);
+	font-size: 16px;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}
 
 .catalog-hero {
 	position: relative;

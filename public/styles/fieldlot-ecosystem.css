@@ -1,5 +1,9 @@
 /* Fieldlot — marketplace home (OLX + Alibaba + борса) */
 
+body {
+	font-family: var(--fl-font);
+}
+
 /* —— Header marketplace —— */
 .site-header--market {
 	border-bottom-color: rgba(26, 77, 58, 0.12);
