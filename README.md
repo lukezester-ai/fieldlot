@@ -69,7 +69,8 @@ npm test      # smoke към API 8789
 
 1. https://vercel.com/new → **Import Git Repository**
 2. Избери **`roxsonltd-droid/fieldlot`** (branch `main`)
-3. Framework: **Other** (или Vite — `vercel.json` вече задава build)
+3. **Application Preset: Other** — **НЕ** избирай **Services** (иначе Vercel разделя FastAPI backend + Vite и deploy-ът е грешен). Виж `VERCEL-IMPORT.md`.
+4. Root Directory: `.` · Build/Output идват от `vercel.json`
 
 ### 2. Build настройки (автоматични от `vercel.json`)
 
