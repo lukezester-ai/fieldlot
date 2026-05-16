@@ -1,23 +1,41 @@
 {
-	"version": 1,
-	"source": "Локални файлове в /images/ (Pexels, лиценз за показване). RAG и UI ползват един и същ manifest.",
+	"version": 3,
+	"source": "Един източник за UI + RAG. Локални /images/*.jpg",
 	"hero": {
-		"background": { "path": "/images/hero/background.jpg", "alt": "Зелено агро поле — фон на hero" },
+		"background": {
+			"path": "/images/hero/background.jpg",
+			"alt": "Зелено зърнено поле — фон зад hero заглавието"
+		},
 		"gallery": {
-			"fresh": { "path": "/images/hero/fresh.jpg", "alt": "Свежа продукция — зеленчуци" },
-			"tomatoes": { "path": "/images/hero/tomatoes.jpg", "alt": "Домати" },
-			"farm": { "path": "/images/hero/farm.jpg", "alt": "Стопанство — поле и жътва" }
+			"tomatoes": {
+				"path": "/images/hero/tomatoes.jpg",
+				"alt": "Домати — червени, пресни"
+			},
+			"peppers": {
+				"path": "/images/hero/peppers.jpg",
+				"alt": "Чушки сурови — цветни"
+			},
+			"cucumbers": {
+				"path": "/images/hero/cucumbers.jpg",
+				"alt": "Краставици — пресни"
+			}
 		}
 	},
 	"categories": {
 		"veg": "/images/crops/pepper.jpg",
 		"fruit": "/images/crops/apple.jpg",
 		"grain": "/images/crops/wheat.jpg",
-		"oil": "/images/crops/sunflower.jpg",
-		"canned": "/images/crops/pepper.jpg",
-		"fertilizer": "/images/crops/hay.jpg",
-		"machines": "/images/hero/farm.jpg",
-		"feed": "/images/crops/hay.jpg"
+		"oil": "/images/crops/oil.jpg",
+		"canned": "/images/crops/canned.jpg",
+		"fertilizer": "/images/crops/fertilizer.jpg",
+		"machines": "/images/crops/machines.jpg",
+		"feed": "/images/crops/feed.jpg"
+	},
+	"catalog": {
+		"heroBackground": {
+			"path": "/images/hero/background.jpg",
+			"alt": "Зърнено поле — фон зад „Каталог на оферти“ (прозрачен панел)"
+		}
 	},
 	"listings": {
 		"wheat-dobr": "/images/crops/wheat.jpg",
@@ -25,22 +43,78 @@
 		"corn-buy": "/images/crops/corn.jpg",
 		"barley-sz": "/images/crops/barley.jpg",
 		"apple-plov": "/images/crops/apple.jpg",
-		"pepper-buy": "/images/crops/pepper.jpg",
+		"pepper-buy": "/images/crops/hot-pepper.jpg",
 		"rapeseed-vt": "/images/crops/rapeseed.jpg",
 		"hay-vid": "/images/crops/hay.jpg"
 	},
+	"listingLabels": {
+		"wheat-dobr": "Пшеница",
+		"sun-pl": "Слънчоглед",
+		"corn-buy": "Царевица",
+		"barley-sz": "Ечемик",
+		"apple-plov": "Ябълки",
+		"pepper-buy": "Лют пипер",
+		"rapeseed-vt": "Рапица",
+		"hay-vid": "Сено фуражно"
+	},
 	"farmers": {
-		"spotlight": { "path": "/images/farmers/spotlight.jpg", "alt": "Профил на фермер с доверие" },
+		"spotlight": {
+			"path": "/images/farmers/spotlight.jpg",
+			"alt": "Профил на фермер с доверие"
+		},
 		"top": [
-			{ "id": "ivan", "name": "Иван П.", "path": "/images/farmers/ivan.jpg" },
-			{ "id": "maria", "name": "Мария К.", "path": "/images/farmers/maria.jpg" },
-			{ "id": "georgi", "name": "Георги Д.", "path": "/images/farmers/georgi.jpg" },
-			{ "id": "petar", "name": "Петър С.", "path": "/images/farmers/petar.jpg" }
+			{
+				"id": "ivan",
+				"name": "Иван П.",
+				"role": "Зърно · Добруджа",
+				"rating": "4.9",
+				"path": "/images/farmers/ivan.jpg"
+			},
+			{
+				"id": "maria",
+				"name": "Мария К.",
+				"role": "Зеленчуци · Юг",
+				"rating": "4.8",
+				"path": "/images/farmers/maria.jpg"
+			},
+			{
+				"id": "georgi",
+				"name": "Георги Д.",
+				"role": "Овощевъд · Пловдив",
+				"rating": "4.7",
+				"path": "/images/farmers/georgi.jpg"
+			},
+			{
+				"id": "petar",
+				"name": "Петър С.",
+				"role": "Маслодайни · Север",
+				"rating": "4.9",
+				"path": "/images/farmers/petar.jpg"
+			}
 		]
 	},
 	"logistics": {
-		"transport": { "path": "/images/logistics/transport.jpg", "alt": "Транспорт — камион" },
-		"warehouse": { "path": "/images/logistics/warehouse.jpg", "alt": "Складове" },
-		"tracking": { "path": "/images/logistics/tracking.jpg", "alt": "Проследяване на пратка" }
-	}
+		"transport": {
+			"path": "/images/logistics/transport.jpg",
+			"alt": "Транспорт — хладилен камион"
+		},
+		"warehouse": {
+			"path": "/images/logistics/warehouse.jpg",
+			"alt": "Склад — стелажи с палети"
+		},
+		"tracking": {
+			"path": "/images/logistics/tracking.jpg",
+			"alt": "Проследяване — доставка и пакети"
+		}
+	},
+	"sections": [
+		{ "id": "hero", "anchor": "#top", "image": "/images/hero/background.jpg" },
+		{ "id": "categories", "anchor": "#categories", "note": "8 категории — виж categories" },
+		{ "id": "listings", "anchor": "#listings", "note": "4 demo карти от каталога" },
+		{ "id": "exchange", "anchor": "#exchange", "note": "демо цени, без снимки" },
+		{ "id": "logistics", "anchor": "#logistics", "note": "transport хладилен камион" },
+		{ "id": "farmers", "anchor": "#farmers", "image": "/images/farmers/spotlight.jpg" },
+		{ "id": "ai", "anchor": "#ai", "note": "Fieldlot Guide чат" },
+		{ "id": "cta", "anchor": "#cta", "note": "форма ранен достъп" }
+	]
 }

@@ -1,50 +1,160 @@
 /**
- * Fieldlot — локални снимки от /images/ + manifest за RAG.
- * Не разчита на Unsplash CDN (често блокиран на production).
+ * AUTO-GENERATED from data/fieldlot-image-manifest.json — do not edit by hand.
+ * Run: node scripts/sync-images-from-manifest.mjs
  */
 (function initFieldlotImages(global) {
 	const M = {
-		hero: {
-			background: '/images/hero/background.jpg',
-			gallery: {
-				fresh: '/images/hero/fresh.jpg',
-				tomatoes: '/images/hero/tomatoes.jpg',
-				farm: '/images/hero/farm.jpg',
+	"version": 3,
+	"source": "Един източник за UI + RAG. Локални /images/*.jpg",
+	"hero": {
+		"background": {
+			"path": "/images/hero/background.jpg",
+			"alt": "Зелено зърнено поле — фон зад hero заглавието"
+		},
+		"gallery": {
+			"tomatoes": {
+				"path": "/images/hero/tomatoes.jpg",
+				"alt": "Домати — червени, пресни"
 			},
+			"peppers": {
+				"path": "/images/hero/peppers.jpg",
+				"alt": "Чушки сурови — цветни"
+			},
+			"cucumbers": {
+				"path": "/images/hero/cucumbers.jpg",
+				"alt": "Краставици — пресни"
+			}
+		}
+	},
+	"categories": {
+		"veg": "/images/crops/pepper.jpg",
+		"fruit": "/images/crops/apple.jpg",
+		"grain": "/images/crops/wheat.jpg",
+		"oil": "/images/crops/oil.jpg",
+		"canned": "/images/crops/canned.jpg",
+		"fertilizer": "/images/crops/fertilizer.jpg",
+		"machines": "/images/crops/machines.jpg",
+		"feed": "/images/crops/feed.jpg"
+	},
+	"catalog": {
+		"heroBackground": {
+			"path": "/images/hero/background.jpg",
+			"alt": "Зърнено поле — фон зад „Каталог на оферти“ (прозрачен панел)"
+		}
+	},
+	"listings": {
+		"wheat-dobr": "/images/crops/wheat.jpg",
+		"sun-pl": "/images/crops/sunflower.jpg",
+		"corn-buy": "/images/crops/corn.jpg",
+		"barley-sz": "/images/crops/barley.jpg",
+		"apple-plov": "/images/crops/apple.jpg",
+		"pepper-buy": "/images/crops/hot-pepper.jpg",
+		"rapeseed-vt": "/images/crops/rapeseed.jpg",
+		"hay-vid": "/images/crops/hay.jpg"
+	},
+	"listingLabels": {
+		"wheat-dobr": "Пшеница",
+		"sun-pl": "Слънчоглед",
+		"corn-buy": "Царевица",
+		"barley-sz": "Ечемик",
+		"apple-plov": "Ябълки",
+		"pepper-buy": "Лют пипер",
+		"rapeseed-vt": "Рапица",
+		"hay-vid": "Сено фуражно"
+	},
+	"farmers": {
+		"spotlight": {
+			"path": "/images/farmers/spotlight.jpg",
+			"alt": "Профил на фермер с доверие"
 		},
-		categories: {
-			veg: '/images/crops/pepper.jpg',
-			fruit: '/images/crops/apple.jpg',
-			grain: '/images/crops/wheat.jpg',
-			oil: '/images/crops/sunflower.jpg',
-			canned: '/images/crops/pepper.jpg',
-			fertilizer: '/images/crops/hay.jpg',
-			machines: '/images/hero/farm.jpg',
-			feed: '/images/crops/hay.jpg',
+		"top": [
+			{
+				"id": "ivan",
+				"name": "Иван П.",
+				"role": "Зърно · Добруджа",
+				"rating": "4.9",
+				"path": "/images/farmers/ivan.jpg"
+			},
+			{
+				"id": "maria",
+				"name": "Мария К.",
+				"role": "Зеленчуци · Юг",
+				"rating": "4.8",
+				"path": "/images/farmers/maria.jpg"
+			},
+			{
+				"id": "georgi",
+				"name": "Георги Д.",
+				"role": "Овощевъд · Пловдив",
+				"rating": "4.7",
+				"path": "/images/farmers/georgi.jpg"
+			},
+			{
+				"id": "petar",
+				"name": "Петър С.",
+				"role": "Маслодайни · Север",
+				"rating": "4.9",
+				"path": "/images/farmers/petar.jpg"
+			}
+		]
+	},
+	"logistics": {
+		"transport": {
+			"path": "/images/logistics/transport.jpg",
+			"alt": "Транспорт — хладилен камион"
 		},
-		byListingId: {
-			'wheat-dobr': '/images/crops/wheat.jpg',
-			'sun-pl': '/images/crops/sunflower.jpg',
-			'corn-buy': '/images/crops/corn.jpg',
-			'barley-sz': '/images/crops/barley.jpg',
-			'apple-plov': '/images/crops/apple.jpg',
-			'pepper-buy': '/images/crops/pepper.jpg',
-			'rapeseed-vt': '/images/crops/rapeseed.jpg',
-			'hay-vid': '/images/crops/hay.jpg',
+		"warehouse": {
+			"path": "/images/logistics/warehouse.jpg",
+			"alt": "Склад — стелажи с палети"
 		},
-		farmer: '/images/farmers/spotlight.jpg',
-		farmers: [
-			{ name: 'Иван П.', role: 'Зърно · Добруджа', rating: '4.9', img: '/images/farmers/ivan.jpg' },
-			{ name: 'Мария К.', role: 'Зеленчуци · Юг', rating: '4.8', img: '/images/farmers/maria.jpg' },
-			{ name: 'Георги Д.', role: 'Овощевъд · Пловдив', rating: '4.7', img: '/images/farmers/georgi.jpg' },
-			{ name: 'Петър С.', role: 'Маслодайни · Север', rating: '4.9', img: '/images/farmers/petar.jpg' },
-		],
-		logistics: {
-			transport: '/images/logistics/transport.jpg',
-			warehouse: '/images/logistics/warehouse.jpg',
-			tracking: '/images/logistics/tracking.jpg',
+		"tracking": {
+			"path": "/images/logistics/tracking.jpg",
+			"alt": "Проследяване — доставка и пакети"
+		}
+	},
+	"sections": [
+		{
+			"id": "hero",
+			"anchor": "#top",
+			"image": "/images/hero/background.jpg"
 		},
-	};
+		{
+			"id": "categories",
+			"anchor": "#categories",
+			"note": "8 категории — виж categories"
+		},
+		{
+			"id": "listings",
+			"anchor": "#listings",
+			"note": "4 demo карти от каталога"
+		},
+		{
+			"id": "exchange",
+			"anchor": "#exchange",
+			"note": "демо цени, без снимки"
+		},
+		{
+			"id": "logistics",
+			"anchor": "#logistics",
+			"note": "transport хладилен камион"
+		},
+		{
+			"id": "farmers",
+			"anchor": "#farmers",
+			"image": "/images/farmers/spotlight.jpg"
+		},
+		{
+			"id": "ai",
+			"anchor": "#ai",
+			"note": "Fieldlot Guide чат"
+		},
+		{
+			"id": "cta",
+			"anchor": "#cta",
+			"note": "форма ранен достъп"
+		}
+	]
+};
 
 	const byCategory = {
 		grain: M.categories.grain,
@@ -55,14 +165,14 @@
 	};
 
 	const byTitleKeyword = [
-		[/пшеница/i, M.byListingId['wheat-dobr']],
-		[/слънчоглед/i, M.byListingId['sun-pl']],
-		[/царевица/i, M.byListingId['corn-buy']],
-		[/ечемик/i, M.byListingId['barley-sz']],
-		[/ябъл/i, M.byListingId['apple-plov']],
-		[/пипер/i, M.byListingId['pepper-buy']],
-		[/рапиц/i, M.byListingId['rapeseed-vt']],
-		[/сено/i, M.byListingId['hay-vid']],
+		[/пшеница/i, M.listings['wheat-dobr']],
+		[/слънчоглед/i, M.listings['sun-pl']],
+		[/царевица/i, M.listings['corn-buy']],
+		[/ечемик/i, M.listings['barley-sz']],
+		[/ябъл/i, M.listings['apple-plov']],
+		[/пипер/i, M.listings['pepper-buy']],
+		[/рапиц/i, M.listings['rapeseed-vt']],
+		[/сено/i, M.listings['hay-vid']],
 	];
 
 	function fromTitle(title) {
@@ -79,18 +189,32 @@
 	}
 
 	global.FieldlotImages = {
+		manifest: M,
 		manifestPath: '/data/fieldlot-image-manifest.json',
-		hero: M.hero.background,
-		heroGallery: M.hero.gallery,
+		hero: M.hero.background.path,
+		heroGallery: {
+			tomatoes: M.hero.gallery.tomatoes.path,
+			peppers: M.hero.gallery.peppers.path,
+			cucumbers: M.hero.gallery.cucumbers.path,
+		},
 		categories: M.categories,
-		farmer: M.farmer,
-		farmers: M.farmers,
-		logistics: M.logistics,
+		farmer: M.farmers.spotlight.path,
+		farmers: M.farmers.top.map((f) => ({
+			name: f.name,
+			role: f.role || '',
+			rating: f.rating || '4.8',
+			img: f.path,
+		})),
+		logistics: {
+			transport: M.logistics.transport.path,
+			warehouse: M.logistics.warehouse.path,
+			tracking: M.logistics.tracking.path,
+		},
 		byCategory,
-		byListingId: M.byListingId,
+		byListingId: M.listings,
 		forListing(item) {
 			if (!item) return byCategory.grain;
-			if (item.id && M.byListingId[item.id]) return M.byListingId[item.id];
+			if (item.id && M.listings[item.id]) return M.listings[item.id];
 			const fromT = fromTitle(item.title);
 			if (fromT) return fromT;
 			if (item.category && byCategory[item.category]) return byCategory[item.category];

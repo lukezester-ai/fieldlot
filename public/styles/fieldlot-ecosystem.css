@@ -134,7 +134,8 @@
 	display: grid;
 	grid-template-columns: 1.2fr 1fr;
 	gap: 10px;
-	align-self: center;
+	align-self: end;
+	margin-top: 14px;
 }
 
 .hero-gallery-main {
@@ -175,6 +176,22 @@
 	object-fit: cover;
 	display: block;
 	min-height: inherit;
+}
+
+.hero-gallery-slot--tomatoes img {
+	object-position: center 72%;
+}
+
+.hero-gallery-slot--peppers img {
+	object-position: center 55%;
+}
+
+.hero-gallery-slot--cucumbers img {
+	object-position: center 60%;
+}
+
+.hero-gallery-side {
+	padding-top: 6px;
 }
 
 .hero-eco-bg::after {

@@ -160,11 +160,19 @@ function scoreKnowledge(
 	return score;
 }
 
+function listingImagePath(id: string): string {
+	const map = imageManifest.listings as Record<string, string>;
+	return map[id] ?? '';
+}
+
 function formatListing(item: FieldlotListing): string {
 	const roleLabel = item.role === 'buy' ? 'търсене' : 'продажба';
+	const labels = imageManifest.listingLabels as Record<string, string> | undefined;
+	const cropLabel = labels?.[item.id] ?? item.title;
 	return [
 		`[id:${item.id}]`,
 		`${item.title} (${roleLabel})`,
+		`Култура/снимка: ${cropLabel} → ${listingImagePath(item.id)}`,
 		`Локация: ${item.subtitle}`,
 		`Количество: ${item.qty}`,
 		`Цена: ${item.price} ${item.priceUnit}`,
@@ -204,81 +212,48 @@ export function buildFieldlotRagContext(
 	ctx?: FieldlotChatContext,
 ): FieldlotRagResult {
 	const queryTokens = tokenize(userQuery);
-	const alwaysKnowledge = [
-		'platform-overview',
-		'pages-nav',
-		'assistant-capabilities',
-		'demo-disclaimer',
-		'site-images',
-	];
+
+	/** Пълен RAG: всички knowledge chunks + всички 8 demo обяви + целият image manifest */
+	const knowledgeIds = KNOWLEDGE.map((c) => c.id);
+	const knowledgeBlocks = KNOWLEDGE.map((c) => `• [${c.id}] ${c.text}`);
 
 	const rankedListings = LISTINGS.map((item) => ({
 		item,
 		score: scoreListing(item, queryTokens, ctx),
-	}))
-		.filter((r) => r.score > 0 || queryTokens.length === 0)
-		.sort((a, b) => b.score - a.score);
+	})).sort((a, b) => b.score - a.score);
 
-	let topListings = rankedListings.slice(0, 5).map((r) => r.item);
-	if (topListings.length === 0) {
-		topListings = LISTINGS.slice(0, 4);
-	}
-	if (ctx?.listingId) {
-		const pinned = LISTINGS.find((l) => l.id === ctx.listingId);
-		if (pinned && !topListings.some((l) => l.id === pinned.id)) {
-			topListings = [pinned, ...topListings].slice(0, 6);
-		}
-	}
+	const listingBlocks = LISTINGS.map((l) => `• ${formatListing(l)}`);
 
-	const rankedKnowledge = KNOWLEDGE.map((chunk) => ({
-		chunk,
-		score: scoreKnowledge(chunk, queryTokens),
-	}))
-		.sort((a, b) => b.score - a.score);
-
-	const knowledgeIds = new Set<string>(alwaysKnowledge);
-	for (const { chunk, score } of rankedKnowledge) {
-		if (score > 0 || knowledgeIds.size < 6) knowledgeIds.add(chunk.id);
-		if (knowledgeIds.size >= 7) break;
-	}
-
-	const knowledgeBlocks = KNOWLEDGE.filter((c) => knowledgeIds.has(c.id)).map(
-		(c) => `• [${c.id}] ${c.text}`,
-	);
-
-	const listingBlocks = topListings.map((l) => `• ${formatListing(l)}`);
-
-	const imageBlock = [
-		'=== RAG: КАРТА НА СНИМКИ (fieldlot-image-manifest) ===',
-		`Hero фон: ${imageManifest.hero.background.path} (${imageManifest.hero.background.alt})`,
-		`Hero галерия: fresh ${imageManifest.hero.gallery.fresh.path}, tomatoes ${imageManifest.hero.gallery.tomatoes.path}, farm ${imageManifest.hero.gallery.farm.path}`,
-		`Логистика: transport ${imageManifest.logistics.transport.path}, warehouse ${imageManifest.logistics.warehouse.path}, tracking ${imageManifest.logistics.tracking.path}`,
-		`Фермер spotlight: ${imageManifest.farmers.spotlight.path}`,
-		'Обяви→снимка: ' +
-			Object.entries(imageManifest.listings)
-				.map(([id, path]) => `${id}=${path}`)
-				.join('; '),
-	].join('\n');
+	const manifestJson = JSON.stringify(imageManifest, null, 0).slice(0, 12000);
 
 	const systemContext = [
-		'=== RAG: ПЛАТФОРМЕНИ ЗНАНИЯ (източник на истина) ===',
+		'=== RAG: ПЪЛНО ЗНАНИЕ ЗА САЙТА (единствен източник на истина) ===',
 		knowledgeBlocks.join('\n'),
 		'',
-		imageBlock,
+		'=== RAG: IMAGE MANIFEST (JSON) ===',
+		manifestJson,
 		'',
 		'=== RAG: СЕСИЯ ===',
 		sessionContextBlock(ctx),
 		'',
-		'=== RAG: РЕЛЕВАНТНИ ДЕМО ОФЕРТИ (само тези — не измисляй други) ===',
+		'=== RAG: ВСИЧКИ ДЕМО ОФЕРТИ (8 бр.) ===',
 		listingBlocks.join('\n'),
 		'',
-		'Правила: При въпрос за оферти използвай само редовете по-горе. Ако няма съвпадение — кажи и предложи /catalog.html или филтри. За регистрация: /#cta. Цитирай id при конкретна обява. За снимки — ползвай картата по-горе.',
+		'=== RAG: ПРАВИЛА ===',
+		'1) Отговаряй САМО от блоковете по-горе — не измисляй оферти, URL, цени или функции.',
+		'2) За снимки: ползвай точните пътища от IMAGE MANIFEST; кажи коя снимка към коя обява/секция отговаря.',
+		'3) Навигация: / , /catalog.html , /#cta , /#categories , /#listings , /#exchange , /#logistics , /#farmers , /#ai',
+		'4) Регистрация: /#cta · форма POST /api/register-interest',
+		'5) Чат backend: Mistral (MISTRAL_API_KEY) → Ollama → OpenAI',
+		'6) Демо фаза — без escrow и плащания през платформата.',
 	].join('\n');
+
+	const topForMeta = rankedListings.slice(0, 5).map((r) => r.item);
 
 	return {
 		systemContext,
-		listingIds: topListings.map((l) => l.id),
-		knowledgeIds: [...knowledgeIds],
+		listingIds: topForMeta.map((l) => l.id),
+		knowledgeIds,
 	};
 }
 

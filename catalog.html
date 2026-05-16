@@ -115,15 +115,36 @@
 		}
 
 		.catalog-hero {
-			padding: 32px 0 28px;
+			position: relative;
+			padding: 40px 0 32px;
+			margin-bottom: 8px;
+			border-radius: 16px;
+			overflow: hidden;
+		}
+
+		.catalog-hero-bg {
+			position: absolute;
+			inset: 0;
+			background:
+				linear-gradient(
+					115deg,
+					rgba(15, 51, 38, 0.35) 0%,
+					rgba(26, 77, 58, 0.22) 50%,
+					rgba(15, 26, 20, 0.4) 100%
+				),
+				url("/images/hero/background.jpg") center / cover;
+			pointer-events: none;
 		}
 
 		.catalog-hero-panel {
+			position: relative;
+			z-index: 1;
 			padding: 28px 32px;
 			border-radius: 14px;
-			background: var(--fl-white);
-			border: 1px solid var(--fl-line);
-			box-shadow: var(--fl-shadow);
+			background: rgba(255, 255, 255, 0.52);
+			border: 1px solid rgba(255, 255, 255, 0.55);
+			box-shadow: 0 12px 40px rgba(11, 18, 32, 0.12);
+			backdrop-filter: blur(3px);
 		}
 
 		.demo-banner {
@@ -565,6 +586,7 @@
 
 	<main class="container">
 		<section class="catalog-hero">
+			<div class="catalog-hero-bg" aria-hidden="true"></div>
 			<div class="catalog-hero-panel">
 				<div class="demo-banner" role="status">
 					<span><strong>Жълти страници · демо</strong> — обявите са в жълт стил като класическия каталог. Реалните оферти идват след старт на платформата.</span>
@@ -651,7 +673,7 @@
 		const DEMO_LISTINGS = [
 			{
 				id: 'wheat-dobr',
-				title: 'Пшеница фуражна',
+				title: 'Пшеница',
 				subtitle: 'Силистра · Добруджа',
 				category: 'grain',
 				region: 'dobrudzha',

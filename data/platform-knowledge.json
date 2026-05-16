@@ -57,8 +57,13 @@
 		},
 		{
 			"id": "assistant-capabilities",
-			"topics": ["assistant", "rag", "capabilities"],
-			"text": "Fieldlot Guide (RAG) може: да търси в демо каталога; да обяснява страници и форми; да предлага филтри и линкове (/catalog.html, /#cta); да описва конкретна обява по id; да помага с текст на оферта. Не измисля оферти извън предоставените данни."
+			"topics": ["assistant", "rag", "capabilities", "mistral"],
+			"text": "Fieldlot Guide (пълен RAG) вижда: всички knowledge chunks, всички 8 demo обяви, пълния fieldlot-image-manifest.json (снимки /images/). Може да обяснява коя снимка къде е, да сравнява обяви, да дава филтри и линкове. Чат: POST /api/fieldlot-chat — LLM ред Mistral (MISTRAL_API_KEY) → Ollama → OpenAI. Не измисля данни извън RAG."
+		},
+		{
+			"id": "rag-authority",
+			"topics": ["rag", "пълен", "authority", "сайт"],
+			"text": "RAG има пълни права върху съдържанието на демо сайта: hero, категории, marketplace, борса, логистика, фермери, AI, CTA. При противоречие между памет и RAG блок — вярвай на RAG. Снимките се описват само по manifest пътища."
 		},
 		{
 			"id": "categories-map",
@@ -68,7 +73,7 @@
 		{
 			"id": "site-images",
 			"topics": ["снимк", "image", "photo", "галерия", "hero", "фон", "логистик", "фермер"],
-			"text": "Снимки на сайта (локални /images/, manifest fieldlot-image-manifest.json): Hero фон /images/hero/background.jpg; галерия: fresh=/images/hero/fresh.jpg, tomatoes=/images/hero/tomatoes.jpg, farm=/images/hero/farm.jpg. Каталог: wheat-dobr→wheat, sun-pl→sunflower, corn-buy→corn, barley-sz→barley, apple-plov→apple, pepper-buy→pepper, rapeseed-vt→rapeseed, hay-vid→hay (всички под /images/crops/). Логистика: transport, warehouse, tracking в /images/logistics/. Фермери: spotlight + ivan, maria, georgi, petar в /images/farmers/. AI описва снимките по този речник — не измисля URL."
+			"text": "Снимки (/images/, manifest): Hero галерия — tomatoes, peppers (чушки), cucumbers. Категории: oil→oil.jpg (олио/бутилки), feed→feed.jpg (чували), machines→machines.jpg (комбайн), fertilizer→fertilizer.jpg. Логистика transport→хладилен камион. Каталог: прозрачен панел, фон background.jpg. Обяви: sun-pl→sunflower, corn-buy→corn, pepper-buy→hot-pepper, rapeseed-vt→rapeseed, hay-vid→hay."
 		}
 	]
 }

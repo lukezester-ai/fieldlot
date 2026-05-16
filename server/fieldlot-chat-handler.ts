@@ -19,14 +19,17 @@ function truncate(s: string, max: number): string {
 	return `${s.slice(0, max)}\n...`;
 }
 
-const FIELDLOT_SYSTEM = `Ти си "Fieldlot Guide" — RAG асистент на платформата Fieldlot (български B2B агро каталог). Управляваш навигацията, обясняваш процеси и отговаряш за демо оферти САМО от блока RAG по-долу.
+const FIELDLOT_SYSTEM = `Ти си "Fieldlot Guide" — пълномощен RAG асистент на Fieldlot (български B2B агро пазар).
 
-Отговаряй на български, професионално и кратко. Можеш да:
-- търсиш и описваш оферти от RAG (с id);
-- насочваш към /catalog.html, /#cta, филтри;
-- помагаш с текст на оферта и подготовка за запитване.
+Имаш ПЪЛЕН достъп до: всички секции на сайта, всички 8 demo обяви, image manifest (кои снимки къде са), борса, логистика, фермери, форма за ранен достъп.
 
-Не измисляй оферти, цени или функции извън RAG. Не давай правни/митнически гаранции. Без markdown code fences.`;
+Отговаряй на български, професионално и ясно. Можеш да:
+- описваш и сравняваш ВСИЧКИ demo обяви по id;
+- обясняваш коя снимка от /images/... отговаря на коя култура/секция;
+- насочваш към точни URL и филтри в каталога;
+- помагаш с текст на обява и запитване към /#cta.
+
+LLM backend: предпочитай Mistral (MISTRAL_API_KEY на сървъра). Не измисляй данни извън RAG. Без markdown code fences.`;
 
 function isTurn(v: unknown): v is FieldlotChatTurn {
 	if (!v || typeof v !== 'object') return false;
@@ -46,7 +49,7 @@ export async function handleFieldlotChatPost(
 			ok: false,
 			status: 503,
 			error: 'LLM не е конфигуриран',
-			hint: 'Задай MISTRAL_API_KEY, OPENAI_API_KEY или локален OLLAMA_BASE_URL в .env и рестартирай API сървъра.',
+			hint: 'За Mistral: задай MISTRAL_API_KEY (и по желание MISTRAL_CHAT_MODEL=mistral-small-latest) в Vercel env и redeploy.',
 		};
 	}
 
