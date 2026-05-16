@@ -1,4 +1,8 @@
 import {
+	formatExchangeForRag,
+	getExchangeSnapshotCached,
+} from './exchange-prices.js';
+import {
 	buildFieldlotRagContext,
 	parseFieldlotChatContext,
 } from './fieldlot-rag.js';
@@ -27,9 +31,12 @@ const FIELDLOT_SYSTEM = `Ти си "Fieldlot Guide" — пълномощен RAG
 - описваш и сравняваш ВСИЧКИ demo обяви по id;
 - обясняваш коя снимка от /images/... отговаря на коя култура/секция;
 - насочваш към точни URL и филтри в каталога;
-- помагаш с текст на обява и запитване към /#cta.
+- помагаш с текст на обява и запитване към /#cta;
+- отговаряш за борсови цени (пшеница, слънчоглед, царевица, рапица) само от блока „БОРСОВИ ЦЕНИ“ в RAG.
 
-LLM backend: предпочитай Mistral (MISTRAL_API_KEY на сървъра). Не измисляй данни извън RAG. Без markdown code fences.`;
+Борса: следи котировките веднъж на ден (източник borsaagro.com / MATIF). Не измисляй цени извън RAG.
+
+LLM backend: предпочитай Mistral (MISTRAL_API_KEY на сървъра). Без markdown code fences.`;
 
 function isTurn(v: unknown): v is FieldlotChatTurn {
 	if (!v || typeof v !== 'object') return false;
@@ -82,7 +89,15 @@ export async function handleFieldlotChatPost(
 
 	const sessionContext = parseFieldlotChatContext(body.context);
 	const rag = buildFieldlotRagContext(last.content, sessionContext);
-	const systemContent = `${FIELDLOT_SYSTEM}\n\n${rag.systemContext}`;
+	let exchangeBlock = '';
+	try {
+		const snap = await getExchangeSnapshotCached();
+		exchangeBlock = `\n\n${formatExchangeForRag(snap)}`;
+	} catch {
+		exchangeBlock =
+			'\n\n=== RAG: БОРСОВИ ЦЕНИ ===\nВременно недостъпни — кажи на потребителя да провери #exchange на сайта.';
+	}
+	const systemContent = `${FIELDLOT_SYSTEM}\n\n${rag.systemContext}${exchangeBlock}`;
 
 	const chatMessages = [
 		{ role: 'system' as const, content: systemContent },

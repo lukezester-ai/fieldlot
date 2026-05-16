@@ -1,0 +1,41 @@
+{
+  "source": "borsaagro.com · MATIF/EUR",
+  "sourceUrl": "https://borsaagro.com/",
+  "fetchedAt": "2026-05-16T18:49:33.525Z",
+  "eurToBgn": 1.95583,
+  "quotes": [
+    {
+      "id": "wheat",
+      "name": "Пшеница",
+      "priceEur": 191,
+      "priceBgn": 374,
+      "unit": "лв/тон",
+      "chg": 0
+    },
+    {
+      "id": "corn",
+      "name": "Царевица",
+      "priceEur": 193.75,
+      "priceBgn": 379,
+      "unit": "лв/тон",
+      "chg": 0
+    },
+    {
+      "id": "rapeseed",
+      "name": "Рапица",
+      "priceEur": 481,
+      "priceBgn": 941,
+      "unit": "лв/тон",
+      "chg": 0
+    },
+    {
+      "id": "sunflower",
+      "name": "Слънчоглед",
+      "priceEur": 545,
+      "priceBgn": 1066,
+      "unit": "лв/тон",
+      "chg": 0
+    }
+  ],
+  "note": "Индикативни борсови референтни цени. Обновяване: веднъж дневно."
+}

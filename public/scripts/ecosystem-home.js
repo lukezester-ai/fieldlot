@@ -97,19 +97,12 @@
 		});
 	}
 
-	const EXCHANGE = [
-		{ name: 'Пшеница', price: 410, unit: 'лв/тон', chg: 3.0 },
-		{ name: 'Слънчоглед', price: 920, unit: 'лв/тон', chg: -1.2 },
-		{ name: 'Царевица', price: 380, unit: 'лв/тон', chg: 1.1 },
-		{ name: 'Рапица', price: 510, unit: 'лв/тон', chg: -0.5 },
-	];
-
 	function fmtChg(n) {
 		const sign = n >= 0 ? '+' : '−';
 		return sign + Math.abs(n).toFixed(1) + '%';
 	}
 
-	function renderExchange(rows) {
+	function renderExchange(rows, meta) {
 		const tbody = document.querySelector('#exchange-table tbody');
 		if (!tbody) return;
 		tbody.innerHTML = rows
@@ -122,27 +115,48 @@
 				</tr>`;
 			})
 			.join('');
-	}
-
-	function tickExchange() {
-		const jitter = () => (Math.random() - 0.5) * 0.4;
-		const next = EXCHANGE.map((r) => ({
-			...r,
-			price: Math.round(r.price * (1 + jitter() * 0.01)),
-			chg: +(r.chg + jitter()).toFixed(1),
-		}));
-		renderExchange(next);
+		const bar = document.querySelector('.exchange-live-bar strong');
+		if (bar && meta?.source) {
+			bar.innerHTML =
+				'<span class="live-dot" aria-hidden="true"></span> LIVE · ' +
+				meta.source.replace(' · MATIF/EUR', '');
+		}
 		const el = document.getElementById('exchange-updated');
-		if (el) {
-			const now = new Date();
+		if (el && meta?.fetchedAt) {
+			const d = new Date(meta.fetchedAt);
 			el.textContent =
 				'обновено ' +
-				now.toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit' });
+				d.toLocaleString('bg-BG', {
+					day: '2-digit',
+					month: '2-digit',
+					hour: '2-digit',
+					minute: '2-digit',
+				});
 		}
 	}
 
-	renderExchange(EXCHANGE);
-	setInterval(tickExchange, 45000);
+	async function loadExchange() {
+		const tbody = document.querySelector('#exchange-table tbody');
+		if (!tbody) return;
+		try {
+			const res = await fetch('/api/exchange-prices');
+			const data = await res.json();
+			if (!res.ok || !data.ok || !Array.isArray(data.quotes)) throw new Error(data.error || 'no data');
+			const rows = data.quotes.map((q) => ({
+				name: q.name,
+				price: q.priceBgn,
+				unit: q.unit || 'лв/тон',
+				chg: q.chg ?? 0,
+			}));
+			renderExchange(rows, { source: data.source, fetchedAt: data.fetchedAt });
+		} catch {
+			tbody.innerHTML =
+				'<tr><td colspan="3">Борсовите цени временно не се зареждат. Опитай по-късно.</td></tr>';
+		}
+	}
+
+	loadExchange();
+	setInterval(loadExchange, 24 * 60 * 60 * 1000);
 
 	function cardHtml(item) {
 		const src = IMG ? IMG.forListing(item) : '';

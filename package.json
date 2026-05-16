@@ -12,6 +12,7 @@
 		"backend:seed": "node scripts/run-backend.mjs --seed-only",
 		"build": "node scripts/sync-images-from-manifest.mjs && vite build",
 		"sync:images": "node scripts/fix-crop-images.mjs && node scripts/sync-images-from-manifest.mjs",
+		"fetch:exchange": "node scripts/fetch-exchange-prices.mjs",
 		"preview": "concurrently -k \"vite preview --port 5174 --strictPort\" \"tsx server/dev-api.ts\"",
 		"typecheck": "tsc --noEmit",
 		"test": "npm run typecheck && node scripts/smoke-api.mjs",
