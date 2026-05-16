@@ -19,10 +19,13 @@
 	function initHero() {
 		if (!IMG) return;
 		const bg = document.querySelector('.hero-eco-bg');
-		if (bg && IMG.hero) bg.style.setProperty('--hero-bg', `url("${IMG.hero}")`);
+		if (bg && IMG.hero) {
+			bg.style.setProperty('--hero-bg', `url("${IMG.hero}")`);
+			bg.style.backgroundImage = `linear-gradient(105deg, rgba(15, 51, 38, 0.52) 0%, rgba(26, 77, 58, 0.38) 45%, rgba(15, 26, 20, 0.35) 100%), url("${IMG.hero}")`;
+		}
 		const gallery = document.getElementById('hero-gallery');
-		if (!gallery || !IMG.heroGallery) return;
-		const [main, ...side] = IMG.heroGallery;
+		const g = IMG.heroGallery;
+		if (!gallery || !g?.fresh) return;
 		gallery.innerHTML = `
 			<div class="hero-gallery-main">${IMG.imgTag(main, 'Свежа продукция', 'fl-photo')}</div>
 			<div class="hero-gallery-side">
@@ -66,7 +69,7 @@
 			.map(
 				(f) => `
 			<a class="farmer-chip" href="/catalog.html">
-				<img src="${f.img}" alt="${f.name}" width="72" height="72" loading="lazy" />
+				<img src="${f.img}" alt="${f.name}" width="72" height="72" loading="lazy" referrerpolicy="no-referrer" />
 				<strong>${f.name}</strong>
 				<span>${f.role}</span>
 				<em>★ ${f.rating}</em>
@@ -150,7 +153,7 @@
 				: `${item.price || '—'} <small>${item.priceUnit || ''}</small>`;
 		const cta = item.role === 'buy' ? 'Направи оферта' : 'Купи';
 		const photo = src
-			? `<img src="${src}" alt="${item.title}" loading="lazy" /><span class="product-card-badge">${roleLabel}</span>`
+			? `<img src="${src}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" /><span class="product-card-badge">${roleLabel}</span>`
 			: `<span class="product-card-badge">${roleLabel}</span>`;
 		return `<article class="product-card">
 			<div class="product-card-img">${photo}</div>

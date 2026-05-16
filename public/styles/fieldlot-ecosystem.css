@@ -111,11 +111,14 @@
 	background:
 		linear-gradient(
 			105deg,
-			rgba(15, 51, 38, 0.97) 0%,
-			rgba(26, 77, 58, 0.9) 42%,
-			rgba(15, 26, 20, 0.88) 100%
+			rgba(15, 51, 38, 0.55) 0%,
+			rgba(26, 77, 58, 0.4) 45%,
+			rgba(15, 26, 20, 0.35) 100%
 		),
-		var(--hero-bg, url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1800&q=82&auto=format&fit=crop"))
+		var(
+			--hero-bg,
+			url("https://images.unsplash.com/photo-1464246908011-87a19b8d9d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")
+		)
 			center / cover;
 }
 
@@ -160,6 +163,9 @@
 	border-radius: 16px;
 	border: 1px solid rgba(255, 255, 255, 0.12);
 	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+	background-color: rgba(255, 255, 255, 0.08);
+	background-size: cover;
+	background-position: center;
 }
 
 .hero-gallery-side > div {
@@ -179,7 +185,8 @@
 	content: "";
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(0deg, rgba(15, 26, 20, 0.65) 0%, transparent 50%);
+	background: linear-gradient(0deg, rgba(15, 26, 20, 0.3) 0%, transparent 55%);
+	pointer-events: none;
 }
 
 .hero-eco-content {
@@ -609,15 +616,15 @@
 }
 
 [data-log="transport"] .log-card-img {
-	background-image: url("https://images.unsplash.com/photo-1601584116292-87c22cdc5e65?w=640&q=82&auto=format&fit=crop");
+	background-image: url("https://images.unsplash.com/photo-1601584116292-87c22cdc5e65?ixlib=rb-4.0.3&auto=format&fit=crop&w=640&q=80");
 }
 
 [data-log="warehouse"] .log-card-img {
-	background-image: url("https://images.unsplash.com/photo-1586528116311-ad8dd3c83130?w=640&q=82&auto=format&fit=crop");
+	background-image: url("https://images.unsplash.com/photo-1586528116311-ad8dd3c83130?ixlib=rb-4.0.3&auto=format&fit=crop&w=640&q=80");
 }
 
 [data-log="tracking"] .log-card-img {
-	background-image: url("https://images.unsplash.com/photo-1566576916181-d993a4baab76?w=640&q=82&auto=format&fit=crop");
+	background-image: url("https://images.unsplash.com/photo-1566576916181-d993a4baab76?ixlib=rb-4.0.3&auto=format&fit=crop&w=640&q=80");
 }
 
 #logistics .logistics-grid.reveal {
