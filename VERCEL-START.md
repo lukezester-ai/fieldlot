@@ -14,19 +14,45 @@ Repo: **https://github.com/roxsonltd-droid/fieldlot**
 
 ---
 
-## Стъпка 1 — Нов import
+## Стъпка 1 — GitHub integration (ако видиш червен error)
 
-Отвори директно:
+Съобщение: *„you need to install the GitHub integration first“*
 
-**https://vercel.com/new/import?s=https://github.com/roxsonltd-droid/fieldlot**
+1. Отвори: **https://github.com/apps/vercel**
+2. **Configure** → избери акаунт **`roxsonltd-droid`**
+3. **Repository access** → **Only select repositories** → маркирай **`fieldlot`**
+4. **Save** / **Install & Authorize**
+5. В Vercel: **Settings → Git** → **Connect GitHub** (ако още не е свързан)
 
-- Account: **roxsonltd-droid**
-- Repo: **fieldlot**
-- Branch: **main**
+**Важно:** Repo е на **`roxsonltd-droid`**. Team **AgriNexus projects** трябва също да има достъп — или deploy-вай от **личния team** на `roxsonltd-droid` (Hobby), не от AgriNexus, докато не дадеш достъп на org-а.
 
 ---
 
-## Стъпка 2 — Настройки (много важно)
+## Стъпка 2 — Нов import
+
+**https://vercel.com/new/import?s=https://github.com/roxsonltd-droid/fieldlot**
+
+- GitHub account: **roxsonltd-droid**
+- Repo: **fieldlot**
+- Branch: **main**
+- Team: предпочитай **roxsonltd-droid** (личен), ако AgriNexus дава permission error
+
+---
+
+## Алтернатива — Deploy без GitHub import (CLI)
+
+```powershell
+cd "C:\Users\expre\OneDrive\Desktop\проект\fieldlot"
+npx vercel login
+npx vercel link
+npx vercel --prod
+```
+
+После env vars в Vercel Dashboard → Project → Settings.
+
+---
+
+## Стъпка 3 — Настройки (много важно)
 
 | Поле | Стойност |
 |------|----------|
@@ -46,7 +72,7 @@ Repo: **https://github.com/roxsonltd-droid/fieldlot**
 
 ---
 
-## Стъпка 3 — Environment Variables
+## Стъпка 4 — Environment Variables
 
 Добави **преди** Deploy (Production + Preview):
 
@@ -61,13 +87,13 @@ Repo: **https://github.com/roxsonltd-droid/fieldlot**
 
 ---
 
-## Стъпка 4 — Deploy
+## Стъпка 5 — Deploy
 
 Натисни **Deploy** и изчакай build да стане **Ready**.
 
 ---
 
-## Стъпка 5 — Проверка
+## Стъпка 6 — Проверка
 
 Замени `YOUR-URL` с production домейна от Vercel:
 
