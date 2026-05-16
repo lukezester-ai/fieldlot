@@ -26,6 +26,18 @@ Repo: **https://github.com/roxsonltd-droid/fieldlot**
 
 **Важно:** Repo е на **`roxsonltd-droid`**. Team **AgriNexus projects** трябва също да има достъп — или deploy-вай от **личния team** на `roxsonltd-droid` (Hobby), не от AgriNexus, докато не дадеш достъп на org-а.
 
+### Сив box: „GitHub organization requires Vercel Pro“
+
+Ако `roxsonltd-droid` е **GitHub Organization** (не личен акаунт), **Hobby не може** Git import от org repo.
+
+**Работещи варианти (без Pro):**
+
+| Вариант | Как |
+|--------|-----|
+| **A — Vercel CLI** | Deploy директно от компютъра (по-долу) — **най-бързо** |
+| **B — Pro team** | Import под **AgriNexus projects** (Pro), след GitHub App за org |
+| **C — Личен GitHub** | Копирай/прехвърли repo под **личен** GitHub user (не org) |
+
 ---
 
 ## Стъпка 2 — Нов import
@@ -39,16 +51,33 @@ Repo: **https://github.com/roxsonltd-droid/fieldlot**
 
 ---
 
-## Алтернатива — Deploy без GitHub import (CLI)
+## Алтернатива A — Deploy без GitHub import (CLI) — препоръчително при Hobby + org
+
+Това **заобикаля** „organization requires Pro“.
 
 ```powershell
 cd "C:\Users\expre\OneDrive\Desktop\проект\fieldlot"
 npx vercel login
 npx vercel link
+# Team: roxsonltd-droid (Hobby) · Project name: fieldlot
 npx vercel --prod
 ```
 
-После env vars в Vercel Dashboard → Project → Settings.
+След първия deploy:
+
+1. **https://vercel.com** → проект **fieldlot** → **Settings** → **Environment Variables**
+2. Добави `FIELDLOT_INBOX_EMAIL`, `RESEND_*`, `MISTRAL_API_KEY`
+3. **Deployments** → **Redeploy**
+
+По-късно можеш да свържеш Git от Dashboard (ако вземеш Pro или преместиш repo).
+
+## Алтернатива B — AgriNexus Pro team
+
+Ако имаш **AgriNexus projects (Pro)**:
+
+1. На import избери team **AgriNexus projects** (не Hobby)
+2. Инсталирай GitHub App за org `roxsonltd-droid`
+3. Import `fieldlot`
 
 ---
 
