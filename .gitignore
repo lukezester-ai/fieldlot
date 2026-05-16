@@ -5,8 +5,8 @@ dist/
 .local/
 dev/backend/.env
 dev/backend/fieldlot.db
+backend/fieldlot.db
+backend/**/*.db
 dev/backend/uploads/
 **/__pycache__/
 dev/backend/.venv/
-
-.vercel
