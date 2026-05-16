@@ -93,9 +93,9 @@
 			},
 		],
 		logistics: {
-			transport: u('photo-1601584116292-87c22cdc5e65', 600),
-			warehouse: u('photo-1586528116311-ad8dd3c83130', 600),
-			tracking: u('photo-1464226184884-943aaad88048', 600),
+			transport: u('photo-1519005054639-8e46d7eb8446', 640),
+			warehouse: u('photo-1565048034253-3b7d0e1e9f1e', 640),
+			tracking: u('photo-1580674289750-8fcc7df2d4b2', 640),
 		},
 		byCategory,
 		byListingId,

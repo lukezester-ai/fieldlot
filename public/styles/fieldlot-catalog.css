@@ -107,12 +107,25 @@
 
 .catalog-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-	gap: 12px;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+	gap: 14px;
+	width: 100%;
 	padding: 20px;
 	border-radius: var(--fl-radius-lg);
 	background: var(--yp-shelf);
 	border: 1px solid var(--fl-line);
+}
+
+@media (min-width: 900px) {
+	.catalog-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (min-width: 1180px) {
+	.catalog-grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
 }
 
 .listing-card {

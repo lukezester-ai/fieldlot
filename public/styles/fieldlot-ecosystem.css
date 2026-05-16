@@ -391,8 +391,9 @@
 /* —— Product cards (marketplace) —— */
 .product-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
 	gap: 16px;
+	width: 100%;
 }
 
 .product-card {
@@ -600,8 +601,23 @@
 }
 
 .log-card-photo .log-card-img {
-	height: 140px;
+	position: relative;
+	min-height: 160px;
+	height: 160px;
 	overflow: hidden;
+	background: var(--fl-surface-2) center / cover;
+}
+
+[data-log="transport"] .log-card-img {
+	background-image: url("https://images.unsplash.com/photo-1519005054639-8e46d7eb8446?w=640&q=82&auto=format&fit=crop");
+}
+
+[data-log="warehouse"] .log-card-img {
+	background-image: url("https://images.unsplash.com/photo-1565048034253-3b7d0e1e9f1e?w=640&q=82&auto=format&fit=crop");
+}
+
+[data-log="tracking"] .log-card-img {
+	background-image: url("https://images.unsplash.com/photo-1580674289750-8fcc7df2d4b2?w=640&q=82&auto=format&fit=crop");
 }
 
 .log-card-photo .log-card-img img {
