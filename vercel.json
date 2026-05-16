@@ -1,21 +1,10 @@
 {
-	"$schema": "https://openapi.vercel.sh/vercel.json",
 	"buildCommand": "npm run build",
-	"installCommand": "npm install --no-audit --no-fund",
 	"outputDirectory": "dist",
+	"installCommand": "npm install --no-audit --no-fund",
 	"framework": null,
 	"rewrites": [
 		{ "source": "/catalog", "destination": "/catalog.html" }
-	],
-	"headers": [
-		{
-			"source": "/data/(.*)",
-			"headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
-		},
-		{
-			"source": "/styles/(.*)",
-			"headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
-		}
 	],
 	"functions": {
 		"api/**/*.ts": {

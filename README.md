@@ -65,61 +65,15 @@ npm test      # smoke към API 8789
 
 ## Deploy на Vercel
 
-### 1. Import проект
+**Пълна инструкция от нулата:** [`VERCEL-START.md`](VERCEL-START.md)
 
-1. https://vercel.com/new → **Import Git Repository**
-2. Избери **`roxsonltd-droid/fieldlot`** (branch `main`)
-3. **Application Preset: Other** — **НЕ** избирай **Services** (иначе Vercel разделя FastAPI backend + Vite и deploy-ът е грешен). Виж `VERCEL-IMPORT.md`.
-4. Root Directory: `.` · Build/Output идват от `vercel.json`
+Бърз линк за import:
 
-### 2. Build настройки (автоматични от `vercel.json`)
+**https://vercel.com/new/import?s=https://github.com/roxsonltd-droid/fieldlot**
 
-| Поле | Стойност |
-|------|----------|
-| Build Command | `npm run build` |
-| Output Directory | `dist` |
-| Install Command | `npm install` |
-
-### 3. Environment Variables (Vercel → Settings → Environment Variables)
-
-**Задължително за формата:**
-
-| Key | Пример |
-|-----|--------|
-| `FIELDLOT_INBOX_EMAIL` | `info@agrinexus.eu` |
-| `RESEND_API_KEY` | ключ от [resend.com](https://resend.com) |
-| `RESEND_FROM` | `Fieldlot <onboarding@yourdomain.com>` |
-
-**За AI чат (поне един):**
-
-| Key | Пример |
-|-----|--------|
-| `MISTRAL_API_KEY` | … |
-| или `OPENAI_API_KEY` | … |
-
-**Опционално:**
-
-| Key | Описание |
-|-----|----------|
-| `FIELDLOT_STORE_LEADS` | `1` — не работи на Vercel serverless (няма persistent disk); за лог ползвай Resend |
-
-### 4. След deploy
-
-- Начало: `https://твой-проект.vercel.app/`
-- Каталог: `https://твой-проект.vercel.app/catalog.html` или `/catalog`
-- API: `/api/fieldlot-chat`, `/api/register-interest`
-
-**FastAPI** (`/api/v1`, Python backend) **не** се хоства на този Vercel проект — отделно Railway/Render, ако го искаш по-късно.
-
-### 5. CLI (по избор)
-
-```bash
-npm i -g vercel
-cd fieldlot
-vercel login
-vercel link
-vercel --prod
-```
+- Preset: **Other** (не Services)
+- Build: `npm run build` → Output: `dist`
+- Env: `FIELDLOT_INBOX_EMAIL`, `RESEND_*`, `MISTRAL_API_KEY` или `OPENAI_API_KEY`
 
 ## SQL
 
