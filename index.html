@@ -12,6 +12,8 @@
 	<link rel="stylesheet" href="/styles/fieldlot-ui.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-ecosystem.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-landing.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
+	<meta name="theme-color" content="#1a4d3a" />
 </head>
 <body>
 	<header class="site-header site-header--market">
@@ -32,13 +34,23 @@
 					<span aria-hidden="true">🔍</span>
 					<input type="search" name="q" placeholder="Търси домати, олио, пшеница…" autocomplete="off" />
 				</form>
+				<button
+					type="button"
+					class="nav-toggle"
+					id="header-menu-toggle"
+					aria-expanded="false"
+					aria-controls="site-header-nav"
+					aria-label="Отвори меню"
+				>
+					<span></span><span></span><span></span>
+				</button>
 				<div class="header-actions">
 					<a class="btn btn-ghost" href="#cta">Вход</a>
 					<a class="btn btn-ghost" href="#cta">Регистрация</a>
-					<a class="btn btn-publish" href="#cta">Публикувай продукция</a>
+					<a class="btn btn-publish" href="#cta">Публикувай</a>
 				</div>
-			</div>
-			<nav class="header-nav" aria-label="Пазарни секции">
+				</div>
+			<nav class="header-nav" id="site-header-nav" aria-label="Пазарни секции">
 				<a href="#categories">Категории</a>
 				<a href="#listings">Пазар</a>
 				<a href="#exchange">Борса</a>
@@ -294,6 +306,7 @@
 			openTriggers: ['hero-ai-chat-btn', 'open-ai-bottom'],
 		});
 	</script>
+	<script src="/scripts/fieldlot-mobile.js"></script>
 	<script>
 		(() => {
 			const io = new IntersectionObserver((e) => e.forEach((x) => x.isIntersecting && x.target.classList.add('visible')), { threshold: 0.12 });

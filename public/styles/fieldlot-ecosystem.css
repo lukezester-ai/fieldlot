@@ -851,9 +851,6 @@ body {
 	.farmer-tags {
 		justify-content: center;
 	}
-	.header-nav {
-		display: none;
-	}
 }
 
 @media (max-width: 640px) {

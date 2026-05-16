@@ -1,0 +1,413 @@
+/**
+ * Fieldlot — мобилна версия (телефон)
+ */
+
+.nav-toggle {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 1px solid var(--fl-line);
+	border-radius: var(--fl-radius);
+	background: var(--fl-white);
+	color: var(--fl-ink);
+	cursor: pointer;
+	flex-shrink: 0;
+}
+
+.nav-toggle span {
+	display: block;
+	width: 18px;
+	height: 2px;
+	margin: 3px auto;
+	border-radius: 1px;
+	background: currentColor;
+	transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(1) {
+	transform: translateY(5px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(2) {
+	opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(3) {
+	transform: translateY(-5px) rotate(-45deg);
+}
+
+body.nav-open {
+	overflow: hidden;
+}
+
+@media (max-width: 900px) {
+	.header-inner,
+	.container,
+	.nav {
+		width: min(100% - 20px, 1200px);
+	}
+
+	.nav-toggle {
+		display: inline-flex;
+		flex-direction: column;
+	}
+
+	/* —— Начална: header —— */
+	.header-row {
+		display: grid;
+		grid-template-columns: 1fr auto auto;
+		grid-template-areas:
+			"brand menu publish"
+			"search search search";
+		align-items: center;
+		gap: 10px;
+	}
+
+	.header-row .brand {
+		grid-area: brand;
+		min-width: 0;
+	}
+
+	.header-row .nav-toggle {
+		grid-area: menu;
+	}
+
+	.header-row .header-actions {
+		grid-area: publish;
+	}
+
+	.header-row .header-search {
+		grid-area: search;
+		min-width: 0;
+		flex: none;
+		width: 100%;
+	}
+
+	.header-actions .btn-ghost {
+		display: none;
+	}
+
+	.btn-publish {
+		padding: 0 12px;
+		font-size: 12px;
+		min-height: 40px;
+		white-space: nowrap;
+	}
+
+	.header-nav {
+		display: none;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0;
+		margin-top: 0;
+		padding: 8px 0 4px;
+		border-top: none;
+	}
+
+	.header-nav.is-open {
+		display: flex;
+	}
+
+	.header-nav a {
+		padding: 12px 4px;
+		border-bottom: 1px solid var(--fl-line);
+		font-size: 15px;
+	}
+
+	.header-nav a:last-child {
+		border-bottom: 0;
+	}
+
+	/* —— Hero —— */
+	.hero-eco-inner {
+		grid-template-columns: 1fr;
+		padding: 28px 0 36px;
+	}
+
+	.hero-eco-gallery {
+		display: grid !important;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 8px;
+		margin-top: 8px;
+		align-self: stretch;
+	}
+
+	.hero-gallery-main {
+		grid-row: auto;
+		min-height: 100px;
+		border-radius: 12px;
+	}
+
+	.hero-gallery-side {
+		display: contents;
+	}
+
+	.hero-gallery-side > div {
+		min-height: 100px;
+		border-radius: 12px;
+	}
+
+	.hero-eco h1 {
+		font-size: clamp(1.5rem, 7vw, 2rem);
+		line-height: 1.15;
+		max-width: none;
+	}
+
+	.hero-eco-lead {
+		font-size: 15px;
+	}
+
+	.hero-eco-cta {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.hero-eco-cta .btn {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.hero-eco-stats {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 8px;
+		text-align: center;
+	}
+
+	.hero-eco-stats div strong {
+		font-size: 1.1rem;
+	}
+
+	.hero-eco-stats div span {
+		font-size: 11px;
+	}
+
+	/* —— Секции —— */
+	.eco-section {
+		padding: 40px 0;
+	}
+
+	.eco-section-head h2 {
+		font-size: 1.35rem;
+	}
+
+	.cat-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 10px;
+	}
+
+	.cat-card {
+		min-height: 100px;
+		padding: 14px 12px;
+	}
+
+	.product-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.exchange-live-bar {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 6px;
+	}
+
+	.exchange-table-wrap {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		margin: 0 -4px;
+		padding: 0 4px;
+	}
+
+	.exchange-table {
+		min-width: 300px;
+		font-size: 14px;
+	}
+
+	.logistics-grid,
+	.ai-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.farmers-row {
+		display: flex;
+		overflow-x: auto;
+		gap: 12px;
+		padding-bottom: 8px;
+		-webkit-overflow-scrolling: touch;
+		scroll-snap-type: x mandatory;
+	}
+
+	.farmer-chip {
+		flex: 0 0 min(72%, 260px);
+		scroll-snap-align: start;
+	}
+
+	.footer-cta {
+		grid-template-columns: 1fr;
+		gap: 24px;
+		padding: 28px 16px;
+		margin: 24px auto 32px;
+		width: min(100% - 20px, 1140px);
+	}
+
+	.form-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.form-actions {
+		flex-direction: column;
+	}
+
+	.form-actions .btn {
+		width: 100%;
+	}
+
+	/* —— AI чат —— */
+	.llm-launch {
+		right: 12px;
+		bottom: max(12px, env(safe-area-inset-bottom, 0px));
+		z-index: 40;
+	}
+
+	.llm-panel {
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100%;
+		max-width: none;
+		max-height: min(88vh, 640px);
+		border-radius: 16px 16px 0 0;
+		box-shadow: 0 -12px 40px rgba(15, 26, 20, 0.2);
+	}
+
+	/* —— Каталог: header —— */
+	.site-header .nav {
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 0;
+	}
+
+	.site-header .nav .brand {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.site-header .nav .nav-toggle {
+		order: 2;
+	}
+
+	.site-header .nav .nav-cta {
+		order: 3;
+		width: 100%;
+		justify-content: center;
+	}
+
+	.site-header .nav-links {
+		display: none;
+		order: 10;
+		flex-direction: column;
+		width: 100%;
+		gap: 0;
+		padding: 8px 0;
+		border-top: 1px solid var(--fl-line);
+	}
+
+	.site-header .nav-links.is-open {
+		display: flex;
+	}
+
+	.site-header .nav-links a {
+		padding: 12px 4px;
+		border-bottom: 1px solid var(--fl-line);
+		font-size: 15px;
+	}
+
+	.catalog-hero {
+		padding: 24px 0 20px;
+	}
+
+	.catalog-hero-panel {
+		padding: 20px 16px;
+	}
+
+	.catalog-hero h1 {
+		font-size: 1.5rem;
+	}
+
+	.toolbar {
+		grid-template-columns: 1fr;
+		padding: 14px;
+	}
+
+	.toolbar .btn {
+		width: 100%;
+	}
+
+	.catalog-grid {
+		grid-template-columns: 1fr;
+		padding: 14px;
+		gap: 12px;
+	}
+
+	.listing-photo {
+		height: 140px;
+	}
+
+	.detail-panel {
+		width: 100%;
+		max-width: none;
+	}
+
+	.demo-banner {
+		flex-direction: column;
+		align-items: stretch;
+		text-align: left;
+	}
+
+	.demo-banner .btn {
+		width: 100%;
+	}
+}
+
+@media (max-width: 480px) {
+	.cat-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.hero-eco-gallery {
+		grid-template-columns: 1fr;
+	}
+
+	.hero-gallery-side {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 8px;
+	}
+
+	.hero-gallery-side > div {
+		min-height: 88px;
+	}
+
+	.hero-eco-stats {
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+
+	.brand-sub {
+		display: none;
+	}
+
+	.listing-card-foot {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.listing-card-foot .btn {
+		width: 100%;
+		text-align: center;
+	}
+}

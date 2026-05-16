@@ -11,6 +11,8 @@
 	<link rel="stylesheet" href="/styles/fieldlot-theme.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-ui.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-catalog.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
+	<meta name="theme-color" content="#1a4d3a" />
 	<style>
 
 		* { box-sizing: border-box; }
@@ -580,6 +582,15 @@
 					<span class="brand-sub">Agro market access</span>
 				</span>
 			</a>
+			<button
+				type="button"
+				class="nav-toggle"
+				id="catalog-menu-toggle"
+				aria-expanded="false"
+				aria-label="Отвори меню"
+			>
+				<span></span><span></span><span></span>
+			</button>
 			<div class="nav-links">
 				<a href="/">Начало</a>
 				<a href="/catalog.html" aria-current="page">Каталог</a>
@@ -954,5 +965,6 @@
 
 		render();
 	</script>
+	<script src="/scripts/fieldlot-mobile.js"></script>
 </body>
 </html>
