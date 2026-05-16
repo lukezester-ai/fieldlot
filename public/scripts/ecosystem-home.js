@@ -16,6 +16,7 @@
 		});
 	}
 
+
 	function initHero() {
 		if (!IMG) return;
 		const bg = document.querySelector('.hero-eco-bg');
@@ -26,14 +27,23 @@
 		const gallery = document.getElementById('hero-gallery');
 		const g = IMG.heroGallery;
 		if (!gallery || !g?.fresh) return;
-		gallery.innerHTML = `
-			<div class="hero-gallery-main">${IMG.imgTag(main, 'Свежа продукция', 'fl-photo')}</div>
-			<div class="hero-gallery-side">
-				<div>${IMG.imgTag(side[0] || main, 'Домати', 'fl-photo')}</div>
-				<div>${IMG.imgTag(side[1] || main, 'Стопанство', 'fl-photo')}</div>
-			</div>`;
+		const setSlot = (sel, src, alt) => {
+			const slot = gallery.querySelector(sel);
+			if (!slot || !src) return;
+			slot.style.backgroundImage = `url("${src}")`;
+			slot.style.backgroundSize = 'cover';
+			slot.style.backgroundPosition = 'center';
+			slot.innerHTML = IMG.imgTag(src, alt, 'fl-photo');
+		};
+		gallery.innerHTML =
+			'<div class="hero-gallery-main" data-fl-photo="fresh"></div>' +
+			'<div class="hero-gallery-side">' +
+			'<div data-fl-photo="tomatoes"></div>' +
+			'<div data-fl-photo="farm"></div></div>';
+		setSlot('[data-fl-photo="fresh"]', g.fresh, 'Свежа продукция');
+		setSlot('[data-fl-photo="tomatoes"]', g.tomatoes, 'Домати');
+		setSlot('[data-fl-photo="farm"]', g.farm, 'Стопанство');
 	}
-
 	function initCategories() {
 		if (!IMG) return;
 		const map = {
