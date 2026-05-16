@@ -1,13 +1,15 @@
-# Fieldlot images (optional local assets)
+# Fieldlot images (bundled with the site)
 
-Place your own photos here later. Until then, the site uses curated Unsplash URLs from `public/scripts/fieldlot-images.js`.
+Снимките са **локални** в тази папка — зареждат се на Vercel без външен CDN.
 
-## Folders
+| Папка | Съдържание |
+|-------|------------|
+| `hero/` | `background.jpg` (фон зад заглавието), `fresh.jpg`, `tomatoes.jpg`, `farm.jpg` |
+| `crops/` | По една снимка на култура от демо каталога |
+| `farmers/` | `spotlight.jpg` + 4 топ фермери |
+| `logistics/` | transport, warehouse, tracking |
 
-| Folder | Files (suggested) |
-|--------|-------------------|
-| `crops/` | `wheat.jpg`, `sunflower.jpg`, `corn.jpg`, … — one per catalog crop |
-| `farmers/` | `ivan-p.jpg`, `maria-k.jpg`, `georgi-d.jpg`, `petar-s.jpg`, `spotlight.jpg` |
-| `logistics/` | `transport.jpg`, `warehouse.jpg`, `tracking.jpg` |
+**Manifest за UI + RAG:** `/data/fieldlot-image-manifest.json`  
+**JS:** `public/scripts/fieldlot-images.js`
 
-After adding files, wire them in `fieldlot-images.js` via `localOrUnsplash('/images/farmers/ivan-p.jpg', 'photo-…')`.
+За нови снимки: замени `.jpg` файл и обнови manifest при нужда.

@@ -1,0 +1,46 @@
+{
+	"version": 1,
+	"source": "Локални файлове в /images/ (Pexels, лиценз за показване). RAG и UI ползват един и същ manifest.",
+	"hero": {
+		"background": { "path": "/images/hero/background.jpg", "alt": "Зелено агро поле — фон на hero" },
+		"gallery": {
+			"fresh": { "path": "/images/hero/fresh.jpg", "alt": "Свежа продукция — зеленчуци" },
+			"tomatoes": { "path": "/images/hero/tomatoes.jpg", "alt": "Домати" },
+			"farm": { "path": "/images/hero/farm.jpg", "alt": "Стопанство — поле и жътва" }
+		}
+	},
+	"categories": {
+		"veg": "/images/crops/pepper.jpg",
+		"fruit": "/images/crops/apple.jpg",
+		"grain": "/images/crops/wheat.jpg",
+		"oil": "/images/crops/sunflower.jpg",
+		"canned": "/images/crops/pepper.jpg",
+		"fertilizer": "/images/crops/hay.jpg",
+		"machines": "/images/hero/farm.jpg",
+		"feed": "/images/crops/hay.jpg"
+	},
+	"listings": {
+		"wheat-dobr": "/images/crops/wheat.jpg",
+		"sun-pl": "/images/crops/sunflower.jpg",
+		"corn-buy": "/images/crops/corn.jpg",
+		"barley-sz": "/images/crops/barley.jpg",
+		"apple-plov": "/images/crops/apple.jpg",
+		"pepper-buy": "/images/crops/pepper.jpg",
+		"rapeseed-vt": "/images/crops/rapeseed.jpg",
+		"hay-vid": "/images/crops/hay.jpg"
+	},
+	"farmers": {
+		"spotlight": { "path": "/images/farmers/spotlight.jpg", "alt": "Профил на фермер с доверие" },
+		"top": [
+			{ "id": "ivan", "name": "Иван П.", "path": "/images/farmers/ivan.jpg" },
+			{ "id": "maria", "name": "Мария К.", "path": "/images/farmers/maria.jpg" },
+			{ "id": "georgi", "name": "Георги Д.", "path": "/images/farmers/georgi.jpg" },
+			{ "id": "petar", "name": "Петър С.", "path": "/images/farmers/petar.jpg" }
+		]
+	},
+	"logistics": {
+		"transport": { "path": "/images/logistics/transport.jpg", "alt": "Транспорт — камион" },
+		"warehouse": { "path": "/images/logistics/warehouse.jpg", "alt": "Складове" },
+		"tracking": { "path": "/images/logistics/tracking.jpg", "alt": "Проследяване на пратка" }
+	}
+}

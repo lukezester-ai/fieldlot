@@ -64,6 +64,11 @@
 			"id": "categories-map",
 			"topics": ["category", "grain", "region"],
 			"text": "Категории: grain=зърно, oilseed=маслодайни, feed=фураж, fruit=плодове, veg=зеленчуци. Региони: dobrudzha=Добруджа, north=север, south=юг, west=северозапад/запад. role=sell е продажба, role=buy е търсене от купувач."
+		},
+		{
+			"id": "site-images",
+			"topics": ["снимк", "image", "photo", "галерия", "hero", "фон", "логистик", "фермер"],
+			"text": "Снимки на сайта (локални /images/, manifest fieldlot-image-manifest.json): Hero фон /images/hero/background.jpg; галерия: fresh=/images/hero/fresh.jpg, tomatoes=/images/hero/tomatoes.jpg, farm=/images/hero/farm.jpg. Каталог: wheat-dobr→wheat, sun-pl→sunflower, corn-buy→corn, barley-sz→barley, apple-plov→apple, pepper-buy→pepper, rapeseed-vt→rapeseed, hay-vid→hay (всички под /images/crops/). Логистика: transport, warehouse, tracking в /images/logistics/. Фермери: spotlight + ivan, maria, georgi, petar в /images/farmers/. AI описва снимките по този речник — не измисля URL."
 		}
 	]
 }

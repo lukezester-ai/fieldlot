@@ -1,4 +1,5 @@
 import demoListings from '../data/demo-listings.json' with { type: 'json' };
+import imageManifest from '../data/fieldlot-image-manifest.json' with { type: 'json' };
 import platformKnowledge from '../data/platform-knowledge.json' with { type: 'json' };
 
 export type FieldlotListing = {
@@ -203,7 +204,13 @@ export function buildFieldlotRagContext(
 	ctx?: FieldlotChatContext,
 ): FieldlotRagResult {
 	const queryTokens = tokenize(userQuery);
-	const alwaysKnowledge = ['platform-overview', 'pages-nav', 'assistant-capabilities', 'demo-disclaimer'];
+	const alwaysKnowledge = [
+		'platform-overview',
+		'pages-nav',
+		'assistant-capabilities',
+		'demo-disclaimer',
+		'site-images',
+	];
 
 	const rankedListings = LISTINGS.map((item) => ({
 		item,
@@ -241,9 +248,23 @@ export function buildFieldlotRagContext(
 
 	const listingBlocks = topListings.map((l) => `• ${formatListing(l)}`);
 
+	const imageBlock = [
+		'=== RAG: КАРТА НА СНИМКИ (fieldlot-image-manifest) ===',
+		`Hero фон: ${imageManifest.hero.background.path} (${imageManifest.hero.background.alt})`,
+		`Hero галерия: fresh ${imageManifest.hero.gallery.fresh.path}, tomatoes ${imageManifest.hero.gallery.tomatoes.path}, farm ${imageManifest.hero.gallery.farm.path}`,
+		`Логистика: transport ${imageManifest.logistics.transport.path}, warehouse ${imageManifest.logistics.warehouse.path}, tracking ${imageManifest.logistics.tracking.path}`,
+		`Фермер spotlight: ${imageManifest.farmers.spotlight.path}`,
+		'Обяви→снимка: ' +
+			Object.entries(imageManifest.listings)
+				.map(([id, path]) => `${id}=${path}`)
+				.join('; '),
+	].join('\n');
+
 	const systemContext = [
 		'=== RAG: ПЛАТФОРМЕНИ ЗНАНИЯ (източник на истина) ===',
 		knowledgeBlocks.join('\n'),
+		'',
+		imageBlock,
 		'',
 		'=== RAG: СЕСИЯ ===',
 		sessionContextBlock(ctx),
@@ -251,7 +272,7 @@ export function buildFieldlotRagContext(
 		'=== RAG: РЕЛЕВАНТНИ ДЕМО ОФЕРТИ (само тези — не измисляй други) ===',
 		listingBlocks.join('\n'),
 		'',
-		'Правила: При въпрос за оферти използвай само редовете по-горе. Ако няма съвпадение — кажи и предложи /catalog.html или филтри. За регистрация: /#cta. Цитирай id при конкретна обява.',
+		'Правила: При въпрос за оферти използвай само редовете по-горе. Ако няма съвпадение — кажи и предложи /catalog.html или филтри. За регистрация: /#cta. Цитирай id при конкретна обява. За снимки — ползвай картата по-горе.',
 	].join('\n');
 
 	return {

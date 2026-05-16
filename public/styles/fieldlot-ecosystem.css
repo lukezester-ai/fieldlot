@@ -115,11 +115,7 @@
 			rgba(26, 77, 58, 0.4) 45%,
 			rgba(15, 26, 20, 0.35) 100%
 		),
-		var(
-			--hero-bg,
-			url("https://images.unsplash.com/photo-1464246908011-87a19b8d9d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")
-		)
-			center / cover;
+		var(--hero-bg, url("/images/hero/background.jpg")) center / cover;
 }
 
 .hero-eco-inner {
@@ -616,15 +612,15 @@
 }
 
 [data-log="transport"] .log-card-img {
-	background-image: url("https://images.unsplash.com/photo-1601584116292-87c22cdc5e65?ixlib=rb-4.0.3&auto=format&fit=crop&w=640&q=80");
+	background-image: url("/images/logistics/transport.jpg");
 }
 
 [data-log="warehouse"] .log-card-img {
-	background-image: url("https://images.unsplash.com/photo-1586528116311-ad8dd3c83130?ixlib=rb-4.0.3&auto=format&fit=crop&w=640&q=80");
+	background-image: url("/images/logistics/warehouse.jpg");
 }
 
 [data-log="tracking"] .log-card-img {
-	background-image: url("https://images.unsplash.com/photo-1566576916181-d993a4baab76?ixlib=rb-4.0.3&auto=format&fit=crop&w=640&q=80");
+	background-image: url("/images/logistics/tracking.jpg");
 }
 
 #logistics .logistics-grid.reveal {
