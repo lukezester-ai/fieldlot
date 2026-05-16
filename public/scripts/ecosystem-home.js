@@ -76,14 +76,21 @@
 	}
 
 	function initLogistics() {
-		if (!IMG) return;
-		const keys = ['transport', 'warehouse', 'tracking'];
+		if (!IMG?.logistics) return;
 		document.querySelectorAll('[data-log]').forEach((card) => {
 			const k = card.getAttribute('data-log');
 			const src = IMG.logistics[k];
 			if (!src) return;
 			const slot = card.querySelector('.log-card-img');
-			if (slot) slot.innerHTML = IMG.imgTag(src, card.querySelector('h3')?.textContent || '', 'fl-photo');
+			const title = card.querySelector('h3')?.textContent || k;
+			if (!slot) return;
+			slot.innerHTML = IMG.imgTag(src, title, 'fl-photo');
+			const img = slot.querySelector('img');
+			if (img) {
+				img.addEventListener('error', () => {
+					slot.style.backgroundImage = `url("${src}")`;
+				});
+			}
 		});
 	}
 
