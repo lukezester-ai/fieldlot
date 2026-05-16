@@ -1,6 +1,31 @@
 # Fieldlot — Vercel от нулата
 
-Repo: **https://github.com/roxsonltd-droid/fieldlot**
+**Препоръчително (lukezester):**
+
+| | URL |
+|---|-----|
+| **GitHub** | https://github.com/lukezester-ai/fieldlot *(създай празно repo, после `git push`)* |
+| **Vercel team** | **roxsonltd-droid** (Hobby, акаунт `lukezester-8211`) |
+| **Production** | https://fieldlot-two.vercel.app |
+| **Dashboard** | https://vercel.com/roxsonltd-droid-250ad223/fieldlot |
+
+Резервно (org, изисква Pro за Git import): https://github.com/roxsonltd-droid/fieldlot
+
+---
+
+## GitHub под lukezester-ai (веднъж)
+
+1. https://github.com/new → Owner: **lukezester-ai** → име **fieldlot** → **Create** (без README)
+2. В PowerShell:
+
+```powershell
+cd "C:\Users\expre\OneDrive\Desktop\проект\fieldlot"
+git remote set-url origin https://github.com/lukezester-ai/fieldlot.git
+git remote add roxson https://github.com/roxsonltd-droid/fieldlot.git 2>$null
+git push -u origin main
+```
+
+3. Vercel → **fieldlot** → **Settings → Git** → Connect **lukezester-ai/fieldlot**
 
 ---
 
@@ -58,9 +83,9 @@ Repo: **https://github.com/roxsonltd-droid/fieldlot**
 ```powershell
 cd "C:\Users\expre\OneDrive\Desktop\проект\fieldlot"
 npx vercel login
-npx vercel link
-# Team: roxsonltd-droid (Hobby) · Project name: fieldlot
-npx vercel --prod
+npx vercel teams switch roxsonltd-droid-250ad223
+npx vercel link --yes --scope roxsonltd-droid-250ad223 --project fieldlot
+npx vercel --prod --yes --scope roxsonltd-droid-250ad223
 ```
 
 След първия deploy:

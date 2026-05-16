@@ -69,7 +69,10 @@ npm test      # smoke към API 8789
 
 Бърз линк за import:
 
-**https://vercel.com/new/import?s=https://github.com/roxsonltd-droid/fieldlot**
+**Production:** https://fieldlot-two.vercel.app (team **roxsonltd-droid**, Hobby)
+
+**Git import (Hobby):** https://vercel.com/new/import?s=https://github.com/lukezester-ai/fieldlot  
+*(създай repo на lukezester-ai първо — виж `VERCEL-START.md`)*
 
 - Preset: **Other** (не Services)
 - Build: `npm run build` → Output: `dist`
