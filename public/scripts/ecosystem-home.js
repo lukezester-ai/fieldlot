@@ -203,7 +203,14 @@
 			const res = await fetch('/data/live-listings.json');
 			if (!res.ok) throw new Error('fetch');
 			const data = await res.json();
-			const slice = Array.isArray(data) ? data.slice(0, 4) : [];
+			const all = Array.isArray(data) ? data : data.listings || [];
+			const borsa = all.filter((item) => item.source === 'borsaagro.com');
+			const sorted = [...borsa].sort((a, b) => {
+				const ta = Date.parse(a.publishedAt || '') || 0;
+				const tb = Date.parse(b.publishedAt || '') || 0;
+				return tb - ta;
+			});
+			const slice = (sorted.length ? sorted : all).slice(0, 4);
 			grid.innerHTML = slice.map((item) => cardHtml(item)).join('');
 			window.__fieldlotVisibleIds = slice.map((x) => x.id);
 		} catch {

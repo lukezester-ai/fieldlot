@@ -9,15 +9,15 @@
     {
       "id": "agro-bg",
       "type": "agro-obyavi",
-      "enabled": true,
-      "name": "agro.bg — обяви",
+      "enabled": false,
+      "name": "agro.bg — обяви (изключено — включи в Admin при нужда)",
       "maxLinks": 25
     },
     {
       "id": "agri-bg",
       "type": "agri-borsa",
-      "enabled": true,
-      "name": "agri.bg — Агроборса",
+      "enabled": false,
+      "name": "agri.bg — Агроборса (изключено — включи в Admin при нужда)",
       "maxLinks": 30
     }
   ]

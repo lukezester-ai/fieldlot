@@ -63,10 +63,31 @@ export async function runListingsSyncPipeline(opts?: {
 			listingLabels: Record<string, string>;
 			source?: string;
 		};
-		manifest.listings = {};
-		manifest.listingLabels = {};
+		if (!manifest.listings || typeof manifest.listings !== 'object') manifest.listings = {};
+		if (!manifest.listingLabels || typeof manifest.listingLabels !== 'object') {
+			manifest.listingLabels = {};
+		}
+		const LEGACY_DEMO: Record<string, string> = {
+			'wheat-dobr': '/images/crops/wheat.jpg',
+			'sun-pl': '/images/crops/sunflower.jpg',
+			'corn-buy': '/images/crops/corn.jpg',
+			'barley-sz': '/images/crops/barley.jpg',
+			'apple-plov': '/images/crops/apple.jpg',
+			'pepper-buy': '/images/crops/hot-pepper.jpg',
+			'rapeseed-vt': '/images/crops/rapeseed.jpg',
+			'hay-vid': '/images/crops/hay.jpg',
+		};
+		for (const [k, v] of Object.entries(LEGACY_DEMO)) {
+			if (!manifest.listings[k]) manifest.listings[k] = v;
+		}
 		for (const item of snap.listings) {
-			manifest.listings[item.id] = item.imageUrl || imageForListing(item);
+			const fallback = imageForListing(item);
+			const prev = manifest.listings[item.id];
+			const keepLocal =
+				typeof prev === 'string' &&
+				prev.startsWith('/images/') &&
+				!item.imageUrl;
+			manifest.listings[item.id] = item.imageUrl || (keepLocal ? prev : fallback);
 			manifest.listingLabels[item.id] = item.title;
 		}
 		manifest.source = snap.source;
