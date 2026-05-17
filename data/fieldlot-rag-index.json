@@ -1,0 +1,376 @@
+{
+	"updatedAt": "2026-05-17T18:05:57.438Z",
+	"model": "keyword-only",
+	"chunks": [
+		{
+			"id": "platform-overview",
+			"kind": "knowledge",
+			"title": "platform-overview",
+			"text": "Fieldlot е дигитална агро екосистема за България: marketplace (обяви B2B), борса с индикативни цени, логистика, профили на производители и AI асистент. Каталогът показва живи обяви от borsaagro.com (сортирани по дата). Без escrow и плащания през платформата."
+		},
+		{
+			"id": "pages-nav",
+			"kind": "knowledge",
+			"title": "pages-nav",
+			"text": "Страници: / (екосистема), /catalog.html (жив каталог от borsaagro.com). API обяви: GET /api/listings. Статичен JSON: /data/live-listings.json. Търсене в хедъра → каталог ?q=. Контакт: info@agrinexus.eu."
+		},
+		{
+			"id": "exchange-board",
+			"kind": "knowledge",
+			"title": "exchange-board",
+			"text": "Борса (#exchange): живи индикативни цени за Пшеница, Слънчоглед, Царевица, Рапица в лв/тон. Източник: borsaagro.com (MATIF/EUR × 1.95583). API: GET /api/exchange-prices. Обновяване: веднъж дневно (Vercel cron + кеш 24ч). Fieldlot Guide ТРЯБВА да следи котировките веднъж на ден и да отговаря за цени само от RAG блок „БОРСОВИ ЦЕНИ“ — не измисля."
+		},
+		{
+			"id": "logistics-ecosystem",
+			"kind": "knowledge",
+			"title": "logistics-ecosystem",
+			"text": "Логистика (#logistics): транспорт (камиони до градове/експорт), складове и силози, проследяване на партида. В ранна фаза — ранен достъп чрез #cta; интеграции с превозвачи и складове са планирани."
+		},
+		{
+			"id": "farmer-profiles",
+			"kind": "knowledge",
+			"title": "farmer-profiles",
+			"text": "Профил на производител (#farmers): снимки, сертификати, история, рейтинг, видео от стопанство — за доверие при B2B сделки. Създаване на профил — чрез ранен достъп (#cta)."
+		},
+		{
+			"id": "business-model",
+			"kind": "knowledge",
+			"title": "business-model",
+			"text": "Планиран бизнес модел (не активен в демо): комисионна 1–3% на сделка; premium акаунти (повече обяви, реклама, AI анализи); процент от логистика. Фаза 1: 0% комисиона, фокус върху мрежа и доверие."
+		},
+		{
+			"id": "early-access",
+			"kind": "knowledge",
+			"title": "early-access",
+			"text": "Форма „Ранен достъп“ на /#cta: име, фирма, бизнес имейл, телефон (+359…), роля (производител/купувач/логистика), бележки. Изпраща POST /api/register-interest. След старт — реални обяви и директни запитвания."
+		},
+		{
+			"id": "catalog-filters",
+			"kind": "knowledge",
+			"title": "catalog-filters",
+			"text": "Каталогът филтрира по: текстово търсене, категория (зърно, маслодайни, фураж, плодове, зеленчуци), регион (Добруджа, север, юг, запад), тип (продажба или търсене/купувач). Детайлът на карта отваря панел; запитване води към /#cta?listing=ID."
+		},
+		{
+			"id": "listings-source",
+			"kind": "knowledge",
+			"title": "listings-source",
+			"text": "Обявите в каталога идват от borsaagro.com. Показват се само публикувани през последните ~60 дни — по-старите се премахват автоматично при sync. sourceUrl към оригинала. Cron: /api/cron/sync-listings · API: GET /api/listings."
+		},
+		{
+			"id": "listing-quality",
+			"kind": "knowledge",
+			"title": "listing-quality",
+			"text": "Добра обява включва: култура/продукт, количество, регион, цена или „по договорение“, Incoterm (FCA, EXW…), реколта/сезон, качество/спецификация, контакт. Купувачите и продавачите проверяват документи и логистика директно."
+		},
+		{
+			"id": "trust-logistics",
+			"kind": "knowledge",
+			"title": "trust-logistics",
+			"text": "Доверие: директна комуникация, проверка на проби/документи, ясни условия за предаване. Fieldlot не гарантира плащане или качество — помага с откриване и структуриране на оферти."
+		},
+		{
+			"id": "assistant-capabilities",
+			"kind": "knowledge",
+			"title": "assistant-capabilities",
+			"text": "Fieldlot Guide (RAG) вижда: knowledge chunks, всички каталожни обяви (borsaagro), fieldlot-image-manifest.json. Чат: POST /api/fieldlot-chat. Не измисля оферти извън RAG."
+		},
+		{
+			"id": "rag-authority",
+			"kind": "knowledge",
+			"title": "rag-authority",
+			"text": "RAG има пълни права върху съдържанието на демо сайта: hero, категории, marketplace, борса, логистика, фермери, AI, CTA. При противоречие между памет и RAG блок — вярвай на RAG. Снимките се описват само по manifest пътища."
+		},
+		{
+			"id": "categories-map",
+			"kind": "knowledge",
+			"title": "categories-map",
+			"text": "Категории: grain=зърно, oilseed=маслодайни, feed=фураж, fruit=плодове, veg=зеленчуци. Региони: dobrudzha=Добруджа, north=север, south=юг, west=северозапад/запад. role=sell е продажба, role=buy е търсене от купувач."
+		},
+		{
+			"id": "site-images",
+			"kind": "knowledge",
+			"title": "site-images",
+			"text": "Снимки (/images/, manifest): Hero галерия — tomatoes, peppers (чушки), cucumbers. Категории: oil→oil.jpg (олио/бутилки), feed→feed.jpg (чували), machines→machines.jpg (комбайн), fertilizer→fertilizer.jpg. Логистика transport→хладилен камион. Каталог: прозрачен панел, фон background.jpg. Обяви: sun-pl→sunflower, corn-buy→corn, pepper-buy→hot-pepper, rapeseed-vt→rapeseed, hay-vid→hay."
+		},
+		{
+			"id": "listing:ba-86",
+			"kind": "listing",
+			"title": "Царевица",
+			"text": "Царевица България · borsaagro.com grain national sell 500.00 100.00 лв Зърно Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/86",
+			"listingId": "ba-86"
+		},
+		{
+			"id": "listing:ba-84",
+			"kind": "listing",
+			"title": "Олио соево нерафинирано",
+			"text": "Олио соево нерафинирано България · borsaagro.com oilseed national sell 100.00 1 000.00 лв Маслодайни Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/84",
+			"listingId": "ba-84"
+		},
+		{
+			"id": "listing:ba-83",
+			"kind": "listing",
+			"title": "ЦАРЕВИЦА",
+			"text": "ЦАРЕВИЦА България · borsaagro.com grain national sell 200.00 200.00 лв Зърно Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/83",
+			"listingId": "ba-83"
+		},
+		{
+			"id": "listing:ba-82",
+			"kind": "listing",
+			"title": "ЦАРЕВИЦА",
+			"text": "ЦАРЕВИЦА България · borsaagro.com grain national sell 200.00 350.00 лв Зърно Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/82",
+			"listingId": "ba-82"
+		},
+		{
+			"id": "listing:ba-81",
+			"kind": "listing",
+			"title": "ПШЕНИЦА",
+			"text": "ПШЕНИЦА България · borsaagro.com grain national sell 100.00 100.00 лв Зърно Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/81",
+			"listingId": "ba-81"
+		},
+		{
+			"id": "listing:ba-79",
+			"kind": "listing",
+			"title": "ОЛИО СОЕВО НЕРАФИНИРАНО",
+			"text": "ОЛИО СОЕВО НЕРАФИНИРАНО България · borsaagro.com oilseed national sell 24.00 тон 980.00 € Маслодайни Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/79",
+			"listingId": "ba-79"
+		},
+		{
+			"id": "listing:ba-78",
+			"kind": "listing",
+			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
+			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oilseed national sell 150.00 тон 190.00 € Маслодайни Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/78",
+			"listingId": "ba-78"
+		},
+		{
+			"id": "listing:ba-77",
+			"kind": "listing",
+			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
+			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oilseed national sell 150.00 тон 190.00 € Маслодайни Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/77",
+			"listingId": "ba-77"
+		},
+		{
+			"id": "listing:ba-76",
+			"kind": "listing",
+			"title": "СЛЪНЧОГЛЕД МАСЛОДАЕН",
+			"text": "СЛЪНЧОГЛЕД МАСЛОДАЕН България · borsaagro.com oilseed national sell 10.00 тон 500.00 € Маслодайни Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/76",
+			"listingId": "ba-76"
+		},
+		{
+			"id": "listing:agro-bg-yavi-mashini-i-inventar-prodavam-jcb-tlt35d-4x4-",
+			"kind": "listing",
+			"title": "Prodavam jcb tlt35d 4x4",
+			"text": "Prodavam jcb tlt35d 4x4 agro.bg — обяви grain north sell — — agro.bg — обяви",
+			"url": "https://agro.bg/obyavi/mashini-i-inventar/prodavam-jcb-tlt35d-4x4/",
+			"listingId": "agro-bg-yavi-mashini-i-inventar-prodavam-jcb-tlt35d-4x4-"
+		},
+		{
+			"id": "listing:agro-bg-g-obyavi-mashini-i-inventar-sita-za-kombayni-15-",
+			"kind": "listing",
+			"title": "Sita za kombayni_15",
+			"text": "Sita za kombayni_15 agro.bg — обяви grain north sell — — agro.bg — обяви",
+			"url": "https://agro.bg/obyavi/mashini-i-inventar/sita-za-kombayni_15/",
+			"listingId": "agro-bg-g-obyavi-mashini-i-inventar-sita-za-kombayni-15-"
+		},
+		{
+			"id": "listing:agro-bg--tiutiun-na-lista-verzhiniya-i-barlley-6-evrokg-",
+			"kind": "listing",
+			"title": "Tiutiun na lista verzhiniya i barlley 6 evrokg",
+			"text": "Tiutiun na lista verzhiniya i barlley 6 evrokg agro.bg — обяви grain north sell — — agro.bg — обяви",
+			"url": "https://agro.bg/obyavi/rastenievadstvo-91/tiutiun-na-lista-verzhiniya-i-barlley-6-evrokg/",
+			"listingId": "agro-bg--tiutiun-na-lista-verzhiniya-i-barlley-6-evrokg-"
+		},
+		{
+			"id": "listing:agro-bg-byavi-mashini-i-inventar-zhilishttni-konteyneri-",
+			"kind": "listing",
+			"title": "Zhilishttni konteyneri",
+			"text": "Zhilishttni konteyneri agro.bg — обяви grain north sell — — agro.bg — обяви",
+			"url": "https://agro.bg/obyavi/mashini-i-inventar/zhilishttni-konteyneri/",
+			"listingId": "agro-bg-byavi-mashini-i-inventar-zhilishttni-konteyneri-"
+		},
+		{
+			"id": "listing:agri-bg-https-agri-bg-agroborsa-ad-prodava-bikove",
+			"kind": "listing",
+			"title": "Prodava bikove",
+			"text": "Prodava bikove agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/prodava-bikove",
+			"listingId": "agri-bg-https-agri-bg-agroborsa-ad-prodava-bikove"
+		},
+		{
+			"id": "listing:agri-bg-https-agri-bg-agroborsa-ad-oves-rekolta-2025-5",
+			"kind": "listing",
+			"title": "Oves rekolta 2025 5",
+			"text": "Oves rekolta 2025 5 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/oves-rekolta-2025-5",
+			"listingId": "agri-bg-https-agri-bg-agroborsa-ad-oves-rekolta-2025-5"
+		},
+		{
+			"id": "listing:agri-bg-agri-bg-agroborsa-ad-liucerna-rulonni-bali-eur50",
+			"kind": "listing",
+			"title": "Liucerna rulonni bali eur50",
+			"text": "Liucerna rulonni bali eur50 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/liucerna-rulonni-bali-eur50",
+			"listingId": "agri-bg-agri-bg-agroborsa-ad-liucerna-rulonni-bali-eur50"
+		},
+		{
+			"id": "listing:agri-bg-https-agri-bg-agroborsa-ad-prodava-ugoeni-teleta",
+			"kind": "listing",
+			"title": "Prodava ugoeni teleta",
+			"text": "Prodava ugoeni teleta agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/prodava-ugoeni-teleta",
+			"listingId": "agri-bg-https-agri-bg-agroborsa-ad-prodava-ugoeni-teleta"
+		},
+		{
+			"id": "listing:agri-bg-ad-doilen-agregat-giumove-iarmomelka-maliek-plug",
+			"kind": "listing",
+			"title": "Doilen agregat giumove iarmomelka maliek plug",
+			"text": "Doilen agregat giumove iarmomelka maliek plug agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/doilen-agregat-giumove-iarmomelka-maliek-plug",
+			"listingId": "agri-bg-ad-doilen-agregat-giumove-iarmomelka-maliek-plug"
+		},
+		{
+			"id": "listing:agri-bg-orsa-ad-prodavam-psenica-i-maslodaen-sliencogled",
+			"kind": "listing",
+			"title": "Prodavam psenica i maslodaen sliencogled",
+			"text": "Prodavam psenica i maslodaen sliencogled agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/prodavam-psenica-i-maslodaen-sliencogled",
+			"listingId": "agri-bg-orsa-ad-prodavam-psenica-i-maslodaen-sliencogled"
+		},
+		{
+			"id": "listing:agri-bg--kupuvam-zito-carevica-ecemik-rapica-sliencogled",
+			"kind": "listing",
+			"title": "Kupuvam zito carevica ecemik rapica sliencogled",
+			"text": "Kupuvam zito carevica ecemik rapica sliencogled agri.bg — Агроборса grain north buy — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/kupuvam-zito-carevica-ecemik-rapica-sliencogled",
+			"listingId": "agri-bg--kupuvam-zito-carevica-ecemik-rapica-sliencogled"
+		},
+		{
+			"id": "listing:agri-bg-https-agri-bg-agroborsa-ad-kupuva-sliencogled",
+			"kind": "listing",
+			"title": "Kupuva sliencogled",
+			"text": "Kupuva sliencogled agri.bg — Агроборса grain north buy — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/kupuva-sliencogled",
+			"listingId": "agri-bg-https-agri-bg-agroborsa-ad-kupuva-sliencogled"
+		},
+		{
+			"id": "listing:agri-bg-https-agri-bg-agroborsa-ad-kupuvam-maxorka",
+			"kind": "listing",
+			"title": "Kupuvam maxorka",
+			"text": "Kupuvam maxorka agri.bg — Агроборса grain north buy — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/kupuvam-maxorka",
+			"listingId": "agri-bg-https-agri-bg-agroborsa-ad-kupuvam-maxorka"
+		},
+		{
+			"id": "listing:agri-bg-https-agri-bg-agroborsa-ad-saran-ziv-kupuvam",
+			"kind": "listing",
+			"title": "Saran ziv kupuvam",
+			"text": "Saran ziv kupuvam agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/saran-ziv-kupuvam",
+			"listingId": "agri-bg-https-agri-bg-agroborsa-ad-saran-ziv-kupuvam"
+		},
+		{
+			"id": "listing:agri-bg-s-agri-bg-agroborsa-ad-kupuvam-zaribitel-saran-2",
+			"kind": "listing",
+			"title": "Kupuvam zaribitel saran 2",
+			"text": "Kupuvam zaribitel saran 2 agri.bg — Агроборса grain north buy — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/kupuvam-zaribitel-saran-2",
+			"listingId": "agri-bg-s-agri-bg-agroborsa-ad-kupuvam-zaribitel-saran-2"
+		},
+		{
+			"id": "listing:agri-bg-blepixa-bielgariia-dostavia-i-kupuva-6000-lv-ton",
+			"kind": "listing",
+			"title": "Asociaciia pp oblepixa bielgariia dostavia i kupuva 6000 lv ton",
+			"text": "Asociaciia pp oblepixa bielgariia dostavia i kupuva 6000 lv ton agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/asociaciia-pp-oblepixa-bielgariia-dostavia-i-kupuva-6000-lv-ton",
+			"listingId": "agri-bg-blepixa-bielgariia-dostavia-i-kupuva-6000-lv-ton"
+		},
+		{
+			"id": "listing:agri-bg-rsa-ad-izviersvam-transportni-uslugi-s-gondola-4",
+			"kind": "listing",
+			"title": "Izviersvam transportni uslugi s gondola 4",
+			"text": "Izviersvam transportni uslugi s gondola 4 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/izviersvam-transportni-uslugi-s-gondola-4",
+			"listingId": "agri-bg-rsa-ad-izviersvam-transportni-uslugi-s-gondola-4"
+		},
+		{
+			"id": "listing:agri-bg-i-bg-agroborsa-ad-transportni-uslugi-s-gondola-3",
+			"kind": "listing",
+			"title": "Transportni uslugi s gondola 3",
+			"text": "Transportni uslugi s gondola 3 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/transportni-uslugi-s-gondola-3",
+			"listingId": "agri-bg-i-bg-agroborsa-ad-transportni-uslugi-s-gondola-3"
+		},
+		{
+			"id": "listing:agri-bg-groborsa-ad-sondazi-za-voda-i-geolozko-proucvane",
+			"kind": "listing",
+			"title": "Sondazi za voda i geolozko proucvane",
+			"text": "Sondazi za voda i geolozko proucvane agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/sondazi-za-voda-i-geolozko-proucvane",
+			"listingId": "agri-bg-groborsa-ad-sondazi-za-voda-i-geolozko-proucvane"
+		},
+		{
+			"id": "listing:agri-bg-astitelna-zashhita-za-potrebiteli-prisiestveno-2",
+			"kind": "listing",
+			"title": "Kurs rastitelna zashhita za potrebiteli prisiestveno 2",
+			"text": "Kurs rastitelna zashhita za potrebiteli prisiestveno 2 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/kurs-rastitelna-zashhita-za-potrebiteli-prisiestveno-2",
+			"listingId": "agri-bg-astitelna-zashhita-za-potrebiteli-prisiestveno-2"
+		},
+		{
+			"id": "listing:agri-bg-ansportni-uslugi-s-bus-transport-na-avtomobili-4",
+			"kind": "listing",
+			"title": "Transportni uslugi s bus transport na avtomobili 4",
+			"text": "Transportni uslugi s bus transport na avtomobili 4 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/transportni-uslugi-s-bus-transport-na-avtomobili-4",
+			"listingId": "agri-bg-ansportni-uslugi-s-bus-transport-na-avtomobili-4"
+		},
+		{
+			"id": "listing:agri-bg-ansportni-uslugi-s-bus-transport-na-avtomobili-3",
+			"kind": "listing",
+			"title": "Transportni uslugi s bus transport na avtomobili 3",
+			"text": "Transportni uslugi s bus transport na avtomobili 3 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/transportni-uslugi-s-bus-transport-na-avtomobili-3",
+			"listingId": "agri-bg-ansportni-uslugi-s-bus-transport-na-avtomobili-3"
+		},
+		{
+			"id": "listing:agri-bg--bg-agroborsa-ad-prodavam-metalen-klas-eur128-kg",
+			"kind": "listing",
+			"title": "Prodavam metalen klas eur128 kg",
+			"text": "Prodavam metalen klas eur128 kg agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/prodavam-metalen-klas-eur128-kg",
+			"listingId": "agri-bg--bg-agroborsa-ad-prodavam-metalen-klas-eur128-kg"
+		},
+		{
+			"id": "listing:agri-bg-sa-ad-kurs-xumanno-otnosenie-kiem-zivotnite-2026",
+			"kind": "listing",
+			"title": "Kurs xumanno otnosenie kiem zivotnite 2026",
+			"text": "Kurs xumanno otnosenie kiem zivotnite 2026 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/kurs-xumanno-otnosenie-kiem-zivotnite-2026",
+			"listingId": "agri-bg-sa-ad-kurs-xumanno-otnosenie-kiem-zivotnite-2026"
+		},
+		{
+			"id": "listing:agri-bg-titelna-zashhita-cl-83-po-iziskvane-na-babx-2026",
+			"kind": "listing",
+			"title": "Kurs po rastitelna zashhita cl 83 po iziskvane na babx 2026",
+			"text": "Kurs po rastitelna zashhita cl 83 po iziskvane na babx 2026 agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/kurs-po-rastitelna-zashhita-cl-83-po-iziskvane-na-babx-2026",
+			"listingId": "agri-bg-titelna-zashhita-cl-83-po-iziskvane-na-babx-2026"
+		},
+		{
+			"id": "listing:agri-bg-bg-agroborsa-ad-pocistvane-i-zagotovka-na-semena",
+			"kind": "listing",
+			"title": "Pocistvane i zagotovka na semena",
+			"text": "Pocistvane i zagotovka na semena agri.bg — Агроборса grain north sell — — agri.bg — Агроборса",
+			"url": "https://agri.bg/agroborsa/ad/pocistvane-i-zagotovka-na-semena",
+			"listingId": "agri-bg-bg-agroborsa-ad-pocistvane-i-zagotovka-na-semena"
+		}
+	]
+}

@@ -1,9 +1,9 @@
 /**
  * Проверка дали Node API (/api/*) е достъпен (локално / Vercel).
- * В Lovable preview статичният сайт няма backend — chat и форма са offline.
  */
 (function initFieldlotApiStatus(global) {
 	const state = { chat: false, leads: false, checked: false };
+	const t = (k) => (global.FieldlotI18n ? FieldlotI18n.t(k) : k);
 
 	function injectPreviewBanner() {
 		if (document.getElementById('fieldlot-preview-banner')) return;
@@ -11,9 +11,7 @@
 		bar.id = 'fieldlot-preview-banner';
 		bar.className = 'fieldlot-preview-banner';
 		bar.setAttribute('role', 'status');
-		bar.innerHTML =
-			'<strong>Преглед без backend</strong> · Каталогът работи на <a href="/catalog.html">/catalog.html</a>. ' +
-			'Формата и AI чатът са <em>offline</em>, докато не вдигнем API (Vercel / локално).';
+		bar.innerHTML = t('api.banner');
 		document.body.prepend(bar);
 	}
 
@@ -47,6 +45,11 @@
 		get: () => ({ ...state }),
 		isOnline: () => state.chat && state.leads,
 	};
+
+	document.addEventListener('fieldlot-lang-change', () => {
+		const bar = document.getElementById('fieldlot-preview-banner');
+		if (bar) bar.innerHTML = t('api.banner');
+	});
 
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', () => probe());

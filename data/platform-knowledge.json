@@ -3,12 +3,12 @@
 		{
 			"id": "platform-overview",
 			"topics": ["platform", "fieldlot", "b2b"],
-			"text": "Fieldlot е дигитална агро екосистема за България: marketplace (обяви като OLX/Alibaba за B2B), борса с индикативни цени, логистика, профили на производители и AI асистент. Ранната фаза е демо каталог + запитвания — без escrow, без плащания и без арбитраж през платформата."
+			"text": "Fieldlot е дигитална агро екосистема за България: marketplace (обяви B2B), борса с индикативни цени, логистика, профили на производители и AI асистент. Каталогът показва живи обяви от borsaagro.com (сортирани по дата). Без escrow и плащания през платформата."
 		},
 		{
 			"id": "pages-nav",
 			"topics": ["navigation", "pages", "url"],
-			"text": "Страници: / (дигитална агро екосистема — hero „Свързваме фермерите директно с пазара“, категории #categories, marketplace #listings, борса #exchange, логистика #logistics, производители #farmers, AI #ai, форма #cta), /catalog.html (демо каталог с филтри и жълти карти). Търсене в хедъра води към каталога с ?q=. Контакт: info@agrinexus.eu."
+			"text": "Страници: / (екосистема), /catalog.html (жив каталог от borsaagro.com). API обяви: GET /api/listings. Статичен JSON: /data/live-listings.json. Търсене в хедъра → каталог ?q=. Контакт: info@agrinexus.eu."
 		},
 		{
 			"id": "exchange-board",
@@ -41,9 +41,9 @@
 			"text": "Каталогът филтрира по: текстово търсене, категория (зърно, маслодайни, фураж, плодове, зеленчуци), регион (Добруджа, север, юг, запад), тип (продажба или търсене/купувач). Детайлът на карта отваря панел; запитване води към /#cta?listing=ID."
 		},
 		{
-			"id": "demo-disclaimer",
-			"topics": ["demo", "disclaimer"],
-			"text": "Текущият каталог е ДЕМО с 8 примерни оферти (жълти страници). Цени и контакти са илюстративни. Не твърди, че офертите са живи сделки — насочи към ранен достъп за реална версия."
+			"id": "listings-source",
+			"topics": ["listings", "borsaagro", "source"],
+			"text": "Обявите в каталога идват от borsaagro.com. Показват се само публикувани през последните ~60 дни — по-старите се премахват автоматично при sync. sourceUrl към оригинала. Cron: /api/cron/sync-listings · API: GET /api/listings."
 		},
 		{
 			"id": "listing-quality",
@@ -58,7 +58,7 @@
 		{
 			"id": "assistant-capabilities",
 			"topics": ["assistant", "rag", "capabilities", "mistral"],
-			"text": "Fieldlot Guide (пълен RAG) вижда: всички knowledge chunks, всички 8 demo обяви, пълния fieldlot-image-manifest.json (снимки /images/). Може да обяснява коя снимка къде е, да сравнява обяви, да дава филтри и линкове. Чат: POST /api/fieldlot-chat — LLM ред Mistral (MISTRAL_API_KEY) → Ollama → OpenAI. Не измисля данни извън RAG."
+			"text": "Fieldlot Guide (RAG) вижда: knowledge chunks, всички каталожни обяви (borsaagro), fieldlot-image-manifest.json. Чат: POST /api/fieldlot-chat. Не измисля оферти извън RAG."
 		},
 		{
 			"id": "rag-authority",

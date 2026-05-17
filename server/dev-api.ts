@@ -1,9 +1,12 @@
 import 'dotenv/config';
 import http from 'node:http';
+import { handleAdminGet, handleAdminGetKnowledge, handleAdminPost } from './admin-handler.js';
 import { handleFieldlotChatPost } from './fieldlot-chat-handler.js';
+import { getRagIndexStatus } from './fieldlot-semantic-rag.js';
 import { getAllListings } from './fieldlot-rag.js';
+import { getListingsSnapshot } from './listings-data.js';
 import { handleRegisterInterestPost } from './register-interest.js';
-import { isAnyLlmConfigured } from './llm-upstream.js';
+import { isAnyLlmConfigured, resolveTextChatUpstream } from './llm-upstream.js';
 
 function clientIpFromNodeRequest(req: http.IncomingMessage): string | null {
 	const realIp = req.headers['x-real-ip'];
@@ -59,12 +62,22 @@ const server = http.createServer(async (req, res) => {
 			return;
 		}
 
+		if (path === '/api/listings' && req.method === 'GET') {
+			const refresh = url.searchParams.get('refresh') === '1';
+			const snap = await getListingsSnapshot(refresh);
+			send(res, 200, snap);
+			return;
+		}
+
 		if (path === '/api/fieldlot-chat' && req.method === 'GET') {
+			const upstream = resolveTextChatUpstream();
 			send(res, 200, {
 				ok: true,
 				path: '/api/fieldlot-chat',
 				llmConfigured: isAnyLlmConfigured(),
 				ragEnabled: true,
+				semanticRag: getRagIndexStatus(),
+				agentEnabled: Boolean(upstream?.supportsTools && process.env.FIELDLOT_AGENT_DISABLED !== '1'),
 				listingCount: getAllListings().length,
 			});
 			return;
@@ -76,9 +89,17 @@ const server = http.createServer(async (req, res) => {
 				send(res, 400, { error: 'Invalid JSON' });
 				return;
 			}
-			const result = await handleFieldlotChatPost(body);
+			const result = await handleFieldlotChatPost(body, {
+				clientIp: clientIpFromNodeRequest(req),
+			});
 			if (result.ok) {
-				send(res, 200, { reply: result.reply, rag: result.rag });
+				send(res, 200, {
+					reply: result.reply,
+					rag: result.rag,
+					semanticHits: result.semanticHits,
+					actions: result.actions,
+					agentMode: result.agentMode,
+				});
 				return;
 			}
 			send(res, result.status, { error: result.error, hint: result.hint });
@@ -104,6 +125,29 @@ const server = http.createServer(async (req, res) => {
 			}
 			send(res, result.status, { ok: false, error: result.error, hint: result.hint });
 			return;
+		}
+
+		const adminMatch = path.match(/^\/api\/admin\/([^/]+)$/);
+		if (adminMatch) {
+			const action = decodeURIComponent(adminMatch[1]);
+			const authH =
+				typeof req.headers.authorization === 'string' ? req.headers.authorization : undefined;
+			if (req.method === 'GET' && action === 'knowledge') {
+				const r = await handleAdminGetKnowledge(authH);
+				send(res, r.status, r.body);
+				return;
+			}
+			if (req.method === 'GET') {
+				const r = await handleAdminGet(action, authH);
+				send(res, r.status, r.body);
+				return;
+			}
+			if (req.method === 'POST') {
+				const body = await readJson(req);
+				const r = await handleAdminPost(action, authH, body);
+				send(res, r.status, r.body);
+				return;
+			}
 		}
 
 		send(res, 404, { error: 'Not found' });

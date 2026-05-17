@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { vercelJsonBody } from '../lib/vercel-json-body.js';
 import { handleFieldlotChatPost } from '../server/fieldlot-chat-handler.js';
 import { getAllListings } from '../server/fieldlot-rag.js';
-import { isAnyLlmConfigured } from '../server/llm-upstream.js';
+import { isAnyLlmConfigured, resolveTextChatUpstream } from '../server/llm-upstream.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -13,11 +13,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 	}
 
 	if (req.method === 'GET') {
+		const upstream = resolveTextChatUpstream();
 		res.status(200).json({
 			ok: true,
 			path: '/api/fieldlot-chat',
 			llmConfigured: isAnyLlmConfigured(),
 			ragEnabled: true,
+			agentEnabled: Boolean(upstream?.supportsTools && process.env.FIELDLOT_AGENT_DISABLED !== '1'),
 			listingCount: getAllListings().length,
 		});
 		return;
@@ -34,9 +36,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 		return;
 	}
 
-	const result = await handleFieldlotChatPost(parsed);
+	const clientIp =
+		(typeof req.headers['x-forwarded-for'] === 'string'
+			? req.headers['x-forwarded-for'].split(',')[0]?.trim()
+			: null) ||
+		(typeof req.headers['x-real-ip'] === 'string' ? req.headers['x-real-ip'] : null) ||
+		null;
+
+	const result = await handleFieldlotChatPost(parsed, { clientIp });
 	if (result.ok) {
-		res.status(200).json({ reply: result.reply, rag: result.rag });
+		res.status(200).json({
+			reply: result.reply,
+			rag: result.rag,
+			actions: result.actions,
+			agentMode: result.agentMode,
+			semanticHits: result.semanticHits,
+		});
 		return;
 	}
 

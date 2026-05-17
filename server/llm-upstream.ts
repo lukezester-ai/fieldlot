@@ -43,6 +43,8 @@ export type TextChatUpstream = {
 	completionUrl: string;
 	bearer: string | undefined;
 	model: string;
+	/** OpenAI-style function calling (Mistral + OpenAI) */
+	supportsTools: boolean;
 };
 
 export function resolveTextChatUpstream(): TextChatUpstream | null {
@@ -55,6 +57,7 @@ export function resolveTextChatUpstream(): TextChatUpstream | null {
 			completionUrl: MISTRAL_CHAT_COMPLETIONS_URL,
 			bearer: mistralKey,
 			model: readMistralChatModel(),
+			supportsTools: true,
 		};
 	}
 	if (ollamaBase) {
@@ -63,6 +66,7 @@ export function resolveTextChatUpstream(): TextChatUpstream | null {
 			completionUrl: `${ollamaBase}/v1/chat/completions`,
 			bearer: undefined,
 			model: process.env.OLLAMA_MODEL?.trim() || 'llama3.2',
+			supportsTools: false,
 		};
 	}
 	if (openaiKey) {
@@ -71,6 +75,7 @@ export function resolveTextChatUpstream(): TextChatUpstream | null {
 			completionUrl: 'https://api.openai.com/v1/chat/completions',
 			bearer: openaiKey,
 			model: process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini',
+			supportsTools: true,
 		};
 	}
 	return null;

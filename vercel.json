@@ -4,7 +4,8 @@
 	"installCommand": "npm install --no-audit --no-fund",
 	"framework": null,
 	"rewrites": [
-		{ "source": "/catalog", "destination": "/catalog.html" }
+		{ "source": "/catalog", "destination": "/catalog.html" },
+		{ "source": "/admin", "destination": "/admin.html" }
 	],
 	"functions": {
 		"api/**/*.ts": {
@@ -15,6 +16,10 @@
 		{
 			"path": "/api/cron/exchange-prices",
 			"schedule": "0 6 * * *"
+		},
+		{
+			"path": "/api/cron/sync-listings",
+			"schedule": "30 6 * * *"
 		}
 	]
 }

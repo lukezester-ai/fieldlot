@@ -66,9 +66,30 @@ body.nav-open {
 		gap: 10px;
 	}
 
-	.header-row .brand {
+	.header-row .brand,
+	.site-header .nav .brand {
 		grid-area: brand;
 		min-width: 0;
+		gap: 10px;
+	}
+
+	.header-row .brand-title,
+	.site-header .nav .brand-title {
+		font-size: 17px;
+		letter-spacing: 0.12em;
+	}
+
+	.header-row .brand-mark,
+	.site-header .nav .brand-mark {
+		width: 44px;
+		height: 44px;
+		flex-shrink: 0;
+	}
+
+	.header-row .brand-mark svg,
+	.site-header .nav .brand-mark svg {
+		width: 24px;
+		height: 24px;
 	}
 
 	.header-row .nav-toggle {
@@ -84,6 +105,15 @@ body.nav-open {
 		min-width: 0;
 		flex: none;
 		width: 100%;
+	}
+
+	.header-actions .lang-switch {
+		order: -1;
+	}
+
+	.site-header .nav .lang-switch {
+		order: 1;
+		margin-left: auto;
 	}
 
 	.header-actions .btn-ghost {
@@ -399,6 +429,18 @@ body.nav-open {
 
 	.brand-sub {
 		display: none;
+	}
+
+	.header-row .brand-title,
+	.site-header .nav .brand-title {
+		font-size: 18px;
+		letter-spacing: 0.1em;
+	}
+
+	.header-row .brand-mark,
+	.site-header .nav .brand-mark {
+		width: 46px;
+		height: 46px;
 	}
 
 	.listing-card-foot {

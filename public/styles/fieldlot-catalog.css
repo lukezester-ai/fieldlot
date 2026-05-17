@@ -225,6 +225,13 @@ textarea {
 	color: #fff;
 }
 
+.tag.source {
+	background: #e8f4fc;
+	color: #1a4d6a;
+	border-color: #b8d4e8;
+	font-size: 11px;
+}
+
 .tag.demo {
 	background: var(--fl-surface-2);
 	color: var(--fl-muted);

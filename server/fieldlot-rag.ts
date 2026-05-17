@@ -1,23 +1,8 @@
-import demoListings from '../data/demo-listings.json' with { type: 'json' };
 import imageManifest from '../data/fieldlot-image-manifest.json' with { type: 'json' };
 import platformKnowledge from '../data/platform-knowledge.json' with { type: 'json' };
+import { getAllListingsSync, type FieldlotListing } from './listings-data.js';
 
-export type FieldlotListing = {
-	id: string;
-	title: string;
-	subtitle: string;
-	category: string;
-	region: string;
-	role: 'sell' | 'buy' | string;
-	qty: string;
-	price: string;
-	priceUnit: string;
-	incoterm: string;
-	harvest: string;
-	quality: string;
-	contact: string;
-	tags: string[];
-};
+export type { FieldlotListing };
 
 export type FieldlotChatFilters = {
 	q?: string;
@@ -28,6 +13,7 @@ export type FieldlotChatFilters = {
 
 export type FieldlotChatContext = {
 	page?: 'landing' | 'catalog' | string;
+	lang?: 'bg' | 'en' | string;
 	listingId?: string;
 	filters?: FieldlotChatFilters;
 	visibleListingIds?: string[];
@@ -39,7 +25,7 @@ export type FieldlotRagResult = {
 	knowledgeIds: string[];
 };
 
-const LISTINGS = demoListings as FieldlotListing[];
+const LISTINGS = getAllListingsSync();
 const KNOWLEDGE = platformKnowledge.chunks;
 
 const BG_STOP = new Set([
@@ -196,7 +182,7 @@ export function buildFieldlotRagContext(
 ): FieldlotRagResult {
 	const queryTokens = tokenize(userQuery);
 
-	/** Пълен RAG: всички knowledge chunks + всички 8 demo обяви + целият image manifest */
+	/** Пълен RAG: knowledge + каталог обяви (borsaagro) + image manifest */
 	const knowledgeIds = KNOWLEDGE.map((c) => c.id);
 	const knowledgeBlocks = KNOWLEDGE.map((c) => `• [${c.id}] ${c.text}`);
 
@@ -219,7 +205,7 @@ export function buildFieldlotRagContext(
 		'=== RAG: СЕСИЯ ===',
 		sessionContextBlock(ctx),
 		'',
-		'=== RAG: ВСИЧКИ ДЕМО ОФЕРТИ (8 бр.) ===',
+		`=== RAG: КАТАЛОГ ОФЕРТИ (${LISTINGS.length} бр., borsaagro.com) ===`,
 		listingBlocks.join('\n'),
 		'',
 		'=== RAG: ПРАВИЛА ===',
@@ -228,7 +214,7 @@ export function buildFieldlotRagContext(
 		'3) Навигация: / , /catalog.html , /#cta , /#categories , /#listings , /#exchange , /#logistics , /#farmers , /#ai',
 		'4) Регистрация: /#cta · форма POST /api/register-interest',
 		'5) Чат backend: Mistral (MISTRAL_API_KEY) → Ollama → OpenAI',
-		'6) Демо фаза — без escrow и плащания през платформата.',
+		'6) Обявите са от публичен източник (borsaagro.com) — насочи към sourceUrl за оригинал. Без escrow през Fieldlot.',
 	].join('\n');
 
 	const topForMeta = rankedListings.slice(0, 5).map((r) => r.item);
@@ -245,6 +231,10 @@ export function parseFieldlotChatContext(raw: unknown): FieldlotChatContext | un
 	const o = raw as Record<string, unknown>;
 	const ctx: FieldlotChatContext = {};
 	if (typeof o.page === 'string' && o.page.trim()) ctx.page = o.page.trim();
+	if (typeof o.lang === 'string') {
+		const lang = o.lang.trim().toLowerCase();
+		if (lang === 'en' || lang === 'bg') ctx.lang = lang;
+	}
 	if (typeof o.listingId === 'string' && o.listingId.trim()) ctx.listingId = o.listingId.trim();
 	if (Array.isArray(o.visibleListingIds)) {
 		ctx.visibleListingIds = o.visibleListingIds

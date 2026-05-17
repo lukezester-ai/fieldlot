@@ -1,4 +1,9 @@
 import {
+	executeAgentTool,
+	FIELDLOT_AGENT_TOOLS,
+	type AgentActionRecord,
+} from './fieldlot-agent-tools.js';
+import {
 	formatExchangeForRag,
 	getExchangeSnapshotCached,
 } from './exchange-prices.js';
@@ -7,36 +12,73 @@ import {
 	parseFieldlotChatContext,
 } from './fieldlot-rag.js';
 import {
+	formatSemanticHitsForPrompt,
+	searchFieldlotSemanticRag,
+	type FieldlotRagHit,
+} from './fieldlot-semantic-rag.js';
+import {
 	chatProviderLabel,
 	openAIMessageContentToString,
 	resolveTextChatUpstream,
+	type TextChatUpstream,
 } from './llm-upstream.js';
 
 export type FieldlotChatTurn = { role: 'user' | 'assistant'; content: string };
 
+type ToolCall = {
+	id: string;
+	type: string;
+	function: { name: string; arguments: string };
+};
+
+type ChatCompletionMessage = {
+	role: string;
+	content?: string | null;
+	tool_calls?: ToolCall[];
+	tool_call_id?: string;
+};
+
 const MAX_MESSAGES = 14;
 const MAX_MESSAGE_CHARS = 2800;
 const MAX_REPLY_CHARS = 4000;
+const MAX_AGENT_STEPS = 6;
 
 function truncate(s: string, max: number): string {
 	if (s.length <= max) return s;
 	return `${s.slice(0, max)}\n...`;
 }
 
-const FIELDLOT_SYSTEM = `Ти си "Fieldlot Guide" — пълномощен RAG асистент на Fieldlot (български B2B агро пазар).
+const FIELDLOT_SYSTEM_BG = `Ти си "Fieldlot Guide" — AI агент с RAG и ИЗПЪЛНЕНИЕ НА ДЕЙСТВИЯ на Fieldlot (български B2B агро пазар).
 
-Имаш ПЪЛЕН достъп до: всички секции на сайта, всички 8 demo обяви, image manifest (кои снимки къде са), борса, логистика, фермери, форма за ранен достъп.
+Имаш инструменти (tools) — използвай ги, когато трябва реално действие, не само текст:
+• get_exchange_prices — живи борсови цени
+• search_listings / get_listing — живи обяви (borsaagro.com)
+• submit_early_access — регистрация за ранен достъп (имейл до екипа) САМО ако потребителят е дал име и имейл и иска регистрация
+• send_team_email — изпрати съобщение до екипа Fieldlot (обобщение, запитване)
+• fetch_fieldlot_api — /api/exchange-prices, /api/listings или /data/live-listings.json
 
-Отговаряй на български, професионално и ясно. Можеш да:
-- описваш и сравняваш ВСИЧКИ demo обяви по id;
-- обясняваш коя снимка от /images/... отговаря на коя култура/секция;
-- насочваш към точни URL и филтри в каталога;
-- помагаш с текст на обява и запитване към /#cta;
-- отговаряш за борсови цени (пшеница, слънчоглед, царевица, рапица) само от блока „БОРСОВИ ЦЕНИ“ в RAG.
+Правила:
+- Отговаряй на български, ясно и професионално.
+- Преди submit_early_access потвърди данните с потребителя.
+- Не измисляй цени извън резултат от get_exchange_prices / RAG.
+- След изпълнение на инструмент обобщи какво направи.
+- Без markdown code fences.`;
 
-Борса: следи котировките веднъж на ден (източник borsaagro.com / MATIF). Не измисляй цени извън RAG.
+const FIELDLOT_SYSTEM_EN = `You are "Fieldlot Guide" — an AI agent with RAG and ACTION execution for Fieldlot (Bulgarian B2B agro marketplace).
 
-LLM backend: предпочитай Mistral (MISTRAL_API_KEY на сървъра). Без markdown code fences.`;
+You have tools — use them when a real action is needed, not text only:
+• get_exchange_prices — live exchange prices
+• search_listings / get_listing — live listings (borsaagro.com)
+• submit_early_access — early access registration (email to team) ONLY when user gave name + email and wants to register
+• send_team_email — message Fieldlot team (summary, inquiry)
+• fetch_fieldlot_api — /api/exchange-prices, /api/listings or /data/live-listings.json
+
+Rules:
+- Reply in English, clear and professional.
+- Confirm data before submit_early_access.
+- Do not invent prices outside get_exchange_prices / RAG.
+- After running a tool, summarize what you did.
+- No markdown code fences.`;
 
 function isTurn(v: unknown): v is FieldlotChatTurn {
 	if (!v || typeof v !== 'object') return false;
@@ -44,10 +86,67 @@ function isTurn(v: unknown): v is FieldlotChatTurn {
 	return (o.role === 'user' || o.role === 'assistant') && typeof o.content === 'string';
 }
 
+async function callChatCompletions(
+	upstream: TextChatUpstream,
+	messages: ChatCompletionMessage[],
+	opts: { tools?: boolean; maxTokens?: number },
+): Promise<{ message: ChatCompletionMessage; raw: unknown }> {
+	const temperature = Number(process.env.OPENAI_TEMPERATURE ?? 0.45);
+	const safeTemp = Number.isFinite(temperature) ? Math.min(1.1, Math.max(0, temperature)) : 0.45;
+
+	const payload: Record<string, unknown> = {
+		model: upstream.model,
+		temperature: safeTemp,
+		max_tokens: opts.maxTokens ?? 950,
+		messages,
+	};
+
+	if (opts.tools && upstream.supportsTools) {
+		payload.tools = FIELDLOT_AGENT_TOOLS;
+		payload.tool_choice = 'auto';
+	}
+
+	const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+	if (upstream.bearer) headers.Authorization = `Bearer ${upstream.bearer}`;
+
+	const res = await fetch(upstream.completionUrl, {
+		method: 'POST',
+		headers,
+		body: JSON.stringify(payload),
+	});
+
+	const rawText = await res.text();
+	let data: {
+		error?: { message?: string };
+		choices?: { message?: ChatCompletionMessage }[];
+	};
+	try {
+		data = rawText.trim() ? (JSON.parse(rawText) as typeof data) : {};
+	} catch {
+		throw new Error('Невалиден JSON от LLM');
+	}
+
+	if (!res.ok) {
+		throw new Error(data.error?.message || res.statusText || 'Upstream error');
+	}
+
+	const message = data.choices?.[0]?.message;
+	if (!message) throw new Error('Празно съдържание от модела');
+	return { message, raw: data };
+}
+
 export async function handleFieldlotChatPost(
 	rawBody: unknown,
+	opts?: { clientIp?: string | null },
 ): Promise<
-	| { ok: true; reply: string; rag?: { listingIds: string[]; knowledgeIds: string[] } }
+	| {
+			ok: true;
+			reply: string;
+			rag?: { listingIds: string[]; knowledgeIds: string[] };
+			semanticHits?: FieldlotRagHit[];
+			actions?: AgentActionRecord[];
+			agentMode?: boolean;
+	  }
 	| { ok: false; status: number; error: string; hint?: string }
 > {
 	const upstream = resolveTextChatUpstream();
@@ -88,95 +187,129 @@ export async function handleFieldlotChatPost(
 	}
 
 	const sessionContext = parseFieldlotChatContext(body.context);
+	const lang: 'bg' | 'en' = sessionContext?.lang === 'en' ? 'en' : 'bg';
 	const rag = buildFieldlotRagContext(last.content, sessionContext);
+	const semanticHits = await searchFieldlotSemanticRag(last.content, 8);
+	const semanticBlock = formatSemanticHitsForPrompt(semanticHits, lang);
 	let exchangeBlock = '';
 	try {
 		const snap = await getExchangeSnapshotCached();
 		exchangeBlock = `\n\n${formatExchangeForRag(snap)}`;
 	} catch {
 		exchangeBlock =
-			'\n\n=== RAG: БОРСОВИ ЦЕНИ ===\nВременно недостъпни — кажи на потребителя да провери #exchange на сайта.';
+			'\n\n=== RAG: БОРСОВИ ЦЕНИ ===\nВременно недостъпни — използвай get_exchange_prices.';
 	}
-	const systemContent = `${FIELDLOT_SYSTEM}\n\n${rag.systemContext}${exchangeBlock}`;
 
-	const chatMessages = [
-		{ role: 'system' as const, content: systemContent },
-		...cleaned.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content })),
+	const systemContent = `${lang === 'en' ? FIELDLOT_SYSTEM_EN : FIELDLOT_SYSTEM_BG}\n\n${rag.systemContext}${semanticBlock ? `\n\n${semanticBlock}` : ''}${exchangeBlock}`;
+	const agentEnabled = upstream.supportsTools && process.env.FIELDLOT_AGENT_DISABLED !== '1';
+
+	const chatMessages: ChatCompletionMessage[] = [
+		{ role: 'system', content: systemContent },
+		...cleaned.map((m) => ({ role: m.role, content: m.content })),
 	];
 
-	const temperature = Number(process.env.OPENAI_TEMPERATURE ?? 0.45);
-	const safeTemp = Number.isFinite(temperature) ? Math.min(1.1, Math.max(0, temperature)) : 0.45;
+	const actions: AgentActionRecord[] = [];
 
-	const payload: Record<string, unknown> = {
-		model: upstream.model,
-		temperature: safeTemp,
-		max_tokens: 950,
-		messages: chatMessages,
-	};
-
-	const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-	if (upstream.bearer) {
-		headers.Authorization = `Bearer ${upstream.bearer}`;
-	}
-
-	let res: Response;
-	try {
-		res = await fetch(upstream.completionUrl, {
-			method: 'POST',
-			headers,
-			body: JSON.stringify(payload),
-		});
-	} catch {
-		const label = chatProviderLabel(upstream.provider);
-		return {
-			ok: false,
-			status: 502,
-			error: `Мрежова грешка към ${label}`,
-			hint:
-				upstream.provider === 'ollama'
-					? 'Пусни Ollama (ollama serve) и провери OLLAMA_BASE_URL.'
-					: undefined,
-		};
-	}
-
-	const raw = await res.text();
-	let data: { error?: { message?: string }; choices?: { message?: { content?: unknown } }[] };
-	try {
-		if (!raw.trim()) {
+	if (!agentEnabled) {
+		try {
+			const { message } = await callChatCompletions(upstream, chatMessages, { tools: false });
+			const rawReply = openAIMessageContentToString(message.content);
+			if (!rawReply) return { ok: false, status: 502, error: 'Празно съдържание от модела' };
+			return {
+				ok: true,
+				reply: truncate(rawReply.trim(), MAX_REPLY_CHARS),
+				rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
+				semanticHits: semanticHits.length ? semanticHits : undefined,
+				agentMode: false,
+			};
+		} catch (e) {
+			const msg = e instanceof Error ? e.message : 'LLM error';
 			return {
 				ok: false,
 				status: 502,
-				error: 'Празен отговор от LLM',
-				hint: 'Провери ключа и името на модела.',
+				error: msg,
+				hint:
+					upstream.provider === 'ollama'
+						? 'Ollama не поддържа agent tools — ползвай Mistral или OpenAI.'
+						: undefined,
 			};
 		}
-		data = JSON.parse(raw) as typeof data;
-	} catch {
-		return {
-			ok: false,
-			status: 502,
-			error: 'Невалиден JSON от LLM',
-			hint: 'Провери доставчика и логовете.',
-		};
 	}
 
-	if (!res.ok) {
-		const detail = data.error?.message || res.statusText || 'Upstream error';
-		return {
-			ok: false,
-			status: res.status >= 400 && res.status < 600 ? res.status : 502,
-			error: detail,
-		};
+	const toolCtx = { lang, clientIp: opts?.clientIp ?? null };
+
+	for (let step = 0; step < MAX_AGENT_STEPS; step++) {
+		try {
+			const { message } = await callChatCompletions(upstream, chatMessages, {
+				tools: true,
+				maxTokens: 1100,
+			});
+
+			const toolCalls = message.tool_calls?.filter(
+				(tc) => tc?.function?.name && typeof tc.function.arguments === 'string',
+			);
+
+			if (!toolCalls?.length) {
+				const rawReply = openAIMessageContentToString(message.content);
+				if (!rawReply) {
+					return { ok: false, status: 502, error: 'Празно съдържание от модела' };
+				}
+				return {
+					ok: true,
+					reply: truncate(rawReply.trim(), MAX_REPLY_CHARS),
+					rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
+					semanticHits: semanticHits.length ? semanticHits : undefined,
+					actions: actions.length ? actions : undefined,
+					agentMode: true,
+				};
+			}
+
+			chatMessages.push({
+				role: 'assistant',
+				content: message.content ?? null,
+				tool_calls: toolCalls,
+			});
+
+			for (const tc of toolCalls) {
+				const { result, action } = await executeAgentTool(
+					tc.function.name,
+					tc.function.arguments,
+					toolCtx,
+				);
+				actions.push(action);
+				chatMessages.push({
+					role: 'tool',
+					tool_call_id: tc.id,
+					content: result,
+				});
+			}
+		} catch (e) {
+			const label = chatProviderLabel(upstream.provider);
+			const msg = e instanceof Error ? e.message : 'LLM error';
+			return {
+				ok: false,
+				status: 502,
+				error: `${label}: ${msg}`,
+				hint:
+					upstream.provider === 'ollama'
+						? 'Пусни Ollama (ollama serve) и провери OLLAMA_BASE_URL.'
+						: undefined,
+			};
+		}
 	}
 
-	const rawReply = openAIMessageContentToString(data.choices?.[0]?.message?.content);
-	if (!rawReply) {
-		return { ok: false, status: 502, error: 'Празно съдържание от модела' };
-	}
-
+	const en = lang === 'en';
 	return {
 		ok: true,
-		reply: truncate(rawReply.trim(), MAX_REPLY_CHARS),
+		reply: truncate(
+			en
+				? 'I ran several actions but need a simpler question to finish — try again.'
+				: 'Изпълних няколко действия, но ми трябва по-прост въпрос — опитай отново.',
+			MAX_REPLY_CHARS,
+		),
 		rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
+		semanticHits: semanticHits.length ? semanticHits : undefined,
+		actions,
+		agentMode: true,
 	};
 }

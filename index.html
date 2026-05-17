@@ -1,10 +1,13 @@
 <!doctype html>
-<html lang="bg">
+<html lang="bg" data-i18n-title-key="meta.title">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Fieldlot — агро пазар · фермери и купувачи</title>
-	<meta name="description" content="Дигитална агро екосистема: обяви, борса, логистика и директни сделки между фермери и пазара в България." />
+	<meta name="description" data-i18n="meta.description" content="Дигитална агро екосистема: обяви, борса, логистика и директни сделки между фермери и пазара в България." />
+	<script>
+		(function(){try{var p=new URLSearchParams(location.search).get('lang');var s=localStorage.getItem('fieldlot-lang');var l=p||s;if(l==='en'||l==='bg')document.documentElement.lang=l;}catch(e){}})();
+	</script>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
@@ -32,31 +35,36 @@
 				</a>
 				<form class="header-search" id="header-search" role="search">
 					<span aria-hidden="true">🔍</span>
-					<input type="search" name="q" placeholder="Търси домати, олио, пшеница…" autocomplete="off" />
+					<input type="search" name="q" data-i18n-placeholder="nav.searchPlaceholder" placeholder="Търси домати, олио, пшеница…" autocomplete="off" />
 				</form>
+				<div class="lang-switch" role="group" data-i18n-aria="lang.label" aria-label="Език">
+					<button type="button" data-lang="bg" aria-pressed="true">BG</button>
+					<button type="button" data-lang="en" aria-pressed="false">EN</button>
+				</div>
 				<button
 					type="button"
 					class="nav-toggle"
 					id="header-menu-toggle"
 					aria-expanded="false"
 					aria-controls="site-header-nav"
+					data-i18n-aria="nav.openMenu"
 					aria-label="Отвори меню"
 				>
 					<span></span><span></span><span></span>
 				</button>
 				<div class="header-actions">
-					<a class="btn btn-ghost" href="#cta">Вход</a>
-					<a class="btn btn-ghost" href="#cta">Регистрация</a>
-					<a class="btn btn-publish" href="#cta">Публикувай</a>
+					<a class="btn btn-ghost" href="#cta" data-i18n="nav.login">Вход</a>
+					<a class="btn btn-ghost" href="#cta" data-i18n="nav.register">Регистрация</a>
+					<a class="btn btn-publish" href="#cta" data-i18n="nav.publish">Публикувай</a>
 				</div>
 			</div>
-			<nav class="header-nav" id="site-header-nav" aria-label="Пазарни секции">
-				<a href="#categories">Категории</a>
-				<a href="#listings">Пазар</a>
-				<a href="#exchange">Борса</a>
-				<a href="#logistics">Логистика</a>
-				<a href="#farmers">Производители</a>
-				<a href="/catalog.html">Демо каталог</a>
+			<nav class="header-nav" id="site-header-nav" data-i18n-aria="nav.sections" aria-label="Пазарни секции">
+				<a href="#categories" data-i18n="nav.categories">Категории</a>
+				<a href="#listings" data-i18n="nav.market">Пазар</a>
+				<a href="#exchange" data-i18n="nav.exchange">Борса</a>
+				<a href="#logistics" data-i18n="nav.logistics">Логистика</a>
+				<a href="#farmers" data-i18n="nav.farmers">Производители</a>
+				<a href="/catalog.html" data-i18n="nav.demoCatalog">Каталог</a>
 			</nav>
 		</div>
 	</header>
@@ -66,17 +74,17 @@
 			<div class="hero-eco-bg" aria-hidden="true"></div>
 			<div class="hero-eco-inner">
 				<div class="hero-eco-content reveal">
-					<span class="hero-eco-badge"><span class="live-dot" aria-hidden="true"></span> Дигитална агро екосистема · България</span>
-					<h1>Свързваме фермерите директно с пазара.</h1>
+					<span class="hero-eco-badge"><span class="live-dot" aria-hidden="true"></span> <span data-i18n="hero.badge">Дигитална агро екосистема · България</span></span>
+					<h1 data-i18n="hero.title">Свързваме фермерите директно с пазара.</h1>
 					<div class="hero-eco-cta">
-						<a class="btn btn-primary" href="/catalog.html">Купи продукция</a>
-						<a class="btn btn-secondary" href="#cta">Продай продукция</a>
-						<button type="button" class="btn btn-secondary" id="hero-ai-chat-btn">AI асистент</button>
+						<a class="btn btn-primary" href="/catalog.html" data-i18n="hero.buy">Купи продукция</a>
+						<a class="btn btn-secondary" href="#cta" data-i18n="hero.sell">Продай продукция</a>
+						<button type="button" class="btn btn-secondary" id="hero-ai-chat-btn" data-i18n="hero.ai">AI асистент</button>
 					</div>
 					<div class="hero-eco-stats">
-						<div><strong>8+</strong><span>демо оферти</span></div>
-						<div><strong>B2B</strong><span>партиди от полето</span></div>
-						<div><strong>0%</strong><span>комисиона · фаза 1</span></div>
+						<div><strong>11+</strong><span data-i18n="hero.stat1">живи обяви</span></div>
+						<div><strong>B2B</strong><span data-i18n="hero.stat2">партиди от полето</span></div>
+						<div><strong>0%</strong><span data-i18n="hero.stat3">комисиона · фаза 1</span></div>
 					</div>
 				</div>
 				<div class="hero-eco-gallery reveal" id="hero-gallery" aria-hidden="true"></div>
@@ -86,19 +94,19 @@
 		<section class="eco-section" id="categories">
 			<div class="container">
 				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow">Категории</p>
-					<h2>Цялото стопанство на една платформа</h2>
-					<p>От зеленчуци до машини — намери или публикувай в правилната категория.</p>
+					<p class="eco-eyebrow" data-i18n="cat.eyebrow">Категории</p>
+					<h2 data-i18n="cat.title">Цялото стопанство на една платформа</h2>
+					<p data-i18n="cat.lead">От зеленчуци до машини — намери или публикувай в правилната категория.</p>
 				</div>
 				<div class="cat-grid reveal">
-					<a class="cat-card" data-cat="veg" href="/catalog.html?category=veg"><span class="icon">🍅</span><strong>Зеленчуци</strong><span>домати, пипер…</span></a>
-					<a class="cat-card" data-cat="fruit" href="/catalog.html?category=fruit"><span class="icon">🍎</span><strong>Плодове</strong><span>ябълки, круши…</span></a>
-					<a class="cat-card" data-cat="grain" href="/catalog.html?category=grain"><span class="icon">🌾</span><strong>Зърно</strong><span>пшеница, царевица…</span></a>
-					<a class="cat-card" data-cat="oil" href="/catalog.html"><span class="icon">🛢️</span><strong>Олио</strong><span>бутилки, слънчоглед…</span></a>
-					<a class="cat-card" data-cat="canned" href="/catalog.html"><span class="icon">🥫</span><strong>Консерви</strong><span>преработка</span></a>
-					<a class="cat-card" data-cat="fertilizer" href="/catalog.html"><span class="icon">🧪</span><strong>Торове</strong><span>агро входове</span></a>
-					<a class="cat-card" data-cat="machines" href="/catalog.html"><span class="icon">🚜</span><strong>Машини</strong><span>техника</span></a>
-					<a class="cat-card" data-cat="feed" href="/catalog.html?category=feed"><span class="icon">🌿</span><strong>Фураж</strong><span>сено, фуражи</span></a>
+					<a class="cat-card" data-cat="veg" href="/catalog.html?category=veg"><span class="icon">🍅</span><strong data-i18n="cat.veg">Зеленчуци</strong><span data-i18n="cat.vegHint">домати, пипер…</span></a>
+					<a class="cat-card" data-cat="fruit" href="/catalog.html?category=fruit"><span class="icon">🍎</span><strong data-i18n="cat.fruit">Плодове</strong><span data-i18n="cat.fruitHint">ябълки, круши…</span></a>
+					<a class="cat-card" data-cat="grain" href="/catalog.html?category=grain"><span class="icon">🌾</span><strong data-i18n="cat.grain">Зърно</strong><span data-i18n="cat.grainHint">пшеница, царевица…</span></a>
+					<a class="cat-card" data-cat="oil" href="/catalog.html"><span class="icon">🛢️</span><strong data-i18n="cat.oil">Олио</strong><span data-i18n="cat.oilHint">бутилки, слънчоглед…</span></a>
+					<a class="cat-card" data-cat="canned" href="/catalog.html"><span class="icon">🥫</span><strong data-i18n="cat.canned">Консерви</strong><span data-i18n="cat.cannedHint">преработка</span></a>
+					<a class="cat-card" data-cat="fertilizer" href="/catalog.html"><span class="icon">🧪</span><strong data-i18n="cat.fertilizer">Торове</strong><span data-i18n="cat.fertilizerHint">агро входове</span></a>
+					<a class="cat-card" data-cat="machines" href="/catalog.html"><span class="icon">🚜</span><strong data-i18n="cat.machines">Машини</strong><span data-i18n="cat.machinesHint">техника</span></a>
+					<a class="cat-card" data-cat="feed" href="/catalog.html?category=feed"><span class="icon">🌿</span><strong data-i18n="cat.feed">Фураж</strong><span data-i18n="cat.feedHint">сено, фуражи</span></a>
 				</div>
 			</div>
 		</section>
@@ -106,21 +114,21 @@
 		<section class="eco-section eco-section--alt" id="listings">
 			<div class="container">
 				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow">Marketplace</p>
-					<h2>Активни обяви</h2>
-					<p>Карти като в модерен B2B пазар — количество, регион, цена и директен контакт.</p>
+					<p class="eco-eyebrow" data-i18n="listings.eyebrow">Marketplace</p>
+					<h2 data-i18n="listings.title">Активни обяви</h2>
+					<p data-i18n="listings.lead">Карти като в модерен B2B пазар — количество, регион, цена и директен контакт.</p>
 				</div>
 				<div class="product-grid reveal" id="home-listings"></div>
-				<p class="demo-strip reveal">Демо обяви · пълният каталог с жълти страници е в <a href="/catalog.html">каталога</a></p>
+				<p class="demo-strip reveal" data-i18n="listings.demoStrip">Демо обяви · пълният каталог с жълти страници е в <a href="/catalog.html">каталога</a></p>
 			</div>
 		</section>
 
 		<section class="eco-section" id="top-producers">
 			<div class="container">
 				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow">Производители</p>
-					<h2>Топ фермери на платформата</h2>
-					<p>Профили с рейтинг и реални стопанства — доверие преди сделката.</p>
+					<p class="eco-eyebrow" data-i18n="farmers.eyebrow">Производители</p>
+					<h2 data-i18n="farmers.title">Топ фермери на платформата</h2>
+					<p data-i18n="farmers.lead">Профили с рейтинг и реални стопанства — доверие преди сделката.</p>
 				</div>
 				<div class="farmers-row reveal" id="top-farmers"></div>
 			</div>
@@ -129,22 +137,22 @@
 		<section class="eco-section" id="exchange">
 			<div class="container">
 				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow">Борса</p>
-					<h2>Борсови цени на живо</h2>
-					<p>Индикативни MATIF цени (borsaagro.com) в лв/тон — ориентир, не оферта за сделка.</p>
+					<p class="eco-eyebrow" data-i18n="exchange.eyebrow">Борса</p>
+					<h2 data-i18n="exchange.title">Борсови цени на живо</h2>
+					<p data-i18n="exchange.lead">Индикативни MATIF цени (borsaagro.com) в лв/тон — ориентир, не оферта за сделка.</p>
 				</div>
 				<div class="exchange-panel reveal">
 					<div class="exchange-live-bar">
-						<strong><span class="live-dot" aria-hidden="true"></span> LIVE · борса</strong>
-						<span id="exchange-updated">обновено сега</span>
+						<strong data-i18n="exchange.live"><span class="live-dot" aria-hidden="true"></span> LIVE · борса</strong>
+						<span id="exchange-updated" data-i18n="exchange.updatedNow">обновено сега</span>
 					</div>
 					<div class="exchange-table-wrap">
 						<table class="exchange-table" id="exchange-table">
 							<thead>
 								<tr>
-									<th>Продукт</th>
-									<th>Цена днес</th>
-									<th>Промяна</th>
+									<th data-i18n="exchange.colProduct">Продукт</th>
+									<th data-i18n="exchange.colPrice">Цена днес</th>
+									<th data-i18n="exchange.colChange">Промяна</th>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -157,35 +165,35 @@
 		<section class="eco-section eco-section--alt" id="logistics">
 			<div class="container">
 				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow">Логистика</p>
-					<h2>От полето до склад или покупател</h2>
-					<p>Камиони, складове, хладилни бази и проследяване — интегрирани в екосистемата.</p>
+					<p class="eco-eyebrow" data-i18n="logistics.eyebrow">Логистика</p>
+					<h2 data-i18n="logistics.title">От полето до склад или покупател</h2>
+					<p data-i18n="logistics.lead">Камиони, складове, хладилни бази и проследяване — интегрирани в екосистемата.</p>
 				</div>
 				<div class="logistics-grid reveal">
 					<div class="log-card log-card-photo" data-log="transport">
 						<div class="log-card-img" aria-hidden="true"></div>
 						<div class="log-card-body">
-							<h3>Транспорт</h3>
-							<p>Намери камион до София, Варна или експортен пункт. Договаряне директно с превозвач.</p>
+							<h3 data-i18n="logistics.transport">Транспорт</h3>
+							<p data-i18n="logistics.transportDesc">Намери камион до София, Варна или експортен пункт. Договаряне директно с превозвач.</p>
 						</div>
 					</div>
 					<div class="log-card log-card-photo" data-log="warehouse">
 						<div class="log-card-img" aria-hidden="true"></div>
 						<div class="log-card-body">
-							<h3>Складове</h3>
-							<p>Силози, хладилни бази и логистични хъбове — видимост за наличности и капацитет.</p>
+							<h3 data-i18n="logistics.warehouse">Складове</h3>
+							<p data-i18n="logistics.warehouseDesc">Силози, хладилни бази и логистични хъбове — видимост за наличности и капацитет.</p>
 						</div>
 					</div>
 					<div class="log-card log-card-photo" data-log="tracking">
 						<div class="log-card-img" aria-hidden="true"></div>
 						<div class="log-card-body">
-							<h3>Проследяване</h3>
-							<p>Статус на партида от натоварване до предаване — по-малко изненади в сделката.</p>
+							<h3 data-i18n="logistics.tracking">Проследяване</h3>
+							<p data-i18n="logistics.trackingDesc">Статус на партида от натоварване до предаване — по-малко изненади в сделката.</p>
 						</div>
 					</div>
 				</div>
 				<p style="margin-top:20px;text-align:center">
-					<a class="btn btn-primary" href="#cta">Намери транспорт (ранен достъп)</a>
+					<a class="btn btn-primary" href="#cta" data-i18n="logistics.cta">Намери транспорт (ранен достъп)</a>
 				</p>
 			</div>
 		</section>
@@ -194,21 +202,21 @@
 			<div class="container">
 				<div class="farmer-spotlight reveal">
 					<div class="farmer-avatar">
-						<img id="farmer-avatar-img" src="" alt="Производител" width="140" height="140" loading="lazy" />
+						<img id="farmer-avatar-img" src="" data-i18n-aria="listing.farmerAlt" alt="Производител" width="140" height="140" loading="lazy" />
 					</div>
 					<div>
-						<p class="eco-eyebrow" style="color:rgba(255,255,255,0.7)">Производители</p>
-						<h2>Профил на фермер с доверие</h2>
-						<p>Снимки, сертификати, история, рейтинг и видео от стопанството — купувачът вижда с кого работи.</p>
+						<p class="eco-eyebrow" style="color:rgba(255,255,255,0.7)" data-i18n="spotlight.eyebrow">Производители</p>
+						<h2 data-i18n="spotlight.title">Профил на фермер с доверие</h2>
+						<p data-i18n="spotlight.lead">Снимки, сертификати, история, рейтинг и видео от стопанството — купувачът вижда с кого работи.</p>
 						<div class="farmer-tags">
-							<span>✓ Сертификати</span>
-							<span>📷 Галерия</span>
-							<span>⭐ Рейтинг</span>
-							<span>🎥 Видео</span>
+							<span data-i18n="spotlight.cert">✓ Сертификати</span>
+							<span data-i18n="spotlight.gallery">📷 Галерия</span>
+							<span data-i18n="spotlight.rating">⭐ Рейтинг</span>
+							<span data-i18n="spotlight.video">🎥 Видео</span>
 						</div>
 						<p style="margin-top:20px">
-							<a class="btn btn-secondary" href="#cta" style="margin-right:8px">Създай профил</a>
-							<a class="btn btn-primary" href="/catalog.html">Виж демо оферти</a>
+							<a class="btn btn-secondary" href="#cta" style="margin-right:8px" data-i18n="spotlight.profile">Създай профил</a>
+							<a class="btn btn-primary" href="/catalog.html" data-i18n="spotlight.offers">Виж демо оферти</a>
 						</p>
 					</div>
 				</div>
@@ -218,66 +226,66 @@
 		<section class="eco-section eco-section--alt" id="ai">
 			<div class="container">
 				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow">AI</p>
-					<h2>Fieldlot Guide — твоят агро асистент</h2>
-					<p>RAG асистент с достъп до каталога и правилата на платформата.</p>
+					<p class="eco-eyebrow" data-i18n="ai.eyebrow">AI</p>
+					<h2 data-i18n="ai.title">Fieldlot Guide — твоят агро асистент</h2>
+					<p data-i18n="ai.lead">RAG асистент с достъп до каталога и правилата на платформата.</p>
 				</div>
 				<div class="ai-grid reveal">
 					<div class="ai-card">
-						<h3>Пазарни цени</h3>
-						<p>Бърз отговор за текущи нива и какво се търгува в момента.</p>
-						<p class="example">„Колко струва в момента слънчогледът?“</p>
+						<h3 data-i18n="ai.prices">Пазарни цени</h3>
+						<p data-i18n="ai.pricesDesc">Бърз отговор за текущи нива и какво се търгува в момента.</p>
+						<p class="example" data-i18n="ai.pricesEx">„Колко струва в момента слънчогледът?“</p>
 					</div>
 					<div class="ai-card">
-						<h3>Анализ и тайминг</h3>
-						<p>Кога да продаваш, прогнозни цени и сезонен контекст (информативно).</p>
-						<p class="example">„Има ли търсене за пшеница в Добруджа?“</p>
+						<h3 data-i18n="ai.timing">Анализ и тайминг</h3>
+						<p data-i18n="ai.timingDesc">Кога да продаваш, прогнозни цени и сезонен контекст (информативно).</p>
+						<p class="example" data-i18n="ai.timingEx">„Има ли търсене за пшеница в Добруджа?“</p>
 					</div>
 					<div class="ai-card">
-						<h3>Навигация</h3>
-						<p>Помощ с обява, филтри, логистика и ранен достъп.</p>
-						<p class="example">„Как да публикувам партида домати?“</p>
+						<h3 data-i18n="ai.nav">Навигация</h3>
+						<p data-i18n="ai.navDesc">Помощ с обява, филтри, логистика и ранен достъп.</p>
+						<p class="example" data-i18n="ai.navEx">„Как да публикувам партида домати?“</p>
 					</div>
 				</div>
 				<p style="margin-top:24px;text-align:center">
-					<button type="button" class="btn btn-primary" id="open-ai-bottom">Отвори AI чата</button>
+					<button type="button" class="btn btn-primary" id="open-ai-bottom" data-i18n="ai.open">Отвори AI чата</button>
 				</p>
 			</div>
 		</section>
 
 		<section class="container footer-cta reveal" id="cta">
 			<div>
-				<p class="section-title">Ранен достъп</p>
-				<h2>Влез в първата вълна на платформата</h2>
-				<p class="section-lead">Фермери, купувачи и логистика — изграждаме дигиталната агро екосистема за България и региона.</p>
+				<p class="section-title" data-i18n="cta.eyebrow">Ранен достъп</p>
+				<h2 data-i18n="cta.title">Влез в първата вълна на платформата</h2>
+				<p class="section-lead" data-i18n="cta.lead">Фермери, купувачи и логистика — изграждаме дигиталната агро екосистема за България и региона.</p>
 			</div>
 			<form id="lead-form" class="lead-form" autocomplete="on">
 				<div class="form-grid">
-					<label>Име и фамилия *<input id="fullName" name="fullName" type="text" required minlength="2" maxlength="120" /></label>
-					<label>Имейл *<input id="businessEmail" name="businessEmail" type="email" required maxlength="200" /></label>
-					<label>Фирма / стопанство<input id="companyName" name="companyName" type="text" maxlength="200" /></label>
-					<label>Телефон<input id="phone" name="phone" type="tel" maxlength="20" placeholder="+359…" /></label>
-					<label class="full">Роля / интерес<textarea id="marketFocus" name="marketFocus" maxlength="800" placeholder="Производител, купувач, логистика…"></textarea></label>
+					<label><span data-i18n="form.name">Име и фамилия *</span><input id="fullName" name="fullName" type="text" required minlength="2" maxlength="120" /></label>
+					<label><span data-i18n="form.email">Имейл *</span><input id="businessEmail" name="businessEmail" type="email" required maxlength="200" /></label>
+					<label><span data-i18n="form.company">Фирма / стопанство</span><input id="companyName" name="companyName" type="text" maxlength="200" /></label>
+					<label><span data-i18n="form.phone">Телефон</span><input id="phone" name="phone" type="tel" maxlength="20" data-i18n-placeholder="form.phonePh" placeholder="+359…" /></label>
+					<label class="full"><span data-i18n="form.role">Роля / интерес</span><textarea id="marketFocus" name="marketFocus" maxlength="800" data-i18n-placeholder="form.rolePh" placeholder="Производител, купувач, логистика…"></textarea></label>
 				</div>
 				<label class="check">
 					<input id="subscribeAlerts" name="subscribeAlerts" type="checkbox" />
-					<span>Искам известия за старта на платформата</span>
+					<span data-i18n="form.alerts">Искам известия за старта на платформата</span>
 				</label>
 				<input class="hp" type="text" id="hpCompanyWebsite" name="hpCompanyWebsite" tabindex="-1" autocomplete="off" />
 				<div class="form-actions">
-					<button type="submit" class="btn btn-primary" id="lead-submit" disabled>Изпрати заявка</button>
+					<button type="submit" class="btn btn-primary" id="lead-submit" disabled data-i18n="form.submit">Изпрати заявка</button>
 					<a class="btn btn-secondary" href="mailto:info@agrinexus.eu">info@agrinexus.eu</a>
 				</div>
 				<p id="lead-status" class="form-status" role="status" aria-live="polite"></p>
-				<p class="fine-print">Демо фаза · без комисиона · без escrow. Не е правен или финансов съвет.</p>
+				<p class="fine-print" data-i18n="form.fine">Демо фаза · без комисиона · без escrow. Не е правен или финансов съвет.</p>
 			</form>
 		</section>
 	</main>
 
 	<footer class="site-footer">
 		<div class="container">
-			<p>© Fieldlot · Дигитална агро екосистема · България</p>
-			<p>Контакт: <a href="mailto:info@agrinexus.eu">info@agrinexus.eu</a> · <a href="/catalog.html">Каталог</a></p>
+			<p data-i18n="footer.line1">© Fieldlot · Дигитална агро екосистема · България</p>
+			<p><span data-i18n="footer.line2">Контакт:</span> <a href="mailto:info@agrinexus.eu" data-i18n-skip-href>info@agrinexus.eu</a> · <a href="/catalog.html" data-i18n="footer.catalog">Каталог</a></p>
 		</div>
 	</footer>
 
@@ -285,16 +293,18 @@
 	<div class="llm-panel" id="llm-panel" role="dialog" aria-label="Fieldlot Guide" aria-modal="false">
 		<div class="llm-head">
 			<div><strong>Fieldlot Guide</strong><span class="llm-status" id="llm-status">…</span></div>
-			<button type="button" class="llm-close" id="llm-close" aria-label="Затвори">×</button>
+			<button type="button" class="llm-close" id="llm-close" data-i18n-aria="nav.close" aria-label="Затвори">×</button>
 		</div>
 		<div class="llm-msgs" id="llm-msgs" aria-live="polite"></div>
-		<p class="llm-hint">RAG · вижда демо каталога и секциите на сайта</p>
+		<p class="llm-hint" data-i18n="chat.hint">RAG · вижда демо каталога и секциите на сайта</p>
 		<div class="llm-foot">
-			<textarea id="llm-input" rows="2" maxlength="2000" placeholder="Напр. Каква е цената на пшеницата?"></textarea>
-			<button type="button" class="llm-send" id="llm-send" aria-label="Изпрати">→</button>
+			<textarea id="llm-input" rows="2" maxlength="2000" data-i18n-placeholder="chat.placeholder" placeholder="Напр. Каква е цената на пшеницата?"></textarea>
+			<button type="button" class="llm-send" id="llm-send" data-i18n-aria="chat.send" aria-label="Изпрати">→</button>
 		</div>
 	</div>
 
+	<script src="/scripts/fieldlot-i18n-messages.js"></script>
+	<script src="/scripts/fieldlot-i18n.js"></script>
 	<script src="/scripts/fieldlot-api-status.js"></script>
 	<script src="/scripts/fieldlot-images.js"></script>
 	<script src="/scripts/ecosystem-home.js"></script>

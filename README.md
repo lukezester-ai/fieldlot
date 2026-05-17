@@ -54,6 +54,17 @@ Backend API-тата (**`/api/register-interest`**, **`/api/fieldlot-chat`**) **
 | `RESEND_API_KEY` + `RESEND_FROM` | Изпращане на имейл |
 | `FIELDLOT_STORE_LEADS=1` | Локален лог в `.local/fieldlot-leads.jsonl` |
 | `MISTRAL_API_KEY` / `OPENAI_API_KEY` / `OLLAMA_*` | AI чат |
+| `MISTRAL_EMBED_MODEL` | Семантичен RAG (`mistral-embed`) |
+| `FIELDLOT_ADMIN_SECRET` | Токен за `/admin` панела |
+| `CRON_SECRET` | Vercel cron за sync на обяви |
+
+## Обяви, снимки, RAG и държавни сайтове
+
+- **Sync:** `npm run sync:listings` — тегли обяви (borsaagro + конфигурирани източници), обновява `data/live-listings.json`, manifest за снимки и `data/fieldlot-rag-index.json`.
+- **Снимки:** `npm run sync:images` — сваля/обновява изображения от manifest.
+- **Източници:** `data/listing-sources.json` — **продава и купува** от **borsaagro.com**, **agro.bg**, **agri.bg**. Само продажби: `FIELDLOT_SALES_ONLY=1`.
+- **Admin:** http://localhost:5174/admin.html (или `/admin` на Vercel) — sync, knowledge, източници. Header: `Authorization: Bearer <FIELDLOT_ADMIN_SECRET>`.
+- **Чат:** Fieldlot Guide ползва keyword + семантичен RAG; в UI се показват **Doc Discovery** хитове при `MISTRAL_API_KEY`.
 
 ## Тестове
 

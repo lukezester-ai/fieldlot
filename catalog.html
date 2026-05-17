@@ -1,17 +1,19 @@
 <!doctype html>
-<html lang="bg">
+<html lang="bg" data-i18n-title-key="catalog.meta.title">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Каталог — Fieldlot</title>
-	<meta name="description" content="Демо каталог с агро оферти в България — Fieldlot B2B пазар." />
+	<meta name="description" data-i18n="catalog.meta.description" content="Каталог с агро обяви от borsaagro.com в България — Fieldlot B2B пазар." />
+	<script>
+		(function(){try{var p=new URLSearchParams(location.search).get('lang');var s=localStorage.getItem('fieldlot-lang');var l=p||s;if(l==='en'||l==='bg')document.documentElement.lang=l;}catch(e){}})();
+	</script>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
 	<link rel="stylesheet" href="/styles/fieldlot-theme.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-ui.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-catalog.css" />
-	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
 	<meta name="theme-color" content="#1a4d3a" />
 	<style>
 
@@ -51,8 +53,8 @@
 
 		.brand { display: inline-flex; align-items: center; gap: 12px; }
 		.brand-mark {
-			width: 42px;
-			height: 42px;
+			width: 46px;
+			height: 46px;
 			border-radius: 9px;
 			display: grid;
 			place-items: center;
@@ -60,12 +62,12 @@
 			color: var(--fl-navy-ink);
 			border: 1px solid var(--fl-line);
 		}
-		.brand-title { display: block; font-weight: 700; letter-spacing: 0.14em; font-size: 14px; }
+		.brand-title { display: block; font-weight: 700; letter-spacing: 0.14em; }
 		.brand-sub {
 			display: block;
 			margin-top: 2px;
 			color: var(--fl-muted);
-			font-size: 11px;
+			font-size: 12px;
 			font-weight: 500;
 			letter-spacing: 0.06em;
 			text-transform: uppercase;
@@ -540,8 +542,14 @@
 			padding: 16px 20px 24px;
 			border-top: 2px solid rgba(26, 26, 26, 0.12);
 			background: rgba(255, 255, 255, 0.4);
-			display: grid;
+			display: flex;
+			flex-wrap: wrap;
 			gap: 10px;
+		}
+
+		.detail-foot .btn {
+			flex: 1 1 auto;
+			min-width: 120px;
 		}
 
 		.site-footer {
@@ -568,10 +576,11 @@
 			.catalog-grid { grid-template-columns: 1fr; }
 		}
 	</style>
+	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
 </head>
 <body>
 	<header class="site-header">
-		<nav class="nav" aria-label="Основна навигация">
+		<nav class="nav" data-i18n-aria="catalog.nav" aria-label="Основна навигация">
 			<a class="brand" href="/">
 				<span class="brand-mark" aria-hidden="true">
 					<svg width="23" height="23" viewBox="0 0 24 24" fill="none">
@@ -583,21 +592,26 @@
 					<span class="brand-sub">Agro market access</span>
 				</span>
 			</a>
+			<div class="lang-switch" role="group" data-i18n-aria="lang.label" aria-label="Език">
+				<button type="button" data-lang="bg" aria-pressed="true">BG</button>
+				<button type="button" data-lang="en" aria-pressed="false">EN</button>
+			</div>
 			<button
 				type="button"
 				class="nav-toggle"
 				id="catalog-menu-toggle"
 				aria-expanded="false"
+				data-i18n-aria="nav.openMenu"
 				aria-label="Отвори меню"
 			>
 				<span></span><span></span><span></span>
 			</button>
 			<div class="nav-links">
-				<a href="/">Начало</a>
-				<a href="/catalog.html" aria-current="page">Каталог</a>
-				<a href="/#cta">Ранен достъп</a>
+				<a href="/" data-i18n="nav.home">Начало</a>
+				<a href="/catalog.html" aria-current="page" data-i18n="nav.catalog">Каталог</a>
+				<a href="/#cta" data-i18n="nav.earlyAccess">Ранен достъп</a>
 			</div>
-			<a class="nav-cta" href="/#cta">Включи се</a>
+			<a class="nav-cta" href="/#cta" data-i18n="nav.join">Включи се</a>
 		</nav>
 	</header>
 
@@ -606,56 +620,56 @@
 			<div class="catalog-hero-bg" aria-hidden="true"></div>
 			<div class="catalog-hero-panel">
 				<div class="demo-banner" role="status">
-					<span><strong>Жълти страници · демо</strong> — обявите са в жълт стил като класическия каталог. Реалните оферти идват след старт на платформата.</span>
-					<a class="btn btn-secondary" href="/#cta">Искам достъп</a>
+					<span data-i18n="catalog.banner"><strong>Жив каталог</strong> — обяви от borsaagro.com, сортирани по дата. Снимките са по култура; оригиналът е на източника.</span>
+					<a class="btn btn-secondary" href="/#cta" data-i18n="catalog.access">Искам достъп</a>
 				</div>
-				<h1>Каталог на оферти</h1>
-				<p>
-					Прегледай демо партиди по култура, регион и тип (продажба или търсене). Филтрирай и отвори детайли — в пълната версия тук ще изпращаш директно запитване.
+				<h1 data-i18n="catalog.title">Каталог на оферти</h1>
+				<p data-i18n="catalog.lead">
+					Прегледай реални обяви по култура, регион и тип (продажба или търсене). Филтрирай, отвори детайли и виж линк към оригинала.
 				</p>
 			</div>
 		</section>
 
-		<form class="toolbar" id="filters" role="search" aria-label="Филтри на каталога">
+		<form class="toolbar" id="filters" role="search" data-i18n-aria="catalog.filterSearch" aria-label="Филтри на каталога">
 			<label>
-				Търсене
-				<input type="search" id="q" placeholder="пшеница, Добруджа, слънчоглед…" autocomplete="off" />
+				<span data-i18n="catalog.filterSearch">Търсене</span>
+				<input type="search" id="q" data-i18n-placeholder="catalog.searchPh" placeholder="пшеница, Добруджа, слънчоглед…" autocomplete="off" />
 			</label>
 			<label>
-				Категория
+				<span data-i18n="catalog.filterCat">Категория</span>
 				<select id="category">
-					<option value="">Всички</option>
-					<option value="grain">Зърно</option>
-					<option value="oilseed">Маслодайни</option>
-					<option value="feed">Фураж</option>
-					<option value="fruit">Плодове</option>
-					<option value="veg">Зеленчуци</option>
+					<option value="" data-i18n="catalog.all">Всички</option>
+					<option value="grain" data-i18n="catalog.cat.grain">Зърно</option>
+					<option value="oilseed" data-i18n="catalog.cat.oilseed">Маслодайни</option>
+					<option value="feed" data-i18n="catalog.cat.feed">Фураж</option>
+					<option value="fruit" data-i18n="catalog.cat.fruit">Плодове</option>
+					<option value="veg" data-i18n="catalog.cat.veg">Зеленчуци</option>
 				</select>
 			</label>
 			<label>
-				Регион
+				<span data-i18n="catalog.filterRegion">Регион</span>
 				<select id="region">
-					<option value="">Всички</option>
-					<option value="dobrudzha">Добруджа</option>
-					<option value="north">Север</option>
-					<option value="south">Юг</option>
-					<option value="west">Запад</option>
+					<option value="" data-i18n="catalog.all">Всички</option>
+					<option value="dobrudzha" data-i18n="catalog.region.dobrudzha">Добруджа</option>
+					<option value="north" data-i18n="catalog.region.north">Север</option>
+					<option value="south" data-i18n="catalog.region.south">Юг</option>
+					<option value="west" data-i18n="catalog.region.west">Запад</option>
 				</select>
 			</label>
 			<label>
-				Тип
+				<span data-i18n="catalog.filterRole">Тип</span>
 				<select id="role">
-					<option value="">Всички</option>
-					<option value="sell">Продажба</option>
-					<option value="buy">Търсене / купувач</option>
+					<option value="" data-i18n="catalog.all">Всички</option>
+					<option value="sell" data-i18n="catalog.role.sell">Продажба</option>
+					<option value="buy" data-i18n="catalog.role.buy">Търсене / купувач</option>
 				</select>
 			</label>
-			<button type="button" class="btn btn-secondary" id="reset-filters">Изчисти</button>
+			<button type="button" class="btn btn-secondary" id="reset-filters" data-i18n="catalog.reset">Изчисти</button>
 		</form>
 
 		<div class="results-meta">
-			<span id="results-count"><strong>0</strong> оферти</span>
-			<span>Сортиране: най-нови (демо)</span>
+			<span id="results-count"><strong>0</strong> <span data-i18n="catalog.offers">оферти</span></span>
+			<span data-i18n="catalog.sort">Сортиране: най-нови</span>
 		</div>
 
 		<div class="catalog-grid" id="catalog-grid" aria-live="polite"></div>
@@ -665,307 +679,32 @@
 	<aside class="detail-panel" id="detail-panel" aria-label="Детайли на оферта" aria-hidden="true">
 		<div class="detail-head">
 			<div>
-				<p class="board-eyebrow">Оферта</p>
+				<p class="board-eyebrow" data-i18n="catalog.detailOffer">Оферта</p>
 				<h2 id="detail-title">—</h2>
 			</div>
-			<button type="button" class="detail-close" id="detail-close" aria-label="Затвори">×</button>
+			<button type="button" class="detail-close" id="detail-close" data-i18n-aria="nav.close" aria-label="Затвори">×</button>
 		</div>
 		<div class="detail-body" id="detail-body"></div>
 		<div class="detail-foot">
-			<a class="btn btn-primary" id="detail-cta" href="/#cta">Запитване (ранен достъп)</a>
-			<button type="button" class="btn btn-secondary" id="detail-close-2">Затвори</button>
+			<a class="btn btn-primary" id="detail-cta" href="/#cta" data-i18n="catalog.detailCta">Запитване (ранен достъп)</a>
+			<button type="button" class="btn btn-secondary" id="detail-pdf" data-i18n="catalog.downloadPdf">Изтегли PDF</button>
+			<button type="button" class="btn btn-secondary" id="detail-close-2" data-i18n="nav.close">Затвори</button>
 		</div>
 	</aside>
 
 	<footer class="site-footer">
 		<div class="container">
-			<p>© Fieldlot · Демо каталог</p>
-			<p>Контакт: <a href="mailto:info@agrinexus.eu">info@agrinexus.eu</a> · <a href="/">Към началото</a></p>
+			<p data-i18n="catalog.footer">© Fieldlot · Каталог</p>
+			<p><span data-i18n="footer.line2">Контакт:</span> <a href="mailto:info@agrinexus.eu" data-i18n-skip-href>info@agrinexus.eu</a> · <a href="/" data-i18n="catalog.footerHome">Към началото</a></p>
 		</div>
 	</footer>
 
+	<script src="/scripts/fieldlot-i18n-messages.js"></script>
+	<script src="/scripts/fieldlot-i18n.js"></script>
 	<script src="/scripts/fieldlot-api-status.js"></script>
 	<script src="/scripts/fieldlot-images.js"></script>
-	<script>
-		const DEMO_LISTINGS = [
-			{
-				id: 'wheat-dobr',
-				title: 'Пшеница',
-				subtitle: 'Силистра · Добруджа',
-				category: 'grain',
-				region: 'dobrudzha',
-				role: 'sell',
-				qty: '85 т',
-				price: '420',
-				priceUnit: 'лв/т',
-				incoterm: 'FCA стопанство',
-				harvest: '2025',
-				quality: 'Хлебен индекс ~58, влага при предаване по договор',
-				contact: 'Производител · документи при запитване',
-				tags: ['Зърно', 'Продажба'],
-			},
-			{
-				id: 'sun-pl',
-				title: 'Слънчоглед',
-				subtitle: 'Плевен · Север',
-				category: 'oilseed',
-				region: 'north',
-				role: 'sell',
-				qty: '~120 т',
-				price: 'по дог.',
-				priceUnit: 'индикативно',
-				incoterm: 'EXW силоз',
-				harvest: '2025 · жътва юли',
-				quality: 'Масленост по проба; сорт по спецификация',
-				contact: 'Директно от стопанство',
-				tags: ['Маслодайни', 'Продажба'],
-			},
-			{
-				id: 'corn-buy',
-				title: 'Царевица — търсене',
-				subtitle: 'Шумен · Североизток',
-				category: 'grain',
-				region: 'north',
-				role: 'buy',
-				qty: '200+ т',
-				price: 'заявка',
-				priceUnit: 'купувач',
-				incoterm: 'Доставка до база',
-				harvest: 'Кампания 2025',
-				quality: 'Фуражна или ЕС стандарт — по оферта',
-				contact: 'Търговец · верифициран интерес',
-				tags: ['Зърно', 'Търсене'],
-			},
-			{
-				id: 'barley-sz',
-				title: 'Ечемик пивоварен',
-				subtitle: 'Стара Загора · Юг',
-				category: 'grain',
-				region: 'south',
-				role: 'sell',
-				qty: '45 т',
-				price: '395',
-				priceUnit: 'лв/т',
-				incoterm: 'FCA',
-				harvest: '2025',
-				quality: 'Протеин и енергия по договорена спецификация',
-				contact: 'Производител',
-				tags: ['Зърно', 'Продажба'],
-			},
-			{
-				id: 'apple-plov',
-				title: 'Ябълки идared',
-				subtitle: 'Пловдив · Юг',
-				category: 'fruit',
-				region: 'south',
-				role: 'sell',
-				qty: '18 т',
-				price: '1.85',
-				priceUnit: 'лв/кг',
-				incoterm: 'EXW градина',
-				harvest: 'Есен 2025',
-				quality: 'Калибър 70+, опаковане по договор',
-				contact: 'Овощевъд · снимки при запитване',
-				tags: ['Плодове', 'Продажба'],
-			},
-			{
-				id: 'pepper-buy',
-				title: 'Лют пипер — търсене',
-				subtitle: 'Пазарджик · Юг',
-				category: 'veg',
-				region: 'south',
-				role: 'buy',
-				qty: '8–12 т/седм.',
-				price: 'оферта',
-				priceUnit: 'купувач',
-				incoterm: 'Доставка до преработка',
-				harvest: 'Сезон 2025',
-				quality: 'Пресни, определен сорт',
-				contact: 'Преработвател',
-				tags: ['Зеленчуци', 'Търсене'],
-			},
-			{
-				id: 'rapeseed-vt',
-				title: 'Рапица',
-				subtitle: 'Монтана · Северозапад',
-				category: 'oilseed',
-				region: 'west',
-				role: 'sell',
-				qty: '62 т',
-				price: '510',
-				priceUnit: 'лв/т',
-				incoterm: 'FCA',
-				harvest: '2025',
-				quality: 'Масленост и примеси по стандарт на купувача',
-				contact: 'Производител · силоз на място',
-				tags: ['Маслодайни', 'Продажба'],
-			},
-			{
-				id: 'hay-vid',
-				title: 'Сено фуражно',
-				subtitle: 'Видин · Северозапад',
-				category: 'feed',
-				region: 'west',
-				role: 'sell',
-				qty: '200 бали',
-				price: '18',
-				priceUnit: 'лв/бала',
-				incoterm: 'EXW',
-				harvest: '2025',
-				quality: 'Сухо, складирано под навес',
-				contact: 'Стопанство · доставка по договаряне',
-				tags: ['Фураж', 'Продажба'],
-			},
-		];
-
-		const grid = document.getElementById('catalog-grid');
-		const countEl = document.getElementById('results-count');
-		const qEl = document.getElementById('q');
-		const catEl = document.getElementById('category');
-		const regEl = document.getElementById('region');
-		const roleEl = document.getElementById('role');
-		const backdrop = document.getElementById('detail-backdrop');
-		const panel = document.getElementById('detail-panel');
-		const detailTitle = document.getElementById('detail-title');
-		const detailBody = document.getElementById('detail-body');
-		const detailCta = document.getElementById('detail-cta');
-
-		function escapeHtml(s) {
-			return String(s)
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/"/g, '&quot;');
-		}
-
-		function filterListings() {
-			const q = qEl.value.trim().toLowerCase();
-			const cat = catEl.value;
-			const reg = regEl.value;
-			const role = roleEl.value;
-			return DEMO_LISTINGS.filter((item) => {
-				if (cat && item.category !== cat) return false;
-				if (reg && item.region !== reg) return false;
-				if (role && item.role !== role) return false;
-				if (!q) return true;
-				const hay = [item.title, item.subtitle, item.quality, item.contact, ...(item.tags || [])]
-					.join(' ')
-					.toLowerCase();
-				return hay.includes(q);
-			});
-		}
-
-		function renderCard(item) {
-			const roleClass = item.role === 'buy' ? 'buy' : 'sell';
-			const roleLabel = item.role === 'buy' ? 'Търсене' : 'Продажба';
-			const photoSrc = window.FieldlotImages ? FieldlotImages.forListing(item) : '';
-			const photoHtml = photoSrc
-				? `<div class="listing-photo"><img src="${photoSrc}" alt="${escapeHtml(item.title)}" loading="lazy" /></div>`
-				: '';
-			const article = document.createElement('article');
-			article.className = 'listing-card';
-			article.tabIndex = 0;
-			article.dataset.id = item.id;
-			article.innerHTML = `
-				${photoHtml}
-				<div class="listing-card-top">
-					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
-					${(item.tags || []).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
-				</div>
-				<div class="listing-card-body">
-					<h2>${escapeHtml(item.title)}</h2>
-					<p class="meta">${escapeHtml(item.subtitle)} · ${escapeHtml(item.qty)}</p>
-					<p class="meta">${escapeHtml(item.incoterm)}</p>
-				</div>
-				<div class="listing-card-foot">
-					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
-					<span class="tag demo">Демо</span>
-				</div>
-			`;
-			article.addEventListener('click', () => openDetail(item));
-			article.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					openDetail(item);
-				}
-			});
-			return article;
-		}
-
-		function render() {
-			const items = filterListings();
-			grid.innerHTML = '';
-			if (items.length === 0) {
-				grid.innerHTML =
-					'<div class="empty-state"><p>Няма оферти за избраните филтри.</p><p>Опитай друга комбинация или <a href="/#cta">заяви ранен достъп</a>.</p></div>';
-			} else {
-				items.forEach((item) => grid.appendChild(renderCard(item)));
-			}
-			countEl.innerHTML = `<strong>${items.length}</strong> оферт${items.length === 1 ? 'а' : 'и'}`;
-		}
-
-		function openDetail(item) {
-			detailTitle.textContent = item.title;
-			const photoSrc = window.FieldlotImages ? FieldlotImages.forListing(item) : '';
-			const heroPhoto = photoSrc
-				? `<div class="detail-photo"><img src="${photoSrc}" alt="${escapeHtml(item.title)}" /></div>`
-				: '';
-			detailBody.innerHTML = `
-				${heroPhoto}
-				<div class="detail-highlight">
-					<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
-					<p class="meta" style="margin:6px 0 0;font-size:13px;color:var(--yp-muted)">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
-				</div>
-				<dl class="detail-dl">
-					<div><dt>Локация</dt><dd>${escapeHtml(item.subtitle)}</dd></div>
-					<div><dt>Количество</dt><dd>${escapeHtml(item.qty)}</dd></div>
-					<div><dt>Цена</dt><dd>${escapeHtml(item.price)} ${escapeHtml(item.priceUnit)}</dd></div>
-					<div><dt>Условие</dt><dd>${escapeHtml(item.incoterm)}</dd></div>
-					<div><dt>Реколта / сезон</dt><dd>${escapeHtml(item.harvest)}</dd></div>
-					<div><dt>Качество</dt><dd>${escapeHtml(item.quality)}</dd></div>
-					<div><dt>Контакт</dt><dd>${escapeHtml(item.contact)}</dd></div>
-				</dl>
-				<p class="detail-note">Това е демо запис. В пълната версия ще изпратиш запитване директно към обявителя през Fieldlot.</p>
-			`;
-			detailCta.href = `/#cta?listing=${encodeURIComponent(item.id)}`;
-			backdrop.hidden = false;
-			panel.setAttribute('aria-hidden', 'false');
-			requestAnimationFrame(() => {
-				backdrop.classList.add('open');
-				panel.classList.add('open');
-			});
-			document.body.style.overflow = 'hidden';
-		}
-
-		function closeDetail() {
-			backdrop.classList.remove('open');
-			panel.classList.remove('open');
-			panel.setAttribute('aria-hidden', 'true');
-			document.body.style.overflow = '';
-			setTimeout(() => {
-				backdrop.hidden = true;
-			}, 280);
-		}
-
-		document.getElementById('detail-close').addEventListener('click', closeDetail);
-		document.getElementById('detail-close-2').addEventListener('click', closeDetail);
-		backdrop.addEventListener('click', closeDetail);
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape') closeDetail();
-		});
-
-		[qEl, catEl, regEl, roleEl].forEach((el) => el.addEventListener('input', render));
-		[qEl, catEl, regEl, roleEl].forEach((el) => el.addEventListener('change', render));
-		document.getElementById('reset-filters').addEventListener('click', () => {
-			qEl.value = '';
-			catEl.value = '';
-			regEl.value = '';
-			roleEl.value = '';
-			render();
-		});
-
-		render();
-	</script>
-	<script src="/scripts/fieldlot-mobile.js"></script>
+	<script src="/scripts/fieldlot-pdf.js" type="module"></script>
+	<script src="/scripts/catalog-page.js"></script>
+		<script src="/scripts/fieldlot-mobile.js"></script>
 </body>
 </html>

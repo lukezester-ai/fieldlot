@@ -2,6 +2,8 @@
  * Fieldlot Guide — клиент с RAG контекст (page, филтри, обява).
  */
 (function initFieldlotChat(global) {
+	const t = (k, fb) => (global.FieldlotI18n ? FieldlotI18n.t(k, fb) : fb || k);
+
 	function defaultPage() {
 		if (global.location.pathname.includes('catalog')) return 'catalog';
 		return 'landing';
@@ -23,9 +25,13 @@
 		const messages = [];
 		const page = opts.page || defaultPage();
 		let apiOnline = false;
+		let welcomeShown = false;
 
 		function buildContext() {
-			const base = { page };
+			const base = {
+				page,
+				lang: global.FieldlotI18n?.getLang?.() || 'bg',
+			};
 			if (typeof opts.getContext === 'function') {
 				try {
 					return { ...base, ...opts.getContext() };
@@ -57,7 +63,7 @@
 			panel.classList.add('llm-panel--offline');
 			input.disabled = true;
 			sendBtn.disabled = true;
-			input.placeholder = 'Чатът е offline в preview — пусни backend или Vercel.';
+			input.placeholder = t('chat.offlinePh');
 		}
 
 		function applyOnlineUi(data) {
@@ -66,14 +72,28 @@
 			panel.classList.remove('llm-panel--offline');
 			input.disabled = false;
 			sendBtn.disabled = false;
-			input.placeholder = 'Напр. Каква е цената на пшеницата?';
-			if (data?.ragEnabled) {
+			input.placeholder = t('chat.placeholder');
+			const en = global.FieldlotI18n?.getLang?.() === 'en';
+			if (data?.agentEnabled) {
+				statusEl.textContent = en ? 'Agent · actions on' : 'Агент · действия';
+			} else if (data?.ragEnabled) {
 				statusEl.textContent = data.llmConfigured
-					? `RAG · ${data.listingCount ?? 0} обяви`
-					: 'RAG · без LLM';
+					? `RAG · ${data.listingCount ?? 0} ${en ? 'listings' : 'обяви'}`
+					: en ? 'RAG · no LLM' : 'RAG · без LLM';
 			} else {
-				statusEl.textContent = data?.llmConfigured ? 'онлайн' : 'без LLM';
+				statusEl.textContent = data?.llmConfigured ? (en ? 'online' : 'онлайн') : en ? 'no LLM' : 'без LLM';
 			}
+		}
+
+		function formatActions(actions) {
+			if (!Array.isArray(actions) || !actions.length) return '';
+			const en = global.FieldlotI18n?.getLang?.() === 'en';
+			const head = en ? 'Actions taken:' : 'Изпълнени действия:';
+			const lines = actions.map((a) => {
+				const mark = a.ok ? '✓' : '✗';
+				return `${mark} ${a.summary || a.tool}`;
+			});
+			return `${head}\n${lines.join('\n')}`;
 		}
 
 		async function checkStatus() {
@@ -93,12 +113,15 @@
 			else applyOfflineUi();
 		});
 
+		document.addEventListener('fieldlot-lang-change', () => {
+			if (apiOnline) checkStatus();
+			else applyOfflineUi();
+			if (global.FieldlotI18n) global.FieldlotI18n.applyI18n(panel);
+		});
+
 		async function send() {
 			if (!apiOnline) {
-				addMsg(
-					'assistant',
-					'Чатът е offline в този преглед (Lovable/static). Каталогът на /catalog.html работи. За AI — пусни npm run dev или deploy на Vercel с API.',
-				);
+				addMsg('assistant', t('chat.offlineReply'));
 				return;
 			}
 			const text = input.value.trim();
@@ -107,7 +130,7 @@
 			messages.push({ role: 'user', content: text });
 			addMsg('user', text);
 			sendBtn.disabled = true;
-			addMsg('assistant', 'Мисля...');
+			addMsg('assistant', t('chat.thinking'));
 			const waiting = msgs.lastElementChild;
 			try {
 				const res = await fetch('/api/fieldlot-chat', {
@@ -119,15 +142,43 @@
 					}),
 				});
 				const data = await res.json().catch(() => ({}));
-				if (!res.ok || !data.reply) throw new Error(data.error || 'Няма отговор.');
-				messages.push({ role: 'assistant', content: data.reply });
-				waiting.textContent = data.reply;
+				if (!res.ok || !data.reply) throw new Error(data.error || t('chat.noReply'));
+				const actionBlock = formatActions(data.actions);
+				const fullReply = actionBlock ? `${data.reply}\n\n${actionBlock}` : data.reply;
+				messages.push({ role: 'assistant', content: fullReply });
+				waiting.replaceChildren();
+				waiting.appendChild(document.createTextNode(data.reply));
+				if (data.semanticHits?.length) {
+					const en = global.FieldlotI18n?.getLang?.() === 'en';
+					const box = document.createElement('div');
+					box.style.marginTop = '8px';
+					box.style.fontSize = '0.82rem';
+					box.style.color = '#9bb0a3';
+					box.textContent = en ? 'Doc Discovery:' : 'Doc Discovery:';
+					waiting.appendChild(box);
+					for (const h of data.semanticHits.slice(0, 5)) {
+						const a = document.createElement('a');
+						a.href = h.url || '#';
+						a.target = '_blank';
+						a.rel = 'noopener noreferrer';
+						a.style.display = 'block';
+						a.style.color = '#7ccd9c';
+						a.style.marginTop = '4px';
+						a.textContent = `${h.title} (${Math.round((h.similarity || 0) * 100)}%)`;
+						waiting.appendChild(a);
+					}
+				}
+				if (actionBlock) {
+					const ab = document.createElement('div');
+					ab.style.marginTop = '8px';
+					ab.style.fontSize = '0.85rem';
+					ab.textContent = actionBlock;
+					waiting.appendChild(ab);
+				}
 			} catch (err) {
-				const msg = err instanceof Error ? err.message : 'Чатът временно не отговаря.';
+				const msg = err instanceof Error ? err.message : t('chat.busy');
 				waiting.textContent =
-					msg === 'Failed to fetch' || msg.includes('NetworkError')
-						? 'Offline — /api/fieldlot-chat не е достъпен в preview.'
-						: msg;
+					msg === 'Failed to fetch' || msg.includes('NetworkError') ? t('chat.network') : msg;
 			} finally {
 				sendBtn.disabled = false;
 			}
@@ -148,11 +199,13 @@
 			if (el) el.addEventListener('click', () => setOpen(true));
 		}
 
-		addMsg(
-			'assistant',
-			opts.welcome ||
-				'Здравей. Аз съм Fieldlot Guide с RAG — виждам демо каталога и мога да те насоча из целия сайт. Питай за оферти, филтри или ранен достъп.',
-		);
+		function showWelcome() {
+			if (welcomeShown) return;
+			welcomeShown = true;
+			addMsg('assistant', opts.welcome || t('chat.welcome'));
+		}
+
+		showWelcome();
 		checkStatus();
 	}
 

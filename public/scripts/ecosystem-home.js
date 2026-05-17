@@ -3,6 +3,9 @@
  */
 (function initEcosystemHome() {
 	const IMG = window.FieldlotImages;
+	const t = (k, fb) => (window.FieldlotI18n ? FieldlotI18n.t(k, fb) : fb || k);
+	const loc = () => (window.FieldlotI18n ? FieldlotI18n.localeTag() : 'bg-BG');
+	const localize = (item) => (window.FieldlotI18n ? FieldlotI18n.localizeListing(item) : item);
 
 	const searchForm = document.getElementById('header-search');
 	if (searchForm) {
@@ -11,6 +14,7 @@
 			const q = new FormData(searchForm).get('q');
 			const params = new URLSearchParams();
 			if (q && String(q).trim()) params.set('q', String(q).trim());
+			if (window.FieldlotI18n?.getLang() === 'en') params.set('lang', 'en');
 			const url = '/catalog.html' + (params.toString() ? '?' + params.toString() : '');
 			window.location.href = url;
 		});
@@ -26,11 +30,14 @@
 		const gallery = document.getElementById('hero-gallery');
 		const g = IMG.heroGallery;
 		if (!gallery || !g?.tomatoes) return;
+		const altTom = FieldlotI18n?.getLang() === 'en' ? 'Tomatoes' : 'Домати';
+		const altPep = FieldlotI18n?.getLang() === 'en' ? 'Peppers' : 'Чушки сурови';
+		const altCuc = FieldlotI18n?.getLang() === 'en' ? 'Cucumbers' : 'Краставици';
 		gallery.innerHTML = `
-			<div class="hero-gallery-main hero-gallery-slot--tomatoes">${IMG.imgTag(g.tomatoes, 'Домати', 'fl-photo')}</div>
+			<div class="hero-gallery-main hero-gallery-slot--tomatoes">${IMG.imgTag(g.tomatoes, altTom, 'fl-photo')}</div>
 			<div class="hero-gallery-side">
-				<div class="hero-gallery-slot hero-gallery-slot--peppers">${IMG.imgTag(g.peppers, 'Чушки сурови', 'fl-photo')}</div>
-				<div class="hero-gallery-slot hero-gallery-slot--cucumbers">${IMG.imgTag(g.cucumbers, 'Краставици', 'fl-photo')}</div>
+				<div class="hero-gallery-slot hero-gallery-slot--peppers">${IMG.imgTag(g.peppers, altPep, 'fl-photo')}</div>
+				<div class="hero-gallery-slot hero-gallery-slot--cucumbers">${IMG.imgTag(g.cucumbers, altCuc, 'fl-photo')}</div>
 			</div>`;
 	}
 
@@ -61,14 +68,14 @@
 		const avatar = document.getElementById('farmer-avatar-img');
 		if (avatar) {
 			avatar.src = IMG.farmer;
-			avatar.alt = 'Профил на фермер с доверие';
+			avatar.alt = t('listing.farmerAlt');
 		}
 		const row = document.getElementById('top-farmers');
 		if (!row || !IMG.farmers) return;
 		row.innerHTML = IMG.farmers
 			.map(
 				(f) => `
-			<a class="farmer-chip" href="/catalog.html">
+			<a class="farmer-chip" href="${window.FieldlotI18n ? FieldlotI18n.withLangUrl('/catalog.html') : '/catalog.html'}">
 				<img src="${f.img}" alt="${f.name}" width="72" height="72" loading="lazy" referrerpolicy="no-referrer" />
 				<strong>${f.name}</strong>
 				<span>${f.role}</span>
@@ -125,8 +132,9 @@
 		if (el && meta?.fetchedAt) {
 			const d = new Date(meta.fetchedAt);
 			el.textContent =
-				'обновено ' +
-				d.toLocaleString('bg-BG', {
+				t('exchange.updated') +
+				' ' +
+				d.toLocaleString(loc(), {
 					day: '2-digit',
 					month: '2-digit',
 					hour: '2-digit',
@@ -145,45 +153,45 @@
 			const rows = data.quotes.map((q) => ({
 				name: q.name,
 				price: q.priceBgn,
-				unit: q.unit || 'лв/тон',
+				unit: q.unit || (FieldlotI18n?.getLang() === 'en' ? 'BGN/ton' : 'лв/тон'),
 				chg: q.chg ?? 0,
 			}));
 			renderExchange(rows, { source: data.source, fetchedAt: data.fetchedAt });
 		} catch {
-			tbody.innerHTML =
-				'<tr><td colspan="3">Борсовите цени временно не се зареждат. Опитай по-късно.</td></tr>';
+			tbody.innerHTML = `<tr><td colspan="3">${t('exchange.fail')}</td></tr>`;
 		}
 	}
 
-	loadExchange();
-	setInterval(loadExchange, 24 * 60 * 60 * 1000);
-
 	function cardHtml(item) {
-		const src = IMG ? IMG.forListing(item) : '';
-		const roleLabel = item.role === 'buy' ? 'Търсене' : 'Продажба';
+		const row = localize(item);
+		const src = IMG ? IMG.forListing(row) : '';
+		const roleLabel = row.role === 'buy' ? t('listing.buy') : t('listing.sell');
 		const price =
-			item.price && item.price !== 'по дог.' && item.price !== 'заявка'
-				? `${item.price} <small>${item.priceUnit || ''}</small>`
-				: `${item.price || '—'} <small>${item.priceUnit || ''}</small>`;
-		const cta = item.role === 'buy' ? 'Направи оферта' : 'Купи';
+			row.price && row.price !== 'по дог.' && row.price !== 'заявка' && row.price !== 'по дог.' 
+				? `${row.price} <small>${row.priceUnit || ''}</small>`
+				: `${row.price || '—'} <small>${row.priceUnit || ''}</small>`;
+		const cta = row.role === 'buy' ? t('listing.offer') : t('listing.buyBtn');
 		const photo = src
-			? `<img src="${src}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" /><span class="product-card-badge">${roleLabel}</span>`
+			? `<img src="${src}" alt="${row.title}" loading="lazy" referrerpolicy="no-referrer" /><span class="product-card-badge">${roleLabel}</span>`
 			: `<span class="product-card-badge">${roleLabel}</span>`;
+		const catUrl =
+			(window.FieldlotI18n ? FieldlotI18n.withLangUrl('/catalog.html') : '/catalog.html') +
+			`?id=${encodeURIComponent(row.id)}`;
 		return `<article class="product-card">
 			<div class="product-card-img">${photo}</div>
 			<div class="product-card-body">
-				<h3>${item.title}</h3>
-				<p class="product-meta">${item.subtitle || ''}</p>
+				<h3>${row.title}</h3>
+				<p class="product-meta">${row.subtitle || ''}</p>
 				<div class="product-meta-row">
-					<span>🚛 ${item.qty || '—'}</span>
-					<span class="product-rating">⭐ 4.${7 + (item.id.length % 3)}</span>
+					<span>🚛 ${row.qty || '—'}</span>
+					<span class="product-rating">⭐ 4.${7 + (row.id.length % 3)}</span>
 				</div>
 				<div class="product-price">${price}</div>
-				<p class="product-seller">${item.contact || ''}</p>
+				<p class="product-seller">${row.contact || ''}</p>
 			</div>
 			<div class="product-card-actions">
-				<a class="btn btn-secondary" href="/catalog.html?id=${encodeURIComponent(item.id)}">Свържи се</a>
-				<a class="btn btn-primary" href="/catalog.html?id=${encodeURIComponent(item.id)}">${cta}</a>
+				<a class="btn btn-secondary" href="${catUrl}">${t('listing.connect')}</a>
+				<a class="btn btn-primary" href="${catUrl}">${cta}</a>
 			</div>
 		</article>`;
 	}
@@ -192,21 +200,31 @@
 		const grid = document.getElementById('home-listings');
 		if (!grid) return;
 		try {
-			const res = await fetch('/data/demo-listings.json');
+			const res = await fetch('/data/live-listings.json');
 			if (!res.ok) throw new Error('fetch');
 			const data = await res.json();
 			const slice = Array.isArray(data) ? data.slice(0, 4) : [];
-			grid.innerHTML = slice.map(cardHtml).join('');
+			grid.innerHTML = slice.map((item) => cardHtml(item)).join('');
 			window.__fieldlotVisibleIds = slice.map((x) => x.id);
 		} catch {
-			grid.innerHTML =
-				'<p class="demo-strip">Каталогът се зарежда от <a href="/catalog.html">демо страницата</a>.</p>';
+			grid.innerHTML = `<p class="demo-strip">${t('listing.loadFail')}</p>`;
 		}
+	}
+
+	function refreshDynamic() {
+		initHero();
+		initFarmers();
+		loadExchange();
+		loadListings();
 	}
 
 	initHero();
 	initCategories();
 	initFarmers();
 	initLogistics();
+	loadExchange();
 	loadListings();
+	setInterval(loadExchange, 24 * 60 * 60 * 1000);
+
+	document.addEventListener('fieldlot-lang-change', refreshDynamic);
 })();
