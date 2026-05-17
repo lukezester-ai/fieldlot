@@ -7,6 +7,8 @@ import {
 } from '../borsa-listings-fetcher.js';
 import { getMaxListingAgeDays, pruneStaleListings } from '../listings-freshness.js';
 import { filterSalesOnly, salesOnlyEnabled } from '../listings-sales-filter.js';
+import { fetchAgroListings } from './agro-listings-fetcher.js';
+import { fetchAgriListings } from './agri-listings-fetcher.js';
 import { fetchGovHtmlListings, type GovHtmlSourceConfig } from './gov-html-fetcher.js';
 
 type SourceRow = {
@@ -56,6 +58,18 @@ export async function fetchAllListingsSnapshot(detailLimit = 40): Promise<Listin
 				const snap = await fetchBorsaListingsSnapshot(detailLimit);
 				all.push(...snap.listings);
 				sourceNames.push('borsaagro.com');
+				continue;
+			}
+			if (src.type === 'agri-borsa' || src.id === 'agri-bg') {
+				const rows = await fetchAgriListings(src.maxLinks ?? 30);
+				all.push(...rows);
+				sourceNames.push('agri.bg');
+				continue;
+			}
+			if (src.type === 'agro-obyavi' || src.id === 'agro-bg') {
+				const rows = await fetchAgroListings(src.maxLinks ?? 25);
+				all.push(...rows);
+				sourceNames.push('agro.bg');
 				continue;
 			}
 			if (src.type === 'gov-html' && src.listUrl) {

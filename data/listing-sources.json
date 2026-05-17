@@ -8,46 +8,17 @@
     },
     {
       "id": "agro-bg",
-      "type": "gov-html",
+      "type": "agro-obyavi",
       "enabled": true,
       "name": "agro.bg — обяви",
-      "listUrl": "https://agro.bg/obyavi/",
-      "baseUrl": "https://agro.bg",
-      "linkInclude": "agro\\.bg/obyavi/[^/]+/[^/]+",
-      "linkExclude": "/uslugi/|/rabota/",
       "maxLinks": 25
     },
     {
       "id": "agri-bg",
-      "type": "gov-html",
+      "type": "agri-borsa",
       "enabled": true,
       "name": "agri.bg — Агроборса",
-      "listUrl": "https://agri.bg/",
-      "baseUrl": "https://agri.bg",
-      "linkInclude": "agri\\.bg/agroborsa/ad/",
-      "linkExclude": "barter|barteri",
-      "maxLinks": 30,
-      "note": "Продава и купува от началната страница."
-    },
-    {
-      "id": "dbr-zemedelie",
-      "type": "gov-html",
-      "enabled": false,
-      "name": "dbr.bg — Земеделие (новини, не обяви)",
-      "listUrl": "https://www.dbr.bg/zemedelie",
-      "baseUrl": "https://www.dbr.bg",
-      "linkInclude": "dbr\\.bg/[a-z0-9~-]+\\.html",
-      "maxLinks": 20
-    },
-    {
-      "id": "novinite-zemedelie",
-      "type": "gov-html",
-      "enabled": false,
-      "name": "novinite.bg — Земеделие (новини, не обяви)",
-      "listUrl": "https://www.novinite.bg/articles/category/17/Zemedelie",
-      "baseUrl": "https://www.novinite.bg",
-      "linkInclude": "novinite\\.bg/articles/[0-9]+/",
-      "maxLinks": 25
+      "maxLinks": 30
     }
   ]
 }

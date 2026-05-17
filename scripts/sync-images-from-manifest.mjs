@@ -74,7 +74,12 @@ const js = `/**
 		byListingId: M.listings,
 		forListing(item) {
 			if (!item) return byCategory.grain;
-			if (item.id && M.listings[item.id]) return M.listings[item.id];
+			if (item.imageUrl) return item.imageUrl;
+			if (item.id && M.listings[item.id]) {
+				const src = M.listings[item.id];
+				if (typeof src === 'string' && /^https?:\/\//i.test(src)) return src;
+				return src;
+			}
 			const fromT = fromTitle(item.title);
 			if (fromT) return fromT;
 			if (item.category && byCategory[item.category]) return byCategory[item.category];

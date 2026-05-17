@@ -84,7 +84,10 @@
 		const item = loc(raw);
 		const roleClass = item.role === 'buy' ? 'buy' : 'sell';
 		const roleLabel = item.role === 'buy' ? t('listing.buy') : t('listing.sell');
-		const photoSrc = window.FieldlotImages ? FieldlotImages.forListing(item) : '';
+		const photoSrc =
+			raw.imageUrl ||
+			item.imageUrl ||
+			(window.FieldlotImages ? FieldlotImages.forListing(item) : '');
 		const photoHtml = photoSrc
 			? `<div class="listing-photo"><img src="${photoSrc}" alt="${escapeHtml(item.title)}" loading="lazy" /></div>`
 			: '';
@@ -138,7 +141,10 @@
 		detailItemRaw = raw;
 		const item = loc(raw);
 		detailTitle.textContent = item.title;
-		const photoSrc = window.FieldlotImages ? FieldlotImages.forListing(item) : '';
+		const photoSrc =
+			raw.imageUrl ||
+			item.imageUrl ||
+			(window.FieldlotImages ? FieldlotImages.forListing(item) : '');
 		const heroPhoto = photoSrc
 			? `<div class="detail-photo"><img src="${photoSrc}" alt="${escapeHtml(item.title)}" /></div>`
 			: '';

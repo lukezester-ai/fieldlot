@@ -66,7 +66,7 @@ export async function runListingsSyncPipeline(opts?: {
 		manifest.listings = {};
 		manifest.listingLabels = {};
 		for (const item of snap.listings) {
-			manifest.listings[item.id] = imageForListing(item);
+			manifest.listings[item.id] = item.imageUrl || imageForListing(item);
 			manifest.listingLabels[item.id] = item.title;
 		}
 		manifest.source = snap.source;

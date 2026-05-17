@@ -38,6 +38,7 @@ export type FieldlotListing = {
 	tags: string[];
 	source?: string;
 	sourceUrl?: string;
+	imageUrl?: string;
 	publishedAt?: string;
 };
 
