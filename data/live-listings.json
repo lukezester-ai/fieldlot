@@ -1,7 +1,7 @@
 {
 	"source": "borsaagro.com",
 	"sourceUrl": "/data/live-listings.json",
-	"fetchedAt": "2026-05-17T19:38:54.951Z",
+	"fetchedAt": "2026-05-18T06:42:59.887Z",
 	"maxAgeDays": 60,
 	"pruned": 0,
 	"count": 9,
@@ -19,11 +19,12 @@
 			"incoterm": "По обява на източника",
 			"harvest": "Публикувана 16.05.2026 г.",
 			"quality": "Без допълнително описание в източника.",
-			"contact": "Източник: borsaagro.com · Непроверена. Оригинал: https://borsaagro.com/potrebitelski-obqvi/86",
+			"contact": "Източник: borsaagro.com · Проверена. Оригинал: https://borsaagro.com/potrebitelski-obqvi/86",
 			"tags": [
 				"Зърно",
 				"Продажба",
-				"borsaagro.com"
+				"borsaagro.com",
+				"crop:corn"
 			],
 			"source": "borsaagro.com",
 			"sourceUrl": "https://borsaagro.com/potrebitelski-obqvi/86",
@@ -33,7 +34,7 @@
 			"id": "ba-84",
 			"title": "Олио соево нерафинирано",
 			"subtitle": "България · borsaagro.com",
-			"category": "oilseed",
+			"category": "oil",
 			"region": "national",
 			"role": "sell",
 			"qty": "100.00",
@@ -44,7 +45,7 @@
 			"quality": "Без допълнително описание в източника.",
 			"contact": "Източник: borsaagro.com · Непроверена. Оригинал: https://borsaagro.com/potrebitelski-obqvi/84",
 			"tags": [
-				"Маслодайни",
+				"Олио",
 				"Продажба",
 				"borsaagro.com"
 			],
@@ -69,7 +70,8 @@
 			"tags": [
 				"Зърно",
 				"Продажба",
-				"borsaagro.com"
+				"borsaagro.com",
+				"crop:corn"
 			],
 			"source": "borsaagro.com",
 			"sourceUrl": "https://borsaagro.com/potrebitelski-obqvi/83",
@@ -92,7 +94,8 @@
 			"tags": [
 				"Зърно",
 				"Продажба",
-				"borsaagro.com"
+				"borsaagro.com",
+				"crop:corn"
 			],
 			"source": "borsaagro.com",
 			"sourceUrl": "https://borsaagro.com/potrebitelski-obqvi/82",
@@ -115,7 +118,8 @@
 			"tags": [
 				"Зърно",
 				"Продажба",
-				"borsaagro.com"
+				"borsaagro.com",
+				"crop:wheat"
 			],
 			"source": "borsaagro.com",
 			"sourceUrl": "https://borsaagro.com/potrebitelski-obqvi/81",
@@ -125,7 +129,7 @@
 			"id": "ba-79",
 			"title": "ОЛИО СОЕВО НЕРАФИНИРАНО",
 			"subtitle": "България · borsaagro.com",
-			"category": "oilseed",
+			"category": "oil",
 			"region": "national",
 			"role": "sell",
 			"qty": "24.00 тон",
@@ -136,9 +140,10 @@
 			"quality": "Soybean oil, crude, without alteration of chemical composition, intended for feed production. Color value, mg iodine - up to 60 acid value, mg KOH/g - up to 4% peroxide value - up to 5 mmol/kg.",
 			"contact": "Източник: borsaagro.com · Непроверена. Оригинал: https://borsaagro.com/potrebitelski-obqvi/79",
 			"tags": [
-				"Маслодайни",
+				"Олио",
 				"Продажба",
-				"borsaagro.com"
+				"borsaagro.com",
+				"crop:soy"
 			],
 			"source": "borsaagro.com",
 			"sourceUrl": "https://borsaagro.com/potrebitelski-obqvi/79",
@@ -148,7 +153,7 @@
 			"id": "ba-78",
 			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
 			"subtitle": "България · borsaagro.com",
-			"category": "oilseed",
+			"category": "oil",
 			"region": "national",
 			"role": "sell",
 			"qty": "150.00 тон",
@@ -159,9 +164,10 @@
 			"quality": "Слънчогледов експелер /кюспе/ с показатели: влага 6...7 % ; протеини 20…23 % ; сурови мазнини 13..15 % ; фибри 15…18 %.",
 			"contact": "Източник: borsaagro.com · Непроверена. Оригинал: https://borsaagro.com/potrebitelski-obqvi/78",
 			"tags": [
-				"Маслодайни",
+				"Олио",
 				"Продажба",
-				"borsaagro.com"
+				"borsaagro.com",
+				"crop:sunflower"
 			],
 			"source": "borsaagro.com",
 			"sourceUrl": "https://borsaagro.com/potrebitelski-obqvi/78",
@@ -171,7 +177,7 @@
 			"id": "ba-77",
 			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
 			"subtitle": "България · borsaagro.com",
-			"category": "oilseed",
+			"category": "oil",
 			"region": "national",
 			"role": "sell",
 			"qty": "150.00 тон",
@@ -182,9 +188,10 @@
 			"quality": "Слънчогледов експелер /кюспе/ с показатели: влага 6...7 % ; протеини 20…23 % ; сурови мазнини 13..15 % ; фибри 15…18 %.",
 			"contact": "Източник: borsaagro.com · Непроверена. Оригинал: https://borsaagro.com/potrebitelski-obqvi/77",
 			"tags": [
-				"Маслодайни",
+				"Олио",
 				"Продажба",
-				"borsaagro.com"
+				"borsaagro.com",
+				"crop:sunflower"
 			],
 			"source": "borsaagro.com",
 			"sourceUrl": "https://borsaagro.com/potrebitelski-obqvi/77",
@@ -194,7 +201,7 @@
 			"id": "ba-76",
 			"title": "СЛЪНЧОГЛЕД МАСЛОДАЕН",
 			"subtitle": "България · borsaagro.com",
-			"category": "oilseed",
+			"category": "oil",
 			"region": "national",
 			"role": "sell",
 			"qty": "10.00 тон",
@@ -205,9 +212,10 @@
 			"quality": "Имам останали 10 тона слънчоглед добро качество",
 			"contact": "Източник: borsaagro.com · Непроверена. Оригинал: https://borsaagro.com/potrebitelski-obqvi/76",
 			"tags": [
-				"Маслодайни",
+				"Олио",
 				"Продажба",
-				"borsaagro.com"
+				"borsaagro.com",
+				"crop:sunflower"
 			],
 			"source": "borsaagro.com",
 			"sourceUrl": "https://borsaagro.com/potrebitelski-obqvi/76",

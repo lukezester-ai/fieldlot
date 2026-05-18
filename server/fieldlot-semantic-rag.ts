@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import platformKnowledge from '../data/platform-knowledge.json' with { type: 'json' };
 import type { FieldlotListing } from './borsa-listings-fetcher.js';
+import { listingCrop, normalizeCategory } from './fieldlot-categories.js';
 
 const INDEX_PATH = path.join(process.cwd(), 'data/fieldlot-rag-index.json');
 const MISTRAL_EMBED_URL = 'https://api.mistral.ai/v1/embeddings';
@@ -73,10 +74,12 @@ async function embedTexts(texts: string[]): Promise<number[][]> {
 }
 
 function listingChunkText(item: FieldlotListing): string {
+	const crop = listingCrop(item);
 	return [
 		item.title,
 		item.subtitle,
-		item.category,
+		normalizeCategory(item.category),
+		crop ? `crop:${crop}` : '',
 		item.region,
 		item.role,
 		item.qty,

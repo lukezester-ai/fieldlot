@@ -85,6 +85,26 @@
 			"path": "/images/farmers/spotlight.jpg",
 			"alt": "Профил на фермер с доверие"
 		},
+		"showcase": [
+			{
+				"id": "farm",
+				"path": "/images/hero/farm.jpg",
+				"alt": "Стопанство и поле",
+				"labelKey": "farmers.slotFarm"
+			},
+			{
+				"id": "field",
+				"path": "/images/hero/background.jpg",
+				"alt": "Зърнено поле",
+				"labelKey": "farmers.slotField"
+			},
+			{
+				"id": "facility",
+				"path": "/images/logistics/warehouse.jpg",
+				"alt": "Склад и преработка",
+				"labelKey": "farmers.slotFacility"
+			}
+		],
 		"top": [
 			{
 				"id": "ivan",
@@ -222,6 +242,12 @@
 			role: f.role || '',
 			rating: f.rating || '4.8',
 			img: f.path,
+		})),
+		farmerShowcase: (M.farmers.showcase || []).map((s) => ({
+			id: s.id,
+			img: s.path,
+			alt: s.alt || '',
+			labelKey: s.labelKey || 'farmers.slotFarm',
 		})),
 		logistics: {
 			transport: M.logistics.transport.path,

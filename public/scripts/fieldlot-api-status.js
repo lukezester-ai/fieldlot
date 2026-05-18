@@ -21,13 +21,12 @@
 
 	async function probe() {
 		try {
-			const res = await fetch('/api/fieldlot-chat', {
-				method: 'GET',
-				headers: { Accept: 'application/json' },
-			});
-			const ok = res.ok;
-			state.chat = ok;
-			state.leads = ok;
+			const [chatRes, leadRes] = await Promise.all([
+				fetch('/api/fieldlot-chat', { method: 'GET', headers: { Accept: 'application/json' } }),
+				fetch('/api/register-interest', { method: 'OPTIONS' }),
+			]);
+			state.chat = chatRes.ok;
+			state.leads = leadRes.status === 204 || leadRes.ok;
 		} catch {
 			state.chat = false;
 			state.leads = false;

@@ -1,5 +1,12 @@
 import imageManifest from '../data/fieldlot-image-manifest.json' with { type: 'json' };
 import platformKnowledge from '../data/platform-knowledge.json' with { type: 'json' };
+import {
+	CATEGORY_LABELS_BG,
+	formatCategoriesForRag,
+	listingCrop,
+	matchListingCategory,
+	normalizeCategory,
+} from './fieldlot-categories.js';
 import { getAllListingsSync, type FieldlotListing } from './listings-data.js';
 
 export type { FieldlotListing };
@@ -7,6 +14,7 @@ export type { FieldlotListing };
 export type FieldlotChatFilters = {
 	q?: string;
 	category?: string;
+	crop?: string;
 	region?: string;
 	role?: string;
 };
@@ -58,13 +66,9 @@ const BG_STOP = new Set([
 	'an',
 ]);
 
-const CATEGORY_LABELS: Record<string, string> = {
-	grain: 'зърно',
-	oilseed: 'маслодайни',
-	feed: 'фураж',
-	fruit: 'плодове',
-	veg: 'зеленчуци',
-};
+const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
+	Object.entries(CATEGORY_LABELS_BG).map(([k, v]) => [k, v.toLowerCase()]),
+);
 
 const REGION_LABELS: Record<string, string> = {
 	dobrudzha: 'добруджа',
@@ -114,8 +118,9 @@ function scoreListing(
 	if (ctx?.listingId && item.id === ctx.listingId) score += 2000;
 	if (ctx?.visibleListingIds?.includes(item.id)) score += 120;
 	const f = ctx?.filters;
-	if (f?.category && item.category === f.category) score += 80;
-	if (f?.region && item.region === f.region) score += 80;
+	if (f?.category && matchListingCategory(item, f.category)) score += 80;
+	if (f?.crop && listingCrop(item) === f.crop.trim().toLowerCase()) score += 60;
+	if (f?.region && (item.region === f.region || item.region === 'national')) score += 80;
 	if (f?.role && item.role === f.role) score += 80;
 	if (f?.q) {
 		for (const t of tokenize(f.q)) {
@@ -138,9 +143,11 @@ function formatListing(item: FieldlotListing): string {
 	const roleLabel = item.role === 'buy' ? 'търсене' : 'продажба';
 	const labels = imageManifest.listingLabels as Record<string, string> | undefined;
 	const cropLabel = labels?.[item.id] ?? item.title;
+	const crop = listingCrop(item);
 	return [
 		`[id:${item.id}]`,
 		`${item.title} (${roleLabel})`,
+		`Категория: ${normalizeCategory(item.category)}${crop ? ` · култура: ${crop}` : ''}`,
 		`Култура/снимка: ${cropLabel} → ${listingImagePath(item.id)}`,
 		`Локация: ${item.subtitle}`,
 		`Количество: ${item.qty}`,
@@ -161,6 +168,7 @@ function sessionContextBlock(ctx: FieldlotChatContext | undefined): string {
 		const parts = [
 			f.q ? `търсене="${f.q}"` : '',
 			f.category ? `категория=${f.category}` : '',
+			f.crop ? `култура=${f.crop}` : '',
 			f.region ? `регион=${f.region}` : '',
 			f.role ? `тип=${f.role}` : '',
 		].filter(Boolean);
@@ -201,6 +209,8 @@ export function buildFieldlotRagContext(
 		'',
 		'=== RAG: IMAGE MANIFEST (JSON) ===',
 		manifestJson,
+		'',
+		formatCategoriesForRag(ctx?.lang === 'en' ? 'en' : 'bg'),
 		'',
 		'=== RAG: СЕСИЯ ===',
 		sessionContextBlock(ctx),
@@ -247,6 +257,7 @@ export function parseFieldlotChatContext(raw: unknown): FieldlotChatContext | un
 		ctx.filters = {};
 		if (typeof f.q === 'string') ctx.filters.q = f.q.slice(0, 200);
 		if (typeof f.category === 'string') ctx.filters.category = f.category.slice(0, 40);
+		if (typeof f.crop === 'string') ctx.filters.crop = f.crop.slice(0, 40);
 		if (typeof f.region === 'string') ctx.filters.region = f.region.slice(0, 40);
 		if (typeof f.role === 'string') ctx.filters.role = f.role.slice(0, 20);
 	}

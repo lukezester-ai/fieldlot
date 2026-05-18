@@ -9,8 +9,10 @@
 	const countEl = document.getElementById('results-count');
 	const qEl = document.getElementById('q');
 	const catEl = document.getElementById('category');
+	const cropEl = document.getElementById('crop');
 	const regEl = document.getElementById('region');
 	const roleEl = document.getElementById('role');
+	const FC = () => global.FieldlotCategories;
 	const backdrop = document.getElementById('detail-backdrop');
 	const panel = document.getElementById('detail-panel');
 	const detailTitle = document.getElementById('detail-title');
@@ -64,13 +66,27 @@
 
 	function filterListings() {
 		const q = qEl.value.trim().toLowerCase();
-		const cat = catEl.value;
-		const reg = regEl.value;
-		const role = roleEl.value;
+		const cat = catEl?.value || '';
+		const crop = cropEl?.value || '';
+		const reg = regEl?.value || '';
+		const role = roleEl?.value || '';
 		return allListings.filter((raw) => {
 			const item = loc(raw);
-			if (cat && item.category !== cat) return false;
-			if (reg && item.region !== reg) return false;
+			if (cat) {
+				if (FC()?.matchCategory) {
+					if (!FC().matchCategory(item, cat)) return false;
+				} else if (item.category !== cat) return false;
+			}
+			if (crop) {
+				if (FC()?.matchCrop) {
+					if (!FC().matchCrop(item, crop)) return false;
+				}
+			}
+			if (reg) {
+				if (FC()?.matchRegion) {
+					if (!FC().matchRegion(item, reg)) return false;
+				} else if (item.region !== reg && item.region !== 'national') return false;
+			}
 			if (role && item.role !== role) return false;
 			if (!q) return true;
 			const hay = [item.title, item.subtitle, item.quality, item.contact, ...(item.tags || [])]
@@ -218,13 +234,24 @@
 		if (e.key === 'Escape') closeDetail();
 	});
 
-	[qEl, catEl, regEl, roleEl].forEach((el) => {
+	function applyUrlFilters() {
+		const params = new URLSearchParams(window.location.search);
+		const cat = params.get('category');
+		const crop = params.get('crop');
+		const q = params.get('q');
+		if (cat && catEl) catEl.value = cat;
+		if (crop && cropEl) cropEl.value = crop;
+		if (q && qEl) qEl.value = q;
+	}
+
+	[qEl, catEl, cropEl, regEl, roleEl].forEach((el) => {
 		el?.addEventListener('input', render);
 		el?.addEventListener('change', render);
 	});
 	document.getElementById('reset-filters')?.addEventListener('click', () => {
 		qEl.value = '';
-		catEl.value = '';
+		if (catEl) catEl.value = '';
+		if (cropEl) cropEl.value = '';
 		regEl.value = '';
 		roleEl.value = '';
 		render();
@@ -234,6 +261,7 @@
 
 	loadListings()
 		.then(() => {
+			applyUrlFilters();
 			render();
 			const openId = new URLSearchParams(window.location.search).get('id');
 			if (openId) {

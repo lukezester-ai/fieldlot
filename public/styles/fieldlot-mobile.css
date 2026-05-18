@@ -261,6 +261,19 @@ body.nav-open {
 		grid-template-columns: 1fr;
 	}
 
+	.farm-showcase-grid {
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+
+	.farm-showcase-card {
+		min-height: 200px;
+	}
+
+	.farm-showcase-caption p {
+		font-size: 14px;
+	}
+
 	.farmers-row {
 		display: flex;
 		overflow-x: auto;

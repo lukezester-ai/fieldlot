@@ -11,11 +11,14 @@ import {
 	buildFieldlotRagContext,
 	parseFieldlotChatContext,
 } from './fieldlot-rag.js';
+import { formatCategoriesForRag } from './fieldlot-categories.js';
 import {
 	formatSemanticHitsForPrompt,
 	searchFieldlotSemanticRag,
 	type FieldlotRagHit,
 } from './fieldlot-semantic-rag.js';
+import { classifyAgroImage, visionResultToListingHint } from './fieldlot-vision.js';
+import type { ListingDraft } from './fieldlot-listing-writer.js';
 import {
 	chatProviderLabel,
 	openAIMessageContentToString,
@@ -52,7 +55,10 @@ const FIELDLOT_SYSTEM_BG = `Ти си "Fieldlot Guide" — AI агент с RAG 
 
 Имаш инструменти (tools) — използвай ги, когато трябва реално действие, не само текст:
 • get_exchange_prices — живи борсови цени
-• search_listings / get_listing — живи обяви (borsaagro.com)
+• search_listings / get_listing — живи обяви (филтър: veg, fruit, grain, oil, canned, fertilizer, machines, feed + crop: wheat, barley…)
+• classify_crop_image — разпознаване на снимка (пшеница/ечемик, консерви, техника, билки…)
+• draft_listing — напиши нова обява (заглавие, качество, количество, цена, Incoterm) като готова чернова
+• edit_listing — редактирай обява по id (ba-…) или чернова според инструкции на потребителя
 • submit_early_access — регистрация за ранен достъп (имейл до екипа) САМО ако потребителят е дал име и имейл и иска регистрация
 • send_team_email — изпрати съобщение до екипа Fieldlot (обобщение, запитване)
 • fetch_fieldlot_api — /api/exchange-prices, /api/listings или /data/live-listings.json
@@ -61,6 +67,7 @@ const FIELDLOT_SYSTEM_BG = `Ти си "Fieldlot Guide" — AI агент с RAG 
 - Отговаряй на български, ясно и професионално.
 - Преди submit_early_access потвърди данните с потребителя.
 - Не измисляй цени извън резултат от get_exchange_prices / RAG.
+- За „напиши/редактирай обява“ → draft_listing / edit_listing; покажи formattedText на потребителя и какво липсва (checklist).
 - След изпълнение на инструмент обобщи какво направи.
 - Без markdown code fences.`;
 
@@ -68,7 +75,10 @@ const FIELDLOT_SYSTEM_EN = `You are "Fieldlot Guide" — an AI agent with RAG an
 
 You have tools — use them when a real action is needed, not text only:
 • get_exchange_prices — live exchange prices
-• search_listings / get_listing — live listings (borsaagro.com)
+• search_listings / get_listing — live listings (filter by category + crop)
+• classify_crop_image — classify user photo (wheat vs barley, preserves, machinery, herbs)
+• draft_listing — write a new listing draft (professional B2B copy)
+• edit_listing — edit listing by id or draft per user instructions
 • submit_early_access — early access registration (email to team) ONLY when user gave name + email and wants to register
 • send_team_email — message Fieldlot team (summary, inquiry)
 • fetch_fieldlot_api — /api/exchange-prices, /api/listings or /data/live-listings.json
@@ -77,6 +87,7 @@ Rules:
 - Reply in English, clear and professional.
 - Confirm data before submit_early_access.
 - Do not invent prices outside get_exchange_prices / RAG.
+- For “write/edit listing” → use draft_listing / edit_listing; show formattedText and checklist.
 - After running a tool, summarize what you did.
 - No markdown code fences.`;
 
@@ -146,6 +157,8 @@ export async function handleFieldlotChatPost(
 			semanticHits?: FieldlotRagHit[];
 			actions?: AgentActionRecord[];
 			agentMode?: boolean;
+			imageClassification?: Awaited<ReturnType<typeof classifyAgroImage>>;
+			listingDraft?: ListingDraft;
 	  }
 	| { ok: false; status: number; error: string; hint?: string }
 > {
@@ -186,10 +199,45 @@ export async function handleFieldlotChatPost(
 		return { ok: false, status: 400, error: 'Последното съобщение трябва да е от потребителя' };
 	}
 
-	const sessionContext = parseFieldlotChatContext(body.context);
+	let sessionContext = parseFieldlotChatContext(body.context);
 	const lang: 'bg' | 'en' = sessionContext?.lang === 'en' ? 'en' : 'bg';
+
+	let imageClassification: Awaited<ReturnType<typeof classifyAgroImage>> | undefined;
+	let visionBlock = '';
+	const imgRaw = body.image;
+	if (imgRaw && typeof imgRaw === 'object') {
+		const io = imgRaw as Record<string, unknown>;
+		const imageBase64 =
+			typeof io.base64 === 'string'
+				? io.base64
+				: typeof io.imageBase64 === 'string'
+					? io.imageBase64
+					: '';
+		if (imageBase64.trim()) {
+			imageClassification = await classifyAgroImage({
+				imageBase64,
+				mimeType: typeof io.mimeType === 'string' ? io.mimeType : 'image/jpeg',
+				lang,
+			});
+			if (imageClassification.ok) {
+				visionBlock = `\n\n=== RAG: СНИМКА ОТ ПОТРЕБИТЕЛЯ ===\n${visionResultToListingHint(imageClassification)}\n${lang === 'en' ? imageClassification.summaryEn : imageClassification.summaryBg}\nПрепоръка: search_listings с category=${imageClassification.category}${imageClassification.crop ? `, crop=${imageClassification.crop}` : ''}.`;
+				sessionContext = sessionContext ?? { page: 'landing', lang };
+				sessionContext.filters = {
+					...sessionContext.filters,
+					category: imageClassification.category,
+					...(imageClassification.crop ? { crop: imageClassification.crop } : {}),
+				};
+			}
+		}
+	}
+
 	const rag = buildFieldlotRagContext(last.content, sessionContext);
-	const semanticHits = await searchFieldlotSemanticRag(last.content, 8);
+	const semanticHits = await searchFieldlotSemanticRag(
+		[last.content, imageClassification?.summaryBg, imageClassification?.labels?.join(' ')]
+			.filter(Boolean)
+			.join(' '),
+		8,
+	);
 	const semanticBlock = formatSemanticHitsForPrompt(semanticHits, lang);
 	let exchangeBlock = '';
 	try {
@@ -200,7 +248,7 @@ export async function handleFieldlotChatPost(
 			'\n\n=== RAG: БОРСОВИ ЦЕНИ ===\nВременно недостъпни — използвай get_exchange_prices.';
 	}
 
-	const systemContent = `${lang === 'en' ? FIELDLOT_SYSTEM_EN : FIELDLOT_SYSTEM_BG}\n\n${rag.systemContext}${semanticBlock ? `\n\n${semanticBlock}` : ''}${exchangeBlock}`;
+	const systemContent = `${lang === 'en' ? FIELDLOT_SYSTEM_EN : FIELDLOT_SYSTEM_BG}\n\n${formatCategoriesForRag(lang)}\n\n${rag.systemContext}${semanticBlock ? `\n\n${semanticBlock}` : ''}${visionBlock}${exchangeBlock}`;
 	const agentEnabled = upstream.supportsTools && process.env.FIELDLOT_AGENT_DISABLED !== '1';
 
 	const chatMessages: ChatCompletionMessage[] = [
@@ -209,19 +257,21 @@ export async function handleFieldlotChatPost(
 	];
 
 	const actions: AgentActionRecord[] = [];
+	let listingDraft: ListingDraft | undefined;
 
 	if (!agentEnabled) {
 		try {
 			const { message } = await callChatCompletions(upstream, chatMessages, { tools: false });
 			const rawReply = openAIMessageContentToString(message.content);
 			if (!rawReply) return { ok: false, status: 502, error: 'Празно съдържание от модела' };
-			return {
-				ok: true,
-				reply: truncate(rawReply.trim(), MAX_REPLY_CHARS),
-				rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
-				semanticHits: semanticHits.length ? semanticHits : undefined,
-				agentMode: false,
-			};
+				return {
+					ok: true,
+					reply: truncate(rawReply.trim(), MAX_REPLY_CHARS),
+					rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
+					semanticHits: semanticHits.length ? semanticHits : undefined,
+					imageClassification,
+					agentMode: false,
+				};
 		} catch (e) {
 			const msg = e instanceof Error ? e.message : 'LLM error';
 			return {
@@ -260,6 +310,8 @@ export async function handleFieldlotChatPost(
 					rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
 					semanticHits: semanticHits.length ? semanticHits : undefined,
 					actions: actions.length ? actions : undefined,
+					imageClassification,
+					listingDraft,
 					agentMode: true,
 				};
 			}
@@ -277,6 +329,14 @@ export async function handleFieldlotChatPost(
 					toolCtx,
 				);
 				actions.push(action);
+				if (tc.function.name === 'draft_listing' || tc.function.name === 'edit_listing') {
+					try {
+						const parsed = JSON.parse(result) as { draft?: ListingDraft };
+						if (parsed.draft?.formattedText) listingDraft = parsed.draft;
+					} catch {
+						/* ignore */
+					}
+				}
 				chatMessages.push({
 					role: 'tool',
 					tool_call_id: tc.id,
@@ -310,6 +370,8 @@ export async function handleFieldlotChatPost(
 		rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
 		semanticHits: semanticHits.length ? semanticHits : undefined,
 		actions,
+		imageClassification,
+		listingDraft,
 		agentMode: true,
 	};
 }

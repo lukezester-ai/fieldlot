@@ -65,6 +65,12 @@ const js = `/**
 			rating: f.rating || '4.8',
 			img: f.path,
 		})),
+		farmerShowcase: (M.farmers.showcase || []).map((s) => ({
+			id: s.id,
+			img: s.path,
+			alt: s.alt || '',
+			labelKey: s.labelKey || 'farmers.slotFarm',
+		})),
 		logistics: {
 			transport: M.logistics.transport.path,
 			warehouse: M.logistics.warehouse.path,

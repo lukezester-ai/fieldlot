@@ -5,6 +5,7 @@ import {
 	getMaxListingAgeMs,
 	pruneStaleListings,
 } from './listings-freshness.js';
+import { categoryTag, enrichListing, inferCategory, inferRegion } from './listing-parse-utils.js';
 
 export type BorsaListingRaw = {
 	sourceId: string;
@@ -56,29 +57,6 @@ const UA = 'Fieldlot/1.0 (+https://fieldlot-two.vercel.app)';
 const SOURCE = 'borsaagro.com';
 const LIST_URL = 'https://borsaagro.com/potrebitelski-obqvi';
 
-const CATEGORY_RULES: { re: RegExp; cat: string }[] = [
-	{ re: /пшеница|ечемик|царевица|лещ|зърн|пшен|wheat|corn|barley|lentil/i, cat: 'grain' },
-	{ re: /слънчоглед|рапиц|олио|експелер|соев|sunflower|rapeseed|oil/i, cat: 'oilseed' },
-	{ re: /ябъл|домат|чушк|плод|fruit|apple/i, cat: 'fruit' },
-	{ re: /крастав|зелен|veg|pepper/i, cat: 'veg' },
-	{ re: /сено|фураж|feed|hay/i, cat: 'feed' },
-];
-
-const REGION_RULES: { re: RegExp; region: string; label: string }[] = [
-	{ re: /силистра|добрич|тутракан|добруджа/i, region: 'dobrudzha', label: 'Добруджа' },
-	{ re: /плевен|русе|шумен|търговище|разград|север/i, region: 'north', label: 'Север' },
-	{ re: /пловдив|стара загора|хасково|пазарджик|кърджали|юг/i, region: 'south', label: 'Юг' },
-	{ re: /видин|монтана|враца|перник|запад/i, region: 'west', label: 'Североизапад' },
-];
-
-const CATEGORY_TAGS: Record<string, string> = {
-	grain: 'Зърно',
-	oilseed: 'Маслодайни',
-	fruit: 'Плодове',
-	veg: 'Зеленчуци',
-	feed: 'Фураж',
-};
-
 function stripHtml(s: string): string {
 	return s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -92,19 +70,6 @@ function parseBgDate(raw: string): { iso: string; ts: number } {
 	return { iso: Number.isFinite(ts) ? dt.toISOString() : raw, ts: Number.isFinite(ts) ? ts : 0 };
 }
 
-function inferCategory(text: string): string {
-	for (const { re, cat } of CATEGORY_RULES) {
-		if (re.test(text)) return cat;
-	}
-	return 'grain';
-}
-
-function inferRegion(text: string): { region: string; label: string } {
-	for (const r of REGION_RULES) {
-		if (r.re.test(text)) return { region: r.region, label: r.label };
-	}
-	return { region: 'national', label: 'България' };
-}
 
 function normalizeGood(title: string): string {
 	return title
@@ -189,11 +154,11 @@ export async function fetchBorsaListingDetails(
 export function mapBorsaToFieldlot(raw: BorsaListingRaw): FieldlotListing {
 	const cat = inferCategory(`${raw.good} ${raw.description}`);
 	const reg = inferRegion(`${raw.description} ${raw.good}`);
-	const catTag = CATEGORY_TAGS[cat] || 'Агро';
+	const catTag = categoryTag(cat);
 	const roleTag = raw.role === 'buy' ? 'Търсене' : 'Продажба';
 	const verifiedTag = raw.verified ? 'Проверена' : 'Непроверена';
 
-	return {
+	return enrichListing({
 		id: `ba-${raw.sourceId}`,
 		title: raw.good,
 		subtitle: `${reg.label} · ${SOURCE}`,
@@ -213,7 +178,7 @@ export function mapBorsaToFieldlot(raw: BorsaListingRaw): FieldlotListing {
 		source: SOURCE,
 		sourceUrl: raw.sourceUrl,
 		publishedAt: raw.publishedAt,
-	};
+	});
 }
 
 function isCardDateFresh(dateStr: string, nowMs = Date.now()): boolean {

@@ -64,9 +64,15 @@ main { overflow: hidden; }
 
 .hero-ticker {
 	border-bottom: 1px solid var(--fl-line);
-	background: rgba(255, 255, 255, 0.7);
+	background: rgba(255, 255, 255, 0.92);
 	backdrop-filter: blur(8px);
 	overflow: hidden;
+}
+
+.hero-ticker-inner {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 12px;
 }
 
 .hero-ticker-track {
@@ -738,10 +744,69 @@ textarea:focus {
 
 .llm-foot {
 	display: grid;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: auto 1fr auto;
 	gap: 8px;
+	align-items: end;
 	padding: 14px;
 	border-top: 1px solid var(--fl-line);
+}
+
+.llm-photo {
+	width: 40px;
+	height: 40px;
+	border: 1px solid var(--fl-line);
+	border-radius: var(--fl-radius);
+	background: var(--fl-surface);
+	font-size: 1.05rem;
+	cursor: pointer;
+}
+
+.llm-photo:hover {
+	background: rgba(45, 106, 79, 0.08);
+}
+
+.llm-quick {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	padding: 0 12px 8px;
+}
+
+.llm-quick-btn {
+	font-size: 0.72rem;
+	padding: 6px 10px;
+	border-radius: 999px;
+	border: 1px solid var(--fl-line);
+	background: var(--fl-surface);
+	color: var(--fl-ink);
+	cursor: pointer;
+}
+
+.llm-quick-btn:hover {
+	border-color: var(--fl-accent);
+	background: rgba(45, 106, 79, 0.06);
+}
+
+.llm-draft-box {
+	margin-top: 10px;
+	padding: 10px;
+	border-radius: 8px;
+	background: rgba(15, 26, 20, 0.06);
+	border: 1px dashed var(--fl-line);
+	font-size: 0.8rem;
+	white-space: pre-wrap;
+	max-height: 220px;
+	overflow: auto;
+}
+
+.llm-draft-copy {
+	margin-top: 6px;
+	font-size: 0.75rem;
+	padding: 4px 10px;
+	border-radius: 6px;
+	border: 1px solid var(--fl-line);
+	background: #fff;
+	cursor: pointer;
 }
 
 .llm-foot textarea {

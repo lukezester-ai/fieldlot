@@ -639,17 +639,37 @@
 				<span data-i18n="catalog.filterCat">Категория</span>
 				<select id="category">
 					<option value="" data-i18n="catalog.all">Всички</option>
-					<option value="grain" data-i18n="catalog.cat.grain">Зърно</option>
-					<option value="oilseed" data-i18n="catalog.cat.oilseed">Маслодайни</option>
-					<option value="feed" data-i18n="catalog.cat.feed">Фураж</option>
-					<option value="fruit" data-i18n="catalog.cat.fruit">Плодове</option>
 					<option value="veg" data-i18n="catalog.cat.veg">Зеленчуци</option>
+					<option value="fruit" data-i18n="catalog.cat.fruit">Плодове</option>
+					<option value="grain" data-i18n="catalog.cat.grain">Зърно</option>
+					<option value="oil" data-i18n="catalog.cat.oil">Олио / маслодайни</option>
+					<option value="canned" data-i18n="catalog.cat.canned">Консерви</option>
+					<option value="fertilizer" data-i18n="catalog.cat.fertilizer">Торове</option>
+					<option value="machines" data-i18n="catalog.cat.machines">Машини</option>
+					<option value="feed" data-i18n="catalog.cat.feed">Фураж</option>
+				</select>
+			</label>
+			<label>
+				<span data-i18n="catalog.filterCrop">Култура</span>
+				<select id="crop">
+					<option value="" data-i18n="catalog.all">Всички</option>
+					<option value="wheat" data-i18n="catalog.crop.wheat">Пшеница</option>
+					<option value="barley" data-i18n="catalog.crop.barley">Ечемик</option>
+					<option value="corn" data-i18n="catalog.crop.corn">Царевица</option>
+					<option value="sunflower" data-i18n="catalog.crop.sunflower">Слънчоглед</option>
+					<option value="rapeseed" data-i18n="catalog.crop.rapeseed">Рапица</option>
+					<option value="tomato" data-i18n="catalog.crop.tomato">Домати</option>
+					<option value="pepper" data-i18n="catalog.crop.pepper">Чушки</option>
+					<option value="preserves" data-i18n="catalog.crop.preserves">Консерви</option>
+					<option value="herbs" data-i18n="catalog.crop.herbs">Билки</option>
+					<option value="tractor" data-i18n="catalog.crop.tractor">Техника</option>
 				</select>
 			</label>
 			<label>
 				<span data-i18n="catalog.filterRegion">Регион</span>
 				<select id="region">
 					<option value="" data-i18n="catalog.all">Всички</option>
+					<option value="national" data-i18n="catalog.region.national">Цяла България</option>
 					<option value="dobrudzha" data-i18n="catalog.region.dobrudzha">Добруджа</option>
 					<option value="north" data-i18n="catalog.region.north">Север</option>
 					<option value="south" data-i18n="catalog.region.south">Юг</option>
@@ -661,7 +681,7 @@
 				<select id="role">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="sell" data-i18n="catalog.role.sell">Продажба</option>
-					<option value="buy" data-i18n="catalog.role.buy">Търсене / купувач</option>
+					<option value="buy" data-i18n="catalog.role.buy">Търсене</option>
 				</select>
 			</label>
 			<button type="button" class="btn btn-secondary" id="reset-filters" data-i18n="catalog.reset">Изчисти</button>
@@ -704,6 +724,7 @@
 	<script src="/scripts/fieldlot-api-status.js"></script>
 	<script src="/scripts/fieldlot-images.js"></script>
 	<script src="/scripts/fieldlot-pdf.js" type="module"></script>
+	<script src="/scripts/fieldlot-categories.js"></script>
 	<script src="/scripts/catalog-page.js"></script>
 		<script src="/scripts/fieldlot-mobile.js"></script>
 </body>

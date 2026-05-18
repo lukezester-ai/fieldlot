@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fetchAllListingsSnapshot } from './listing-sources/index.js';
 import { rebuildFieldlotRagIndex } from './fieldlot-semantic-rag.js';
 import type { FieldlotListing } from './borsa-listings-fetcher.js';
+import { enrichListing } from './fieldlot-categories.js';
 
 const CROP_IMAGE: { re: RegExp; file: string }[] = [
 	{ re: /пшеница/i, file: '/images/crops/wheat.jpg' },
@@ -19,10 +20,14 @@ const CROP_IMAGE: { re: RegExp; file: string }[] = [
 
 const CAT_IMAGE: Record<string, string> = {
 	grain: '/images/crops/wheat.jpg',
+	oil: '/images/crops/sunflower.jpg',
 	oilseed: '/images/crops/sunflower.jpg',
 	fruit: '/images/crops/apple.jpg',
 	veg: '/images/crops/pepper.jpg',
 	feed: '/images/crops/hay.jpg',
+	canned: '/images/crops/canned.jpg',
+	fertilizer: '/images/crops/fertilizer.jpg',
+	machines: '/images/crops/machines.jpg',
 };
 
 function imageForListing(item: { title: string; category: string }): string {
@@ -45,7 +50,11 @@ export async function runListingsSyncPipeline(opts?: {
 	detailLimit?: number;
 }): Promise<SyncPipelineResult> {
 	const writeToDisk = opts?.writeToDisk !== false && !process.env.VERCEL;
-	const snap = await fetchAllListingsSnapshot(opts?.detailLimit ?? 40);
+	const snapRaw = await fetchAllListingsSnapshot(opts?.detailLimit ?? 40);
+	const snap = {
+		...snapRaw,
+		listings: snapRaw.listings.map((l) => enrichListing(l)),
+	};
 	const rag = await rebuildFieldlotRagIndex(snap.listings);
 
 	const paths: SyncPipelineResult['paths'] = {};

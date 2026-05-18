@@ -39,9 +39,30 @@
 				<div class="hero-gallery-slot hero-gallery-slot--peppers">${IMG.imgTag(g.peppers, altPep, 'fl-photo')}</div>
 				<div class="hero-gallery-slot hero-gallery-slot--cucumbers">${IMG.imgTag(g.cucumbers, altCuc, 'fl-photo')}</div>
 			</div>`;
+		gallery.removeAttribute('aria-hidden');
+	}
+
+	const CAT_ICONS = {
+		veg: '\u{1F345}',
+		fruit: '\u{1F34E}',
+		grain: '\u{1F33E}',
+		oil: '\u{1F6E2}\uFE0F',
+		canned: '\u{1F96B}',
+		fertilizer: '\u{1F9EA}',
+		machines: '\u{1F69C}',
+		feed: '\u{1F33F}',
+	};
+
+	function initCategoryIcons() {
+		document.querySelectorAll('.cat-card[data-cat] .icon').forEach((icon) => {
+			const card = icon.closest('[data-cat]');
+			const key = card?.getAttribute('data-cat');
+			if (key && CAT_ICONS[key]) icon.textContent = CAT_ICONS[key];
+		});
 	}
 
 	function initCategories() {
+		initCategoryIcons();
 		if (!IMG) return;
 		const map = {
 			veg: IMG.categories.veg,
@@ -70,19 +91,27 @@
 			avatar.src = IMG.farmer;
 			avatar.alt = t('listing.farmerAlt');
 		}
-		const row = document.getElementById('top-farmers');
-		if (!row || !IMG.farmers) return;
-		row.innerHTML = IMG.farmers
-			.map(
-				(f) => `
-			<a class="farmer-chip" href="${window.FieldlotI18n ? FieldlotI18n.withLangUrl('/catalog.html') : '/catalog.html'}">
-				<img src="${f.img}" alt="${f.name}" width="72" height="72" loading="lazy" referrerpolicy="no-referrer" />
-				<strong>${f.name}</strong>
-				<span>${f.role}</span>
-				<em>★ ${f.rating}</em>
-			</a>`,
-			)
-			.join('');
+		const showcase = IMG.farmerShowcase;
+		if (showcase?.length) {
+			const byId = Object.fromEntries(showcase.map((s) => [s.id, s]));
+			document.querySelectorAll('[data-farm-img]').forEach((slot) => {
+				const key = slot.getAttribute('data-farm-img');
+				const item = key ? byId[key] : null;
+				if (!item?.img) return;
+				const alt = item.alt || t('farmers.slotFarm');
+				slot.innerHTML = IMG.imgTag(item.img, alt, 'fl-photo');
+				const img = slot.querySelector('img');
+				if (img) {
+					img.addEventListener('error', () => {
+						slot.style.backgroundImage = `url("${item.img}")`;
+					});
+				}
+			});
+		}
+		const ctaBase = window.FieldlotI18n?.withLangUrl?.('#cta') || '#cta';
+		document.querySelectorAll('.farm-showcase-card[href="#cta"]').forEach((a) => {
+			a.setAttribute('href', ctaBase);
+		});
 	}
 
 	function initLogistics() {
@@ -141,6 +170,40 @@
 					minute: '2-digit',
 				});
 		}
+	}
+
+	async function loadHeaderTicker() {
+		const ticker = document.getElementById('market-ticker');
+		const track = document.getElementById('market-ticker-track');
+		if (!ticker || !track) return;
+		let quotes = [];
+		try {
+			const res = await fetch('/api/exchange-prices');
+			const data = await res.json();
+			if (res.ok && data.ok && Array.isArray(data.quotes)) quotes = data.quotes;
+		} catch {
+			/* fallback */
+		}
+		if (!quotes.length) {
+			try {
+				const res2 = await fetch('/data/exchange-prices.json');
+				const data2 = await res2.json();
+				if (Array.isArray(data2.quotes)) quotes = data2.quotes;
+			} catch {
+				return;
+			}
+		}
+		const en = FieldlotI18n?.getLang() === 'en';
+		const items = quotes.map((q) => {
+			const chg = q.chg ?? 0;
+			const sign = chg >= 0 ? '+' : '−';
+			const chgTxt = `${sign}${Math.abs(chg).toFixed(1)}%`;
+			const label = en ? q.name : q.name;
+			return `<span>${label} ${q.priceBgn} ${q.unit || 'лв/тон'} · ${chgTxt}</span>`;
+		});
+		if (!items.length) return;
+		track.innerHTML = items.join('') + items.join('');
+		ticker.hidden = false;
 	}
 
 	async function loadExchange() {
@@ -213,6 +276,8 @@
 			const slice = (sorted.length ? sorted : all).slice(0, 4);
 			grid.innerHTML = slice.map((item) => cardHtml(item)).join('');
 			window.__fieldlotVisibleIds = slice.map((x) => x.id);
+			const statEl = document.getElementById('hero-stat-count');
+			if (statEl && all.length) statEl.textContent = String(all.length);
 		} catch {
 			grid.innerHTML = `<p class="demo-strip">${t('listing.loadFail')}</p>`;
 		}
@@ -220,15 +285,20 @@
 
 	function refreshDynamic() {
 		initHero();
+		initCategoryIcons();
+		initCategories();
 		initFarmers();
+		loadHeaderTicker();
 		loadExchange();
 		loadListings();
 	}
 
+	initCategoryIcons();
 	initHero();
 	initCategories();
 	initFarmers();
 	initLogistics();
+	loadHeaderTicker();
 	loadExchange();
 	loadListings();
 	setInterval(loadExchange, 24 * 60 * 60 * 1000);

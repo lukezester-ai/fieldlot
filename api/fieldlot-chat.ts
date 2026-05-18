@@ -51,6 +51,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 			actions: result.actions,
 			agentMode: result.agentMode,
 			semanticHits: result.semanticHits,
+			imageClassification: result.imageClassification,
+			listingDraft: result.listingDraft,
 		});
 		return;
 	}

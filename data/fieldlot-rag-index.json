@@ -1,5 +1,5 @@
 {
-	"updatedAt": "2026-05-17T19:38:54.951Z",
+	"updatedAt": "2026-05-18T06:42:59.888Z",
 	"model": "keyword-only",
 	"chunks": [
 		{
@@ -48,7 +48,7 @@
 			"id": "catalog-filters",
 			"kind": "knowledge",
 			"title": "catalog-filters",
-			"text": "Каталогът филтрира по: текстово търсене, категория (зърно, маслодайни, фураж, плодове, зеленчуци), регион (Добруджа, север, юг, запад), тип (продажба или търсене/купувач). Детайлът на карта отваря панел; запитване води към /#cta?listing=ID."
+			"text": "Каталогът филтрира по: текст, категория (veg зеленчуци, fruit плодове, grain зърно, oil олио/маслодайни, canned консерви, fertilizer торове, machines техника, feed фураж), култура (wheat пшеница, barley ечемик, corn, sunflower, tomato, preserves консерви, herbs билки, tractor…), регион (dobrudzha, north, south, west, national), тип sell/buy. URL: /catalog.html?category=grain&crop=wheat"
 		},
 		{
 			"id": "listings-source",
@@ -63,6 +63,12 @@
 			"text": "Добра обява включва: култура/продукт, количество, регион, цена или „по договорение“, Incoterm (FCA, EXW…), реколта/сезон, качество/спецификация, контакт. Купувачите и продавачите проверяват документи и логистика директно."
 		},
 		{
+			"id": "listing-writer-ai",
+			"kind": "knowledge",
+			"title": "listing-writer-ai",
+			"text": "Fieldlot Guide ПИШЕ и РЕДАКТИРА обяви: инструменти draft_listing (нова чернова) и edit_listing (промени по id или текст). API: POST /api/draft-listing с action=draft|edit. Връща formattedText (готов текст за копиране), полета title/qty/price/quality/incoterm и checklist какво липсва. Не публикува автоматично в borsaagro — фаза 1: копирай текста или ранен достъп #cta. Примери: „Напиши обява за 80т пшеница Добруджа FCA“, „Съкрати текста“, „Редактирай ba-86 — добави влага 14%“."
+		},
+		{
 			"id": "trust-logistics",
 			"kind": "knowledge",
 			"title": "trust-logistics",
@@ -72,7 +78,7 @@
 			"id": "assistant-capabilities",
 			"kind": "knowledge",
 			"title": "assistant-capabilities",
-			"text": "Fieldlot Guide (RAG) вижда: knowledge chunks, всички каталожни обяви (borsaagro), fieldlot-image-manifest.json. Чат: POST /api/fieldlot-chat. Не измисля оферти извън RAG."
+			"text": "Fieldlot Guide (RAG) вижда: knowledge chunks, всички каталожни обяви (borsaagro), fieldlot-image-manifest.json. Чат: POST /api/fieldlot-chat. Пише/редактира обяви: draft_listing, edit_listing, POST /api/draft-listing. Не измисля оферти извън RAG."
 		},
 		{
 			"id": "rag-authority",
@@ -84,7 +90,13 @@
 			"id": "categories-map",
 			"kind": "knowledge",
 			"title": "categories-map",
-			"text": "Категории: grain=зърно, oilseed=маслодайни, feed=фураж, fruit=плодове, veg=зеленчуци. Региони: dobrudzha=Добруджа, north=север, south=юг, west=северозапад/запад. role=sell е продажба, role=buy е търсене от купувач."
+			"text": "Категории (канонични id): veg, fruit, grain, oil, canned, fertilizer, machines, feed. Старо oilseed → oil. Култури (crop): wheat, barley, corn, sunflower, rapeseed, tomato, pepper, cucumber, apple, herbs, preserves, hay, tractor. AI разпознава снимки: POST /api/classify-image или tool classify_crop_image в чата. Пшеница vs ечемик: различни класове на зърно. Консерви/лютеница → canned. Трактор/комбайн → machines. Региони: dobrudzha, north, south, west, national. role=sell продажба, buy търсене."
+		},
+		{
+			"id": "vision-ai",
+			"kind": "knowledge",
+			"title": "vision-ai",
+			"text": "Fieldlot Guide може да анализира снимка на продукт: качи в AI чата (📷) или POST /api/classify-image с imageBase64. Връща category + crop + етикети. След това филтрира обяви с search_listings(category, crop). Manifest снимки: hero домати/чушки/краставици; grain→wheat.jpg; canned→canned.jpg; machines→machines.jpg."
 		},
 		{
 			"id": "site-images",
@@ -96,7 +108,7 @@
 			"id": "listing:ba-86",
 			"kind": "listing",
 			"title": "Царевица",
-			"text": "Царевица България · borsaagro.com grain national sell 500.00 100.00 лв Зърно Продажба borsaagro.com",
+			"text": "Царевица България · borsaagro.com grain crop:corn national sell 500.00 100.00 лв Зърно Продажба borsaagro.com crop:corn",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/86",
 			"listingId": "ba-86"
 		},
@@ -104,7 +116,7 @@
 			"id": "listing:ba-84",
 			"kind": "listing",
 			"title": "Олио соево нерафинирано",
-			"text": "Олио соево нерафинирано България · borsaagro.com oilseed national sell 100.00 1 000.00 лв Маслодайни Продажба borsaagro.com",
+			"text": "Олио соево нерафинирано България · borsaagro.com oil national sell 100.00 1 000.00 лв Олио Продажба borsaagro.com",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/84",
 			"listingId": "ba-84"
 		},
@@ -112,7 +124,7 @@
 			"id": "listing:ba-83",
 			"kind": "listing",
 			"title": "ЦАРЕВИЦА",
-			"text": "ЦАРЕВИЦА България · borsaagro.com grain national sell 200.00 200.00 лв Зърно Продажба borsaagro.com",
+			"text": "ЦАРЕВИЦА България · borsaagro.com grain crop:corn national sell 200.00 200.00 лв Зърно Продажба borsaagro.com crop:corn",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/83",
 			"listingId": "ba-83"
 		},
@@ -120,7 +132,7 @@
 			"id": "listing:ba-82",
 			"kind": "listing",
 			"title": "ЦАРЕВИЦА",
-			"text": "ЦАРЕВИЦА България · borsaagro.com grain national sell 200.00 350.00 лв Зърно Продажба borsaagro.com",
+			"text": "ЦАРЕВИЦА България · borsaagro.com grain crop:corn national sell 200.00 350.00 лв Зърно Продажба borsaagro.com crop:corn",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/82",
 			"listingId": "ba-82"
 		},
@@ -128,7 +140,7 @@
 			"id": "listing:ba-81",
 			"kind": "listing",
 			"title": "ПШЕНИЦА",
-			"text": "ПШЕНИЦА България · borsaagro.com grain national sell 100.00 100.00 лв Зърно Продажба borsaagro.com",
+			"text": "ПШЕНИЦА България · borsaagro.com grain crop:wheat national sell 100.00 100.00 лв Зърно Продажба borsaagro.com crop:wheat",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/81",
 			"listingId": "ba-81"
 		},
@@ -136,7 +148,7 @@
 			"id": "listing:ba-79",
 			"kind": "listing",
 			"title": "ОЛИО СОЕВО НЕРАФИНИРАНО",
-			"text": "ОЛИО СОЕВО НЕРАФИНИРАНО България · borsaagro.com oilseed national sell 24.00 тон 980.00 € Маслодайни Продажба borsaagro.com",
+			"text": "ОЛИО СОЕВО НЕРАФИНИРАНО България · borsaagro.com oil crop:soy national sell 24.00 тон 980.00 € Олио Продажба borsaagro.com crop:soy",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/79",
 			"listingId": "ba-79"
 		},
@@ -144,7 +156,7 @@
 			"id": "listing:ba-78",
 			"kind": "listing",
 			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oilseed national sell 150.00 тон 190.00 € Маслодайни Продажба borsaagro.com",
+			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oil crop:sunflower national sell 150.00 тон 190.00 € Олио Продажба borsaagro.com crop:sunflower",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/78",
 			"listingId": "ba-78"
 		},
@@ -152,7 +164,7 @@
 			"id": "listing:ba-77",
 			"kind": "listing",
 			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oilseed national sell 150.00 тон 190.00 € Маслодайни Продажба borsaagro.com",
+			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oil crop:sunflower national sell 150.00 тон 190.00 € Олио Продажба borsaagro.com crop:sunflower",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/77",
 			"listingId": "ba-77"
 		},
@@ -160,7 +172,7 @@
 			"id": "listing:ba-76",
 			"kind": "listing",
 			"title": "СЛЪНЧОГЛЕД МАСЛОДАЕН",
-			"text": "СЛЪНЧОГЛЕД МАСЛОДАЕН България · borsaagro.com oilseed national sell 10.00 тон 500.00 € Маслодайни Продажба borsaagro.com",
+			"text": "СЛЪНЧОГЛЕД МАСЛОДАЕН България · borsaagro.com oil crop:sunflower national sell 10.00 тон 500.00 € Олио Продажба borsaagro.com crop:sunflower",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/76",
 			"listingId": "ba-76"
 		}

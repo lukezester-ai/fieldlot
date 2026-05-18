@@ -1,6 +1,21 @@
 /**
  * Fieldlot Guide — agent tools (actions): email, listings, exchange, API fetch.
  */
+import {
+	FIELDLOT_CATEGORY_IDS,
+	FIELDLOT_CROP_IDS,
+	matchListingCategory,
+	matchListingCrop,
+	matchListingRegion,
+} from './fieldlot-categories.js';
+import { classifyAgroImage, visionResultToListingHint } from './fieldlot-vision.js';
+import {
+	draftListingFromFacts,
+	editListingDraft,
+	listingToDraft,
+	polishListingDraft,
+	type ListingDraft,
+} from './fieldlot-listing-writer.js';
 import { getExchangeSnapshotCached } from './exchange-prices.js';
 import { getAllListings, type FieldlotListing } from './fieldlot-rag.js';
 import { getListingsSnapshot, getStaticListingsSnapshot } from './listings-data.js';
@@ -115,17 +130,20 @@ function listingSummary(l: FieldlotListing): Record<string, unknown> {
 function searchListings(args: {
 	query?: string;
 	category?: string;
+	crop?: string;
 	region?: string;
 	role?: string;
 }): FieldlotListing[] {
 	const q = (args.query ?? '').toLowerCase().trim();
 	const cat = args.category?.trim();
+	const crop = args.crop?.trim();
 	const reg = args.region?.trim();
 	const role = args.role?.trim();
 
 	return getAllListings().filter((item) => {
-		if (cat && item.category !== cat) return false;
-		if (reg && item.region !== reg) return false;
+		if (cat && !matchListingCategory(item, cat)) return false;
+		if (crop && !matchListingCrop(item, crop)) return false;
+		if (reg && !matchListingRegion(item, reg)) return false;
 		if (role && item.role !== role) return false;
 		if (!q) return true;
 		const hay = [
@@ -157,21 +175,102 @@ export const FIELDLOT_AGENT_TOOLS = [
 		type: 'function' as const,
 		function: {
 			name: 'search_listings',
-			description: 'Search live B2B agro listings (borsaagro.com) by text, category, region, or role (sell/buy).',
+			description:
+				'Search live B2B agro listings by text, category (veg/fruit/grain/oil/canned/fertilizer/machines/feed), crop (wheat/barley/corn…), region, or role.',
 			parameters: {
 				type: 'object',
 				properties: {
 					query: { type: 'string', description: 'Free text: crop, region, quality…' },
 					category: {
 						type: 'string',
-						enum: ['grain', 'oilseed', 'feed', 'fruit', 'veg'],
+						enum: [...FIELDLOT_CATEGORY_IDS],
+						description: 'Market section: veg, fruit, grain, oil, canned, fertilizer, machines, feed',
+					},
+					crop: {
+						type: 'string',
+						enum: [...FIELDLOT_CROP_IDS],
+						description: 'Specific crop/product: wheat, barley, tomato, preserves, tractor…',
 					},
 					region: {
 						type: 'string',
-						enum: ['dobrudzha', 'north', 'south', 'west'],
+						enum: ['dobrudzha', 'north', 'south', 'west', 'national'],
 					},
 					role: { type: 'string', enum: ['sell', 'buy'] },
 				},
+				additionalProperties: false,
+			},
+		},
+	},
+	{
+		type: 'function' as const,
+		function: {
+			name: 'classify_crop_image',
+			description:
+				'Classify an agro product photo (base64) into category and crop (wheat vs barley, veg preserves, machinery, herbs). Use when user sends or describes a photo.',
+			parameters: {
+				type: 'object',
+				properties: {
+					image_base64: { type: 'string', description: 'Base64 image data (no data: prefix required)' },
+					mime_type: { type: 'string', description: 'image/jpeg, image/png, image/webp' },
+				},
+				required: ['image_base64'],
+				additionalProperties: false,
+			},
+		},
+	},
+	{
+		type: 'function' as const,
+		function: {
+			name: 'draft_listing',
+			description:
+				'Write a new B2B agro listing draft (title, quality text, qty, price, incoterm). Use when user wants to publish/sell/buy and needs ad copy. Returns formatted text + structured fields.',
+			parameters: {
+				type: 'object',
+				properties: {
+					product: { type: 'string', description: 'Crop/product name e.g. Пшеница, домати' },
+					role: { type: 'string', enum: ['sell', 'buy'] },
+					category: { type: 'string', enum: [...FIELDLOT_CATEGORY_IDS] },
+					crop: { type: 'string', enum: [...FIELDLOT_CROP_IDS] },
+					qty: { type: 'string', description: 'e.g. 85 т, 200+ т' },
+					region: {
+						type: 'string',
+						enum: ['dobrudzha', 'north', 'south', 'west', 'national'],
+					},
+					price: { type: 'string' },
+					price_unit: { type: 'string' },
+					incoterm: { type: 'string', description: 'FCA, EXW…' },
+					harvest: { type: 'string' },
+					quality: { type: 'string', description: 'Specs: moisture, class, certificates' },
+					contact: { type: 'string' },
+					notes: { type: 'string', description: 'Extra facts from user' },
+					polish: { type: 'boolean', description: 'LLM polish (default true)' },
+				},
+				required: ['product'],
+				additionalProperties: false,
+			},
+		},
+	},
+	{
+		type: 'function' as const,
+		function: {
+			name: 'edit_listing',
+			description:
+				'Edit an existing listing draft or catalog listing by id. Apply user change requests (shorter text, add price, fix typos, translate).',
+			parameters: {
+				type: 'object',
+				properties: {
+					listing_id: { type: 'string', description: 'Catalog id e.g. ba-86 (optional if draft provided)' },
+					instructions: {
+						type: 'string',
+						description: 'What to change: tone, add FCA, shorten, fix grammar…',
+					},
+					product: { type: 'string' },
+					role: { type: 'string', enum: ['sell', 'buy'] },
+					qty: { type: 'string' },
+					price: { type: 'string' },
+					quality: { type: 'string' },
+				},
+				required: ['instructions'],
 				additionalProperties: false,
 			},
 		},
@@ -300,6 +399,7 @@ export async function executeAgentTool(
 				const items = searchListings({
 					query: typeof args.query === 'string' ? args.query : undefined,
 					category: typeof args.category === 'string' ? args.category : undefined,
+					crop: typeof args.crop === 'string' ? args.crop : undefined,
 					region: typeof args.region === 'string' ? args.region : undefined,
 					role: typeof args.role === 'string' ? args.role : undefined,
 				});
@@ -313,6 +413,100 @@ export async function executeAgentTool(
 						count: items.length,
 						listings: items.map(listingSummary),
 					}),
+					action: { tool: name, ok: true, summary },
+				};
+			}
+
+			case 'classify_crop_image': {
+				const b64 = typeof args.image_base64 === 'string' ? args.image_base64 : '';
+				const mime = typeof args.mime_type === 'string' ? args.mime_type : 'image/jpeg';
+				const v = await classifyAgroImage({
+					imageBase64: b64,
+					mimeType: mime,
+					lang: ctx.lang,
+				});
+				const summary =
+					ctx.lang === 'en'
+						? `Photo: ${v.category}${v.crop ? ` · ${v.crop}` : ''} (${Math.round(v.confidence * 100)}%)`
+						: `Снимка: ${v.category}${v.crop ? ` · ${v.crop}` : ''} (${Math.round(v.confidence * 100)}%)`;
+				return {
+					result: JSON.stringify({
+						ok: v.ok,
+						classification: v,
+						hint: visionResultToListingHint(v),
+						suggestSearch: {
+							category: v.category,
+							crop: v.crop,
+						},
+					}),
+					action: { tool: name, ok: v.ok, summary },
+				};
+			}
+
+			case 'draft_listing': {
+				let draft = draftListingFromFacts({
+					lang: ctx.lang,
+					role: args.role === 'buy' ? 'buy' : 'sell',
+					product: typeof args.product === 'string' ? args.product : undefined,
+					category: typeof args.category === 'string' ? args.category : undefined,
+					crop: typeof args.crop === 'string' ? args.crop : undefined,
+					qty: typeof args.qty === 'string' ? args.qty : undefined,
+					region: typeof args.region === 'string' ? args.region : undefined,
+					price: typeof args.price === 'string' ? args.price : undefined,
+					priceUnit: typeof args.price_unit === 'string' ? args.price_unit : undefined,
+					incoterm: typeof args.incoterm === 'string' ? args.incoterm : undefined,
+					harvest: typeof args.harvest === 'string' ? args.harvest : undefined,
+					quality: typeof args.quality === 'string' ? args.quality : undefined,
+					contact: typeof args.contact === 'string' ? args.contact : undefined,
+					notes: typeof args.notes === 'string' ? args.notes : undefined,
+				});
+				if (args.polish !== false) draft = await polishListingDraft(draft, { lang: ctx.lang });
+				const summary =
+					ctx.lang === 'en'
+						? `Listing draft: ${draft.title}`
+						: `Чернова обява: ${draft.title}`;
+				return {
+					result: JSON.stringify({ ok: true, draft }),
+					action: { tool: name, ok: true, summary },
+				};
+			}
+
+			case 'edit_listing': {
+				const instructions = typeof args.instructions === 'string' ? args.instructions.trim() : '';
+				if (!instructions) {
+					const msg = ctx.lang === 'en' ? 'instructions required' : 'нужни са инструкции';
+					return {
+						result: JSON.stringify({ ok: false, error: msg }),
+						action: { tool: name, ok: false, summary: msg },
+					};
+				}
+				const listingId = typeof args.listing_id === 'string' ? args.listing_id.trim() : '';
+				let base: ListingDraft;
+				if (listingId) {
+					const item = getAllListings().find((l) => l.id === listingId);
+					if (!item) {
+						const msg = ctx.lang === 'en' ? `Listing not found: ${listingId}` : `Няма обява: ${listingId}`;
+						return {
+							result: JSON.stringify({ ok: false, error: msg }),
+							action: { tool: name, ok: false, summary: msg },
+						};
+					}
+					base = listingToDraft(item, ctx.lang);
+				} else {
+					base = draftListingFromFacts({
+						lang: ctx.lang,
+						role: args.role === 'buy' ? 'buy' : 'sell',
+						product: typeof args.product === 'string' ? args.product : undefined,
+						qty: typeof args.qty === 'string' ? args.qty : undefined,
+						price: typeof args.price === 'string' ? args.price : undefined,
+						quality: typeof args.quality === 'string' ? args.quality : undefined,
+					});
+				}
+				const draft = await editListingDraft(base, instructions, { lang: ctx.lang });
+				const summary =
+					ctx.lang === 'en' ? `Edited listing: ${draft.title}` : `Редакция: ${draft.title}`;
+				return {
+					result: JSON.stringify({ ok: true, draft }),
 					action: { tool: name, ok: true, summary },
 				};
 			}

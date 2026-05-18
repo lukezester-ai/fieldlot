@@ -20,12 +20,15 @@
 		const input = document.getElementById('llm-input');
 		const sendBtn = document.getElementById('llm-send');
 		const statusEl = document.getElementById('llm-status');
+		const photoInput = document.getElementById('llm-photo');
+		const photoBtn = document.getElementById('llm-photo-btn');
 		if (!fab || !panel || !msgs || !input || !sendBtn || !statusEl) return;
 
 		const messages = [];
 		const page = opts.page || defaultPage();
 		let apiOnline = false;
 		let welcomeShown = false;
+		let pendingImage = null;
 
 		function buildContext() {
 			const base = {
@@ -119,27 +122,78 @@
 			if (global.FieldlotI18n) global.FieldlotI18n.applyI18n(panel);
 		});
 
+		function readFileAsBase64(file) {
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => {
+					const dataUrl = String(reader.result || '');
+					const m = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+					if (!m) {
+						reject(new Error('bad image'));
+						return;
+					}
+					resolve({ mimeType: m[1], base64: m[2] });
+				};
+				reader.onerror = () => reject(reader.error || new Error('read failed'));
+				reader.readAsDataURL(file);
+			});
+		}
+
+		if (photoBtn && photoInput) {
+			photoBtn.addEventListener('click', () => photoInput.click());
+			photoInput.addEventListener('change', async () => {
+				const file = photoInput.files?.[0];
+				photoInput.value = '';
+				if (!file || !file.type.startsWith('image/')) return;
+				if (file.size > 4_500_000) {
+					addMsg('assistant', t('chat.imageTooBig'));
+					return;
+				}
+				try {
+					pendingImage = await readFileAsBase64(file);
+					const en = global.FieldlotI18n?.getLang?.() === 'en';
+					addMsg(
+						'user',
+						en ? '📷 Photo attached — send a message or press Enter.' : '📷 Снимката е готова — изпрати съобщение.',
+					);
+				} catch {
+					addMsg('assistant', t('chat.imageErr'));
+				}
+			});
+		}
+
 		async function send() {
 			if (!apiOnline) {
 				addMsg('assistant', t('chat.offlineReply'));
 				return;
 			}
 			const text = input.value.trim();
-			if (!text) return;
+			if (!text && !pendingImage) return;
+			const imagePayload = pendingImage;
+			pendingImage = null;
 			input.value = '';
-			messages.push({ role: 'user', content: text });
-			addMsg('user', text);
+			const userLine =
+				text ||
+				(global.FieldlotI18n?.getLang?.() === 'en'
+					? 'Classify this agro product photo and find matching listings.'
+					: 'Разпознай снимката и намери подходящи обяви.');
+			messages.push({ role: 'user', content: userLine });
+			addMsg('user', imagePayload ? `${userLine}\n📷` : userLine);
 			sendBtn.disabled = true;
 			addMsg('assistant', t('chat.thinking'));
 			const waiting = msgs.lastElementChild;
 			try {
+				const body = {
+					messages,
+					context: buildContext(),
+				};
+				if (imagePayload) {
+					body.image = { base64: imagePayload.base64, mimeType: imagePayload.mimeType };
+				}
 				const res = await fetch('/api/fieldlot-chat', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						messages,
-						context: buildContext(),
-					}),
+					body: JSON.stringify(body),
 				});
 				const data = await res.json().catch(() => ({}));
 				if (!res.ok || !data.reply) throw new Error(data.error || t('chat.noReply'));
@@ -166,6 +220,36 @@
 						a.style.marginTop = '4px';
 						a.textContent = `${h.title} (${Math.round((h.similarity || 0) * 100)}%)`;
 						waiting.appendChild(a);
+					}
+				}
+				if (data.listingDraft?.formattedText) {
+					appendDraftBox(waiting, data.listingDraft);
+				}
+				if (data.imageClassification?.ok) {
+					const en = global.FieldlotI18n?.getLang?.() === 'en';
+					const ic = data.imageClassification;
+					const vbox = document.createElement('div');
+					vbox.style.marginTop = '8px';
+					vbox.style.fontSize = '0.85rem';
+					vbox.style.color = '#b8d4c8';
+					vbox.textContent = en
+						? `📷 ${ic.category}${ic.crop ? ` · ${ic.crop}` : ''} (${Math.round((ic.confidence || 0) * 100)}%)`
+						: `📷 ${ic.category}${ic.crop ? ` · ${ic.crop}` : ''} (${Math.round((ic.confidence || 0) * 100)}%)`;
+					waiting.appendChild(vbox);
+					if (ic.category) {
+						const catUrl =
+							'/catalog.html?category=' +
+							encodeURIComponent(ic.category) +
+							(ic.crop ? '&crop=' + encodeURIComponent(ic.crop) : '');
+						const link = document.createElement('a');
+						link.href = global.FieldlotI18n?.withLangUrl
+							? FieldlotI18n.withLangUrl(catUrl)
+							: catUrl;
+						link.style.display = 'block';
+						link.style.marginTop = '6px';
+						link.style.color = '#7ccd9c';
+						link.textContent = t('chat.viewCatalog');
+						waiting.appendChild(link);
 					}
 				}
 				if (actionBlock) {
@@ -203,6 +287,45 @@
 			if (welcomeShown) return;
 			welcomeShown = true;
 			addMsg('assistant', opts.welcome || t('chat.welcome'));
+		}
+
+		const quick = document.getElementById('llm-quick');
+		quick?.querySelectorAll('[data-prompt]').forEach((btn) => {
+			btn.addEventListener('click', () => {
+				const p = btn.getAttribute('data-prompt');
+				if (!p) return;
+				input.value = p;
+				setOpen(true);
+				input.focus();
+			});
+		});
+
+		function appendDraftBox(parent, draft) {
+			if (!draft?.formattedText) return;
+			const en = global.FieldlotI18n?.getLang?.() === 'en';
+			const wrap = document.createElement('div');
+			const pre = document.createElement('pre');
+			pre.className = 'llm-draft-box';
+			pre.textContent = draft.formattedText;
+			wrap.appendChild(pre);
+			if (draft.checklist?.length) {
+				const note = document.createElement('p');
+				note.style.fontSize = '0.75rem';
+				note.style.color = '#9bb0a3';
+				note.style.marginTop = '6px';
+				note.textContent = (en ? 'Missing: ' : 'Допълни: ') + draft.checklist.join(', ');
+				wrap.appendChild(note);
+			}
+			const copyBtn = document.createElement('button');
+			copyBtn.type = 'button';
+			copyBtn.className = 'llm-draft-copy';
+			copyBtn.textContent = en ? 'Copy text' : 'Копирай текста';
+			copyBtn.addEventListener('click', () => {
+				navigator.clipboard?.writeText(draft.formattedText).catch(() => {});
+				copyBtn.textContent = en ? 'Copied ✓' : 'Копирано ✓';
+			});
+			wrap.appendChild(copyBtn);
+			parent.appendChild(wrap);
 		}
 
 		showWelcome();

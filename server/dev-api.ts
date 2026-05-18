@@ -2,6 +2,7 @@ import 'dotenv/config';
 import http from 'node:http';
 import { handleAdminGet, handleAdminGetKnowledge, handleAdminPost } from './admin-handler.js';
 import { handleFieldlotChatPost } from './fieldlot-chat-handler.js';
+import { handleDraftListingRequest } from './fieldlot-listing-writer.js';
 import { getRagIndexStatus } from './fieldlot-semantic-rag.js';
 import { getAllListings } from './fieldlot-rag.js';
 import { getListingsSnapshot } from './listings-data.js';
@@ -99,10 +100,23 @@ const server = http.createServer(async (req, res) => {
 					semanticHits: result.semanticHits,
 					actions: result.actions,
 					agentMode: result.agentMode,
+					imageClassification: result.imageClassification,
+					listingDraft: result.listingDraft,
 				});
 				return;
 			}
 			send(res, result.status, { error: result.error, hint: result.hint });
+			return;
+		}
+
+		if (path === '/api/draft-listing' && req.method === 'POST') {
+			const body = await readJson(req);
+			if (body === null || typeof body !== 'object') {
+				send(res, 400, { ok: false, error: 'Invalid JSON' });
+				return;
+			}
+			const result = await handleDraftListingRequest(body as Record<string, unknown>);
+			send(res, result.ok ? 200 : 400, result);
 			return;
 		}
 

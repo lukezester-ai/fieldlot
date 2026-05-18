@@ -34,7 +34,7 @@
 					</span>
 				</a>
 				<form class="header-search" id="header-search" role="search">
-					<span aria-hidden="true">🔍</span>
+					<span class="header-search-icon" aria-hidden="true"></span>
 					<input type="search" name="q" data-i18n-placeholder="nav.searchPlaceholder" placeholder="Търси домати, олио, пшеница…" autocomplete="off" />
 				</form>
 				<div class="lang-switch" role="group" data-i18n-aria="lang.label" aria-label="Език">
@@ -63,11 +63,17 @@
 				<a href="#listings" data-i18n="nav.market">Пазар</a>
 				<a href="#exchange" data-i18n="nav.exchange">Борса</a>
 				<a href="#logistics" data-i18n="nav.logistics">Логистика</a>
-				<a href="#farmers" data-i18n="nav.farmers">Производители</a>
+				<a href="#top-producers" data-i18n="nav.farmers">Производители</a>
 				<a href="/catalog.html" data-i18n="nav.demoCatalog">Каталог</a>
 			</nav>
 		</div>
 	</header>
+
+	<div class="hero-ticker" id="market-ticker" hidden aria-label="Борсови индикативни цени">
+		<div class="hero-ticker-inner">
+			<div class="hero-ticker-track" id="market-ticker-track"></div>
+		</div>
+	</div>
 
 	<main>
 		<section class="hero-eco">
@@ -82,9 +88,9 @@
 						<button type="button" class="btn btn-secondary" id="hero-ai-chat-btn" data-i18n="hero.ai">AI асистент</button>
 					</div>
 					<div class="hero-eco-stats">
-						<div><strong>11+</strong><span data-i18n="hero.stat1">живи обяви</span></div>
+						<div><strong id="hero-stat-count">9+</strong><span data-i18n="hero.stat1">живи обяви</span></div>
 						<div><strong>B2B</strong><span data-i18n="hero.stat2">партиди от полето</span></div>
-						<div><strong>0%</strong><span data-i18n="hero.stat3">комисиона · фаза 1</span></div>
+						<div><strong>0%</strong><span data-i18n="hero.stat3">без комисионна · фаза 1</span></div>
 					</div>
 				</div>
 				<div class="hero-eco-gallery reveal" id="hero-gallery" aria-hidden="true"></div>
@@ -99,14 +105,14 @@
 					<p data-i18n="cat.lead">От зеленчуци до машини — намери или публикувай в правилната категория.</p>
 				</div>
 				<div class="cat-grid reveal">
-					<a class="cat-card" data-cat="veg" href="/catalog.html?category=veg"><span class="icon">🍅</span><strong data-i18n="cat.veg">Зеленчуци</strong><span data-i18n="cat.vegHint">домати, пипер…</span></a>
-					<a class="cat-card" data-cat="fruit" href="/catalog.html?category=fruit"><span class="icon">🍎</span><strong data-i18n="cat.fruit">Плодове</strong><span data-i18n="cat.fruitHint">ябълки, круши…</span></a>
-					<a class="cat-card" data-cat="grain" href="/catalog.html?category=grain"><span class="icon">🌾</span><strong data-i18n="cat.grain">Зърно</strong><span data-i18n="cat.grainHint">пшеница, царевица…</span></a>
-					<a class="cat-card" data-cat="oil" href="/catalog.html"><span class="icon">🛢️</span><strong data-i18n="cat.oil">Олио</strong><span data-i18n="cat.oilHint">бутилки, слънчоглед…</span></a>
-					<a class="cat-card" data-cat="canned" href="/catalog.html"><span class="icon">🥫</span><strong data-i18n="cat.canned">Консерви</strong><span data-i18n="cat.cannedHint">преработка</span></a>
-					<a class="cat-card" data-cat="fertilizer" href="/catalog.html"><span class="icon">🧪</span><strong data-i18n="cat.fertilizer">Торове</strong><span data-i18n="cat.fertilizerHint">агро входове</span></a>
-					<a class="cat-card" data-cat="machines" href="/catalog.html"><span class="icon">🚜</span><strong data-i18n="cat.machines">Машини</strong><span data-i18n="cat.machinesHint">техника</span></a>
-					<a class="cat-card" data-cat="feed" href="/catalog.html?category=feed"><span class="icon">🌿</span><strong data-i18n="cat.feed">Фураж</strong><span data-i18n="cat.feedHint">сено, фуражи</span></a>
+					<a class="cat-card" data-cat="veg" href="/catalog.html?category=veg"><span class="icon" aria-hidden="true"></span><strong data-i18n="cat.veg">Зеленчуци</strong><span data-i18n="cat.vegHint">домати, пипер…</span></a>
+					<a class="cat-card" data-cat="fruit" href="/catalog.html?category=fruit"><span class="icon" aria-hidden="true"></span><strong data-i18n="cat.fruit">Плодове</strong><span data-i18n="cat.fruitHint">ябълки, круши…</span></a>
+					<a class="cat-card" data-cat="grain" href="/catalog.html?category=grain"><span class="icon" aria-hidden="true"></span><strong data-i18n="cat.grain">Зърно</strong><span data-i18n="cat.grainHint">пшеница, царевица…</span></a>
+					<a class="cat-card" data-cat="oil" href="/catalog.html?category=oil"><span class="icon" aria-hidden="true"></span><strong data-i18n="cat.oil">Олио</strong><span data-i18n="cat.oilHint">бутилки, слънчоглед…</span></a>
+					<a class="cat-card" data-cat="canned" href="/catalog.html?category=canned"><span class="icon" aria-hidden="true"></span><strong data-i18n="cat.canned">Консерви</strong><span data-i18n="cat.cannedHint">преработка</span></a>
+					<a class="cat-card" data-cat="fertilizer" href="/catalog.html?category=fertilizer"><span class="icon" aria-hidden="true"></span><strong data-i18n="cat.fertilizer">Торове</strong><span data-i18n="cat.fertilizerHint">агро входове</span></a>
+					<a class="cat-card" data-cat="machines" href="/catalog.html?category=machines"><span class="icon" aria-hidden="true"></span><strong data-i18n="cat.machines">Машини</strong><span data-i18n="cat.machinesHint">техника</span></a>
+					<a class="cat-card" data-cat="feed" href="/catalog.html?category=feed"><span class="icon" aria-hidden="true"></span><strong data-i18n="cat.feed">Фураж</strong><span data-i18n="cat.feedHint">сено, фуражи</span></a>
 				</div>
 			</div>
 		</section>
@@ -114,12 +120,12 @@
 		<section class="eco-section eco-section--alt" id="listings">
 			<div class="container">
 				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow" data-i18n="listings.eyebrow">Marketplace</p>
+					<p class="eco-eyebrow" data-i18n="listings.eyebrow">Пазар</p>
 					<h2 data-i18n="listings.title">Активни обяви</h2>
 					<p data-i18n="listings.lead">Карти като в модерен B2B пазар — количество, регион, цена и директен контакт.</p>
 				</div>
 				<div class="product-grid reveal" id="home-listings"></div>
-				<p class="demo-strip reveal" data-i18n="listings.demoStrip">Демо обяви · пълният каталог с жълти страници е в <a href="/catalog.html">каталога</a></p>
+				<p class="demo-strip reveal" data-i18n="listings.demoStrip">Обяви от borsaagro.com · пълният <a href="/catalog.html">каталог</a></p>
 			</div>
 		</section>
 
@@ -128,9 +134,34 @@
 				<div class="eco-section-head reveal">
 					<p class="eco-eyebrow" data-i18n="farmers.eyebrow">Производители</p>
 					<h2 data-i18n="farmers.title">Топ фермери на платформата</h2>
-					<p data-i18n="farmers.lead">Профили с рейтинг и реални стопанства — доверие преди сделката.</p>
+					<p data-i18n="farmers.lead">Стопанство, поле или база — виж кого срещаш преди сделката.</p>
 				</div>
-				<div class="farmers-row reveal" id="top-farmers"></div>
+				<div class="farm-showcase-grid reveal" id="top-farmers" aria-label="Място за профили на производители">
+					<a class="farm-showcase-card" href="#cta" data-farm-slot="farm">
+						<div class="farm-showcase-img" data-farm-img="farm" role="img" aria-hidden="true"></div>
+						<div class="farm-showcase-caption">
+							<span class="farm-showcase-badge" data-i18n="farmers.badge">Свободно място</span>
+							<p data-i18n="farmers.slotFarm">Тук може да бъде вашата ферма</p>
+						</div>
+					</a>
+					<a class="farm-showcase-card" href="#cta" data-farm-slot="field">
+						<div class="farm-showcase-img" data-farm-img="field" role="img" aria-hidden="true"></div>
+						<div class="farm-showcase-caption">
+							<span class="farm-showcase-badge" data-i18n="farmers.badge">Свободно място</span>
+							<p data-i18n="farmers.slotField">Тук може да бъде вашето стопанство</p>
+						</div>
+					</a>
+					<a class="farm-showcase-card" href="#cta" data-farm-slot="facility">
+						<div class="farm-showcase-img" data-farm-img="facility" role="img" aria-hidden="true"></div>
+						<div class="farm-showcase-caption">
+							<span class="farm-showcase-badge" data-i18n="farmers.badge">Свободно място</span>
+							<p data-i18n="farmers.slotFacility">Тук може да бъде вашият склад или цех</p>
+						</div>
+					</a>
+				</div>
+				<p class="farm-showcase-cta reveal">
+					<a class="btn btn-secondary" href="#cta" data-i18n="farmers.cta">Публикувай профил (ранен достъп)</a>
+				</p>
 			</div>
 		</section>
 
@@ -210,9 +241,9 @@
 						<p data-i18n="spotlight.lead">Снимки, сертификати, история, рейтинг и видео от стопанството — купувачът вижда с кого работи.</p>
 						<div class="farmer-tags">
 							<span data-i18n="spotlight.cert">✓ Сертификати</span>
-							<span data-i18n="spotlight.gallery">📷 Галерия</span>
-							<span data-i18n="spotlight.rating">⭐ Рейтинг</span>
-							<span data-i18n="spotlight.video">🎥 Видео</span>
+							<span data-i18n="spotlight.gallery">Галерия</span>
+							<span data-i18n="spotlight.rating">Рейтинг</span>
+							<span data-i18n="spotlight.video">Видео</span>
 						</div>
 						<p style="margin-top:20px">
 							<a class="btn btn-secondary" href="#cta" style="margin-right:8px" data-i18n="spotlight.profile">Създай профил</a>
@@ -237,7 +268,7 @@
 						<p class="example" data-i18n="ai.pricesEx">„Колко струва в момента слънчогледът?“</p>
 					</div>
 					<div class="ai-card">
-						<h3 data-i18n="ai.timing">Анализ и тайминг</h3>
+						<h3 data-i18n="ai.timing">Анализ и момент за продажба</h3>
 						<p data-i18n="ai.timingDesc">Кога да продаваш, прогнозни цени и сезонен контекст (информативно).</p>
 						<p class="example" data-i18n="ai.timingEx">„Има ли търсене за пшеница в Добруджа?“</p>
 					</div>
@@ -277,7 +308,7 @@
 					<a class="btn btn-secondary" href="mailto:info@agrinexus.eu">info@agrinexus.eu</a>
 				</div>
 				<p id="lead-status" class="form-status" role="status" aria-live="polite"></p>
-				<p class="fine-print" data-i18n="form.fine">Демо фаза · без комисиона · без escrow. Не е правен или финансов съвет.</p>
+				<p class="fine-print" data-i18n="form.fine">Демо фаза · без комисионна · без escrow. Не е правен или финансов съвет.</p>
 			</form>
 		</section>
 	</main>
@@ -296,8 +327,15 @@
 			<button type="button" class="llm-close" id="llm-close" data-i18n-aria="nav.close" aria-label="Затвори">×</button>
 		</div>
 		<div class="llm-msgs" id="llm-msgs" aria-live="polite"></div>
-		<p class="llm-hint" data-i18n="chat.hint">RAG · вижда демо каталога и секциите на сайта</p>
+		<p class="llm-hint" data-i18n="chat.hint">RAG · категории, култури · качи снимка</p>
+		<div class="llm-quick" id="llm-quick" role="group" aria-label="Бързи въпроси">
+			<button type="button" class="llm-quick-btn" data-prompt="Напиши обява за продажба на пшеница: 80 т, Добруджа, FCA, хлебен индекс ~58" data-i18n="chat.quickDraft">Нова обява</button>
+			<button type="button" class="llm-quick-btn" data-prompt="Редактирай последната обява — направи текста по-кратък и по-професионален" data-i18n="chat.quickEdit">Редакция</button>
+			<button type="button" class="llm-quick-btn" data-prompt="Покажи обяви за ечемик в каталога" data-i18n="chat.quickBarley">Ечемик</button>
+		</div>
 		<div class="llm-foot">
+			<input type="file" id="llm-photo" accept="image/jpeg,image/png,image/webp" hidden />
+			<button type="button" class="llm-photo" id="llm-photo-btn" title="Качи снимка" aria-label="Снимка" data-i18n-aria="chat.photoBtn">+</button>
 			<textarea id="llm-input" rows="2" maxlength="2000" data-i18n-placeholder="chat.placeholder" placeholder="Напр. Каква е цената на пшеницата?"></textarea>
 			<button type="button" class="llm-send" id="llm-send" data-i18n-aria="chat.send" aria-label="Изпрати">→</button>
 		</div>
