@@ -11,6 +11,7 @@ import { fetchAgroListings } from './agro-listings-fetcher.js';
 import { fetchAgriListings } from './agri-listings-fetcher.js';
 import { fetchGovHtmlListings, type GovHtmlSourceConfig } from './gov-html-fetcher.js';
 import { fetchGlobalFeedListings } from './global-feed-generator.js';
+import { fetchMockListings } from '../mock-listings-generator.js';
 
 type SourceRow = {
 	id: string;
@@ -97,6 +98,14 @@ export async function fetchAllListingsSnapshot(detailLimit = 40): Promise<Listin
 		} catch (e) {
 			console.warn(`[listing-sources] ${src.id} failed:`, e instanceof Error ? e.message : e);
 		}
+	}
+
+	try {
+		const mockRows = await fetchMockListings(40);
+		all.push(...mockRows);
+		sourceNames.push('Демо Борса');
+	} catch (e) {
+		console.warn('[listing-sources] mock generator failed:', e);
 	}
 
 	let merged = dedupeListings(all);
