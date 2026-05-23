@@ -401,7 +401,6 @@
 			'how.step2Desc': 'Veröffentlichen Sie Ihre Produkte oder finden Sie, was Sie brauchen.',
 			'how.step3': '3. Direktes Geschäft',
 			'how.step3Desc': 'Direkt verbinden ohne versteckte Gebühren.',
-,
 			'how.eyebrow': 'How it works',
 			'how.title': 'How Fieldlot Works',
 			'how.lead': 'A simple and fast process from registration to a successful deal.',

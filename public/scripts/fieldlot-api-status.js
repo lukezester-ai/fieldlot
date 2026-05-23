@@ -33,8 +33,8 @@
 		}
 		state.checked = true;
 		global.__fieldlotApi = { ...state };
-		if (!state.chat) injectPreviewBanner();
-		else removePreviewBanner();
+		// if (!state.chat) injectPreviewBanner();
+		// else removePreviewBanner();
 		document.dispatchEvent(new CustomEvent('fieldlot-api-status', { detail: { ...state } }));
 		return { ...state };
 	}
