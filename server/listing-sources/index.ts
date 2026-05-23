@@ -10,6 +10,7 @@ import { filterSalesOnly, salesOnlyEnabled } from '../listings-sales-filter.js';
 import { fetchAgroListings } from './agro-listings-fetcher.js';
 import { fetchAgriListings } from './agri-listings-fetcher.js';
 import { fetchGovHtmlListings, type GovHtmlSourceConfig } from './gov-html-fetcher.js';
+import { fetchGlobalFeedListings } from './global-feed-generator.js';
 
 type SourceRow = {
 	id: string;
@@ -85,6 +86,13 @@ export async function fetchAllListingsSnapshot(detailLimit = 40): Promise<Listin
 				const rows = await fetchGovHtmlListings(cfg);
 				all.push(...rows);
 				sourceNames.push(cfg.name);
+				continue;
+			}
+			if (src.type === 'global-feed') {
+				const rows = await fetchGlobalFeedListings(src.maxLinks ?? 20);
+				all.push(...rows);
+				sourceNames.push('Global Feed Exchange');
+				continue;
 			}
 		} catch (e) {
 			console.warn(`[listing-sources] ${src.id} failed:`, e instanceof Error ? e.message : e);

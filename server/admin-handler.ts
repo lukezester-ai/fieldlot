@@ -69,6 +69,19 @@ export async function handleAdminPost(
 		return { status: 200, body: { ok: true, message: 'Images synced from manifest' } };
 	}
 
+	if (action === 'curate-images') {
+		const { exec } = await import('node:child_process');
+		const util = await import('node:util');
+		const execAsync = util.promisify(exec);
+		try {
+			const { stdout, stderr } = await execAsync('npx tsx scripts/curate-ai-images.ts', { cwd: process.cwd() });
+			return { status: 200, body: { ok: true, message: 'AI curation completed\n' + stdout } };
+		} catch (e) {
+			const err = e instanceof Error ? e.message : String(e);
+			return { status: 500, body: { ok: false, error: err } };
+		}
+	}
+
 	if (action === 'save-knowledge') {
 		if (!body || typeof body !== 'object') {
 			return { status: 400, body: { ok: false, error: 'Invalid body' } };

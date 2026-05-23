@@ -1,0 +1,182 @@
+/**
+ * Fieldlot — жълти страници (споделени кутии за обяви)
+ * Начало (#home-listings) + Каталог (#catalog-grid)
+ */
+
+.yp-board,
+.catalog-grid.yp-board,
+#home-listings.yp-board {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	align-content: start;
+	gap: 16px;
+	width: 100%;
+	padding: 16px;
+	border-radius: var(--fl-radius-lg);
+	background: linear-gradient(180deg, var(--yp-shelf) 0%, #e5dfc8 100%);
+	border: 1px solid rgba(26, 26, 26, 0.08);
+	box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.yp-entry,
+.listing-card.yp-entry,
+#home-listings .yp-entry {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	justify-content: space-between;
+	padding: 14px 16px;
+	border: 2px solid var(--yp-border);
+	border-top: 4px solid var(--yp-yellow-bar);
+	border-radius: 4px;
+	background: linear-gradient(165deg, var(--yp-yellow) 0%, var(--yp-yellow-mid) 55%, var(--yp-yellow-soft) 100%);
+	box-shadow: 0 3px 0 rgba(0, 0, 0, 0.12), 0 8px 24px var(--yp-glow);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	color: var(--yp-ink);
+	text-decoration: none;
+}
+
+#home-listings .yp-entry {
+	cursor: default;
+}
+
+.listing-card.yp-entry,
+#catalog-grid .yp-entry {
+	cursor: pointer;
+}
+
+.listing-card.yp-entry:hover,
+#catalog-grid .yp-entry:hover {
+	transform: translateY(-3px);
+	border-color: rgba(26, 26, 26, 0.22);
+	box-shadow:
+		0 5px 0 rgba(0, 0, 0, 0.14),
+		0 16px 40px var(--yp-glow);
+}
+
+.yp-entry-main {
+	min-width: 0;
+}
+
+.yp-entry-head {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 6px;
+}
+
+.yp-entry-title {
+	margin: 0 0 4px;
+	font-size: 17px;
+	font-weight: 700;
+	line-height: 1.25;
+	letter-spacing: -0.01em;
+	color: var(--yp-ink);
+}
+
+.yp-entry-line {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.45;
+	color: var(--yp-ink);
+}
+
+.yp-entry-line.yp-entry-muted {
+	color: var(--yp-muted);
+}
+
+.yp-entry-contact {
+	font-weight: 600;
+	font-size: 12px;
+}
+
+.yp-entry-aside {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	flex-shrink: 0;
+	margin-top: auto;
+}
+
+.yp-entry-aside .price,
+.yp-entry-aside .product-price {
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--yp-ink);
+	letter-spacing: -0.02em;
+	line-height: 1.15;
+}
+
+.yp-entry-aside .price small,
+.yp-entry-aside .product-price small {
+	display: block;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--yp-muted);
+}
+
+.yp-entry .tag {
+	font-size: 10px;
+	font-weight: 700;
+	padding: 4px 8px;
+	border-radius: 3px;
+	background: rgba(26, 26, 26, 0.88);
+	color: var(--fl-gold, #c9a227);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.yp-entry .tag.buy {
+	background: #3264a8;
+	color: #fff;
+}
+
+.yp-entry .tag.sell {
+	background: var(--fl-brand-solid, #1a4d3a);
+	color: #fff;
+}
+
+.yp-entry .tag.yp-cat {
+	background: var(--yp-yellow-dark);
+	color: #1b1810;
+}
+
+.yp-entry .tag.source {
+	background: var(--fl-surface-2);
+	color: var(--fl-ink);
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+#home-listings .product-card-actions {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 8px;
+	width: 100%;
+	justify-content: flex-end;
+}
+
+#home-listings .product-card-actions .btn {
+	flex: 1;
+	min-width: 100px;
+	min-height: 36px;
+	font-size: 12px;
+}
+
+.yp-loading {
+	padding: 24px;
+	text-align: center;
+	color: var(--yp-muted);
+}
+
+@media (max-width: 640px) {
+	.yp-board,
+	.catalog-grid.yp-board,
+	#home-listings.yp-board {
+		grid-template-columns: 1fr;
+	}
+}

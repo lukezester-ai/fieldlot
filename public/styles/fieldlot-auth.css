@@ -1,0 +1,157 @@
+/* Fieldlot Auth Modal Styles */
+
+.fl-auth-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	background: rgba(11, 18, 32, 0.4);
+	backdrop-filter: blur(4px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s ease;
+}
+
+.fl-auth-backdrop.active {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.fl-auth-modal {
+	position: relative;
+	background: var(--fl-white);
+	width: 100%;
+	max-width: 420px;
+	border-radius: var(--fl-radius-xl);
+	box-shadow: 0 20px 60px rgba(11, 18, 32, 0.15);
+	transform: translateY(20px);
+	transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	overflow: hidden;
+	color: var(--fl-ink);
+}
+
+.fl-auth-backdrop.active .fl-auth-modal {
+	transform: translateY(0);
+}
+
+.fl-auth-head {
+	padding: 28px 24px 16px;
+	text-align: center;
+	border-bottom: 1px solid var(--fl-line);
+	background: linear-gradient(180deg, var(--yp-yellow-soft) 0%, var(--fl-white) 100%);
+}
+
+.fl-auth-head h2 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	color: var(--fl-ink);
+}
+
+.fl-auth-head p {
+	margin: 6px 0 0;
+	font-size: 14px;
+	color: var(--fl-muted);
+}
+
+.fl-auth-body {
+	padding: 24px;
+}
+
+.fl-auth-form {
+	display: grid;
+	gap: 16px;
+}
+
+.fl-auth-input-group {
+	display: grid;
+	gap: 6px;
+}
+
+.fl-auth-input-group label {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--fl-ink);
+}
+
+.fl-auth-input-group input {
+	width: 100%;
+	min-height: 44px;
+	padding: 0 14px;
+	border: 1px solid var(--fl-line);
+	border-radius: var(--fl-radius);
+	background: var(--fl-surface);
+	font-size: 15px;
+	transition: border-color 0.2s, box-shadow 0.2s;
+	color: var(--fl-ink);
+}
+
+.fl-auth-input-group input:focus {
+	outline: none;
+	border-color: var(--fl-accent);
+	box-shadow: 0 0 0 3px var(--fl-accent-soft);
+	background: var(--fl-white);
+}
+
+.fl-auth-btn {
+	margin-top: 8px;
+	width: 100%;
+	min-height: 48px;
+	font-size: 16px;
+}
+
+.fl-auth-switch {
+	margin-top: 20px;
+	text-align: center;
+	font-size: 14px;
+	color: var(--fl-muted);
+}
+
+.fl-auth-switch button {
+	background: none;
+	border: none;
+	padding: 0;
+	font: inherit;
+	color: var(--fl-emerald);
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.fl-auth-switch button:hover {
+	text-decoration: underline;
+}
+
+.fl-auth-close {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	background: rgba(255, 255, 255, 0.5);
+	border: none;
+	font-size: 24px;
+	line-height: 1;
+	color: var(--fl-muted);
+	cursor: pointer;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.2s;
+}
+
+.fl-auth-close:hover {
+	color: var(--fl-ink);
+	background: var(--fl-surface-2);
+}
+
+.fl-auth-error {
+	color: #d32f2f;
+	font-size: 13px;
+	text-align: center;
+	min-height: 18px;
+}

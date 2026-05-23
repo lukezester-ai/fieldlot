@@ -2,40 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fetchAllListingsSnapshot } from './listing-sources/index.js';
 import { rebuildFieldlotRagIndex } from './fieldlot-semantic-rag.js';
-import type { FieldlotListing } from './borsa-listings-fetcher.js';
 import { enrichListing } from './fieldlot-categories.js';
-
-const CROP_IMAGE: { re: RegExp; file: string }[] = [
-	{ re: /пшеница/i, file: '/images/crops/wheat.jpg' },
-	{ re: /ечемик/i, file: '/images/crops/barley.jpg' },
-	{ re: /царевица/i, file: '/images/crops/corn.jpg' },
-	{ re: /слънчоглед|експелер/i, file: '/images/crops/sunflower.jpg' },
-	{ re: /рапиц/i, file: '/images/crops/rapeseed.jpg' },
-	{ re: /лещ/i, file: '/images/crops/feed.jpg' },
-	{ re: /олио|соев/i, file: '/images/crops/oil.jpg' },
-	{ re: /ябъл/i, file: '/images/crops/apple.jpg' },
-	{ re: /пипер|чушк/i, file: '/images/crops/hot-pepper.jpg' },
-	{ re: /сено/i, file: '/images/crops/hay.jpg' },
-];
-
-const CAT_IMAGE: Record<string, string> = {
-	grain: '/images/crops/wheat.jpg',
-	oil: '/images/crops/sunflower.jpg',
-	oilseed: '/images/crops/sunflower.jpg',
-	fruit: '/images/crops/apple.jpg',
-	veg: '/images/crops/pepper.jpg',
-	feed: '/images/crops/hay.jpg',
-	canned: '/images/crops/canned.jpg',
-	fertilizer: '/images/crops/fertilizer.jpg',
-	machines: '/images/crops/machines.jpg',
-};
-
-function imageForListing(item: { title: string; category: string }): string {
-	for (const { re, file } of CROP_IMAGE) {
-		if (re.test(item.title)) return file;
-	}
-	return CAT_IMAGE[item.category] || '/images/crops/wheat.jpg';
-}
+import { stripListingMedia } from './listings-data.js';
 
 export type SyncPipelineResult = {
 	snapshot: Awaited<ReturnType<typeof fetchAllListingsSnapshot>>;
@@ -53,7 +21,7 @@ export async function runListingsSyncPipeline(opts?: {
 	const snapRaw = await fetchAllListingsSnapshot(opts?.detailLimit ?? 40);
 	const snap = {
 		...snapRaw,
-		listings: snapRaw.listings.map((l) => enrichListing(l)),
+		listings: snapRaw.listings.map((l) => stripListingMedia(enrichListing(l))),
 	};
 	const rag = await rebuildFieldlotRagIndex(snap.listings);
 
@@ -89,16 +57,7 @@ export async function runListingsSyncPipeline(opts?: {
 		for (const [k, v] of Object.entries(LEGACY_DEMO)) {
 			if (!manifest.listings[k]) manifest.listings[k] = v;
 		}
-		for (const item of snap.listings) {
-			const fallback = imageForListing(item);
-			const prev = manifest.listings[item.id];
-			const keepLocal =
-				typeof prev === 'string' &&
-				prev.startsWith('/images/') &&
-				!item.imageUrl;
-			manifest.listings[item.id] = item.imageUrl || (keepLocal ? prev : fallback);
-			manifest.listingLabels[item.id] = item.title;
-		}
+		/* Manifest kept for legacy/demo ids only — catalog listings are text-only (no photos). */
 		manifest.source = snap.source;
 		fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, '\t')}\n`, 'utf8');
 		paths.manifest = manifestPath;

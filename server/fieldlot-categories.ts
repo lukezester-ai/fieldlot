@@ -226,7 +226,7 @@ export function matchListingRegion(item: FieldlotListing, filterRegion: string):
 	return false;
 }
 
-export function formatCategoriesForRag(lang: 'bg' | 'en'): string {
+export function formatCategoriesForRag(lang: 'bg' | 'en' | 'de'): string {
 	const labels = lang === 'en' ? CATEGORY_LABELS_EN : CATEGORY_LABELS_BG;
 	const lines = FIELDLOT_CATEGORY_IDS.map((id) => `• ${id} — ${labels[id]}`).join('\n');
 	const crops = FIELDLOT_CROP_IDS.map((id) => `${id} (${CROP_LABELS_BG[id] || id})`).join(', ');

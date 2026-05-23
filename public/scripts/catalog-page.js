@@ -1,5 +1,5 @@
 /**
- * Fieldlot catalog — live listings from borsaagro.com (sorted newest first)
+ * Fieldlot catalog — live listings (yellow-pages style, no photos)
  */
 (function initCatalogPage(global) {
 	const I18n = () => window.FieldlotI18n;
@@ -36,6 +36,22 @@
 			.replace(/"/g, '&quot;');
 	}
 
+	const CAT_LABELS = {
+		veg: 'Зеленчуци',
+		fruit: 'Плодове',
+		grain: 'Зърно',
+		oil: 'Маслодайни',
+		feed: 'Фураж',
+		canned: 'Консерви',
+		fertilizer: 'Торове',
+		machines: 'Машини',
+	};
+
+	function categoryLabel(item) {
+		const id = FC()?.normCat ? FC().normCat(item.category) : item.category;
+		return CAT_LABELS[id] || id || '';
+	}
+
 	function sortListings(items) {
 		return [...items].sort((a, b) => {
 			const ta = Date.parse(a.publishedAt || '') || 0;
@@ -44,24 +60,39 @@
 		});
 	}
 
+	function stripMedia(listings) {
+		return listings.map((row) => {
+			const { imageUrl, image, ...rest } = row;
+			return rest;
+		});
+	}
+
 	async function loadListings() {
-		grid.innerHTML = `<p class="meta" style="padding:24px">${escapeHtml(t('catalog.loading'))}</p>`;
+		grid.innerHTML = `<p class="meta yp-loading">${escapeHtml(t('catalog.loading'))}</p>`;
+		let staticData = [];
 		try {
-			const res = await fetch('/api/listings', { headers: { Accept: 'application/json' } });
+			const res = await fetch('/data/live-listings.json');
 			if (res.ok) {
 				const data = await res.json();
-				if (Array.isArray(data.listings) && data.listings.length) {
-					allListings = sortListings(data.listings);
-					return;
-				}
+				staticData = Array.isArray(data.listings) ? data.listings : [];
 			}
-		} catch {
-			/* static fallback */
+		} catch {}
+
+		let fbData = [];
+		try {
+			let retries = 20;
+			while (!window.fetchFirebaseListings && retries > 0) {
+				await new Promise(r => setTimeout(r, 100));
+				retries--;
+			}
+			if (window.fetchFirebaseListings) {
+				fbData = await window.fetchFirebaseListings(100);
+			}
+		} catch (e) {
+			console.error("Firebase listings fetch error:", e);
 		}
-		const res2 = await fetch('/data/live-listings.json');
-		if (!res2.ok) throw new Error('listings unavailable');
-		const data2 = await res2.json();
-		allListings = sortListings(data2.listings || []);
+
+		allListings = sortListings(stripMedia([...fbData, ...staticData]));
 	}
 
 	function filterListings() {
@@ -100,32 +131,31 @@
 		const item = loc(raw);
 		const roleClass = item.role === 'buy' ? 'buy' : 'sell';
 		const roleLabel = item.role === 'buy' ? t('listing.buy') : t('listing.sell');
-		const photoSrc =
-			raw.imageUrl ||
-			item.imageUrl ||
-			(window.FieldlotImages ? FieldlotImages.forListing(item) : '');
-		const photoHtml = photoSrc
-			? `<div class="listing-photo"><img src="${photoSrc}" alt="${escapeHtml(item.title)}" loading="lazy" /></div>`
-			: '';
+		const cat = categoryLabel(item);
 		const sourceTag = item.source
 			? `<span class="tag source">${escapeHtml(item.source)}</span>`
 			: '';
+		const contactLine = item.contact
+			? `<p class="yp-entry-line yp-entry-contact">${escapeHtml(item.contact)}</p>`
+			: '';
+
 		const article = document.createElement('article');
-		article.className = 'listing-card';
+		article.className = 'listing-card yp-entry';
 		article.tabIndex = 0;
 		article.dataset.id = item.id;
 		article.innerHTML = `
-			${photoHtml}
-			<div class="listing-card-top">
-				<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
-				${(item.tags || []).slice(0, 2).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+			<div class="yp-entry-main">
+				<div class="yp-entry-head">
+					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
+					${cat ? `<span class="tag yp-cat">${escapeHtml(cat)}</span>` : ''}
+					${(item.tags || []).filter(t => t.toLowerCase() !== (cat || '').toLowerCase()).slice(0, 2).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+				</div>
+				<h2 class="yp-entry-title">${escapeHtml(item.title)}</h2>
+				<p class="yp-entry-line">${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)} · ${escapeHtml(item.qty)}</p>
+				<p class="yp-entry-line yp-entry-muted">${escapeHtml(item.incoterm)}${item.quality ? ` · ${escapeHtml(item.quality)}` : ''}</p>
+				${contactLine}
 			</div>
-			<div class="listing-card-body">
-				<h2>${escapeHtml(item.title)}</h2>
-				<p class="meta">${escapeHtml(item.subtitle)} · ${escapeHtml(item.qty)}</p>
-				<p class="meta">${escapeHtml(item.incoterm)}</p>
-			</div>
-			<div class="listing-card-foot">
+			<div class="yp-entry-aside">
 				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
 				${sourceTag}
 			</div>
@@ -157,24 +187,18 @@
 		detailItemRaw = raw;
 		const item = loc(raw);
 		detailTitle.textContent = item.title;
-		const photoSrc =
-			raw.imageUrl ||
-			item.imageUrl ||
-			(window.FieldlotImages ? FieldlotImages.forListing(item) : '');
-		const heroPhoto = photoSrc
-			? `<div class="detail-photo"><img src="${photoSrc}" alt="${escapeHtml(item.title)}" /></div>`
-			: '';
 		const sourceLink = item.sourceUrl
 			? `<p class="detail-note"><a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(t('catalog.sourceLink'))}</a></p>`
 			: '';
+		const cat = categoryLabel(item);
 		detailBody.innerHTML = `
-			${heroPhoto}
-			<div class="detail-highlight">
+			<div class="detail-highlight yp-detail-lead">
+				${cat ? `<p class="yp-detail-cat">${escapeHtml(cat)}</p>` : ''}
 				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
-				<p class="meta" style="margin:6px 0 0;font-size:13px;color:var(--yp-muted)">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
+				<p class="meta">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
 			</div>
 			<dl class="detail-dl">
-				<div><dt>${escapeHtml(t('catalog.loc'))}</dt><dd>${escapeHtml(item.subtitle)}</dd></div>
+				<div><dt>${escapeHtml(t('catalog.loc'))}</dt><dd>${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)}</dd></div>
 				<div><dt>${escapeHtml(t('catalog.qty'))}</dt><dd>${escapeHtml(item.qty)}</dd></div>
 				<div><dt>${escapeHtml(t('catalog.price'))}</dt><dd>${escapeHtml(item.price)} ${escapeHtml(item.priceUnit)}</dd></div>
 				<div><dt>${escapeHtml(t('catalog.term'))}</dt><dd>${escapeHtml(item.incoterm)}</dd></div>

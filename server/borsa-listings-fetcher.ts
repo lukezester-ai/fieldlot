@@ -81,7 +81,7 @@ function normalizeGood(title: string): string {
 function parseListCards(html: string): { id: string; title: string; date: string; price: string }[] {
 	const out: { id: string; title: string; date: string; price: string }[] = [];
 	const re =
-		/href="https:\/\/borsaagro\.com\/potrebitelski-obqvi\/(\d+)"[^>]*class="stretched-link[^"]*"[^>]*>([^<]+)<\/a>[\s\S]*?fa-clock[\s\S]*?>([^<]+)<[\s\S]*?fw-semibold fs-5">\s*([\d.,]+)/gi;
+		/href="https:\/\/borsaagro\.com\/potrebitelski-obqvi\/(\d+)"[^>]*>\s*([^<]+)\s*<\/a>[\s\S]*?fa-clock[\s\S]*?>\s*([^<]+)\s*<[\s\S]*?fw-semibold fs-5">\s*([\d.,]+)/gi;
 	let m: RegExpExecArray | null;
 	while ((m = re.exec(html))) {
 		out.push({
@@ -129,8 +129,21 @@ export async function fetchBorsaListingDetails(
 	const qtyRaw = kv['Количество'] || '';
 	const qty = qtyRaw || '—';
 	const priceRaw = kv['Цена'] || card?.price || '—';
-	const priceUnit = /€|eur/i.test(priceRaw) ? '€' : 'лв';
-	const price = priceRaw.replace(/\s*€.*$/i, '').trim() || priceRaw;
+	let priceUnit = '€';
+	let price = priceRaw;
+	const match = priceRaw.match(/([\d\s,.]+)/);
+	if (match) {
+		const numStr = match[1].replace(/\s+/g, '').replace(',', '.');
+		let num = parseFloat(numStr);
+		if (!isNaN(num) && num > 0) {
+			if (!/€|eur/i.test(priceRaw)) {
+				num = num / 1.95583;
+			}
+			price = num.toFixed(2);
+		}
+	} else {
+		price = priceRaw.replace(/лв\.?/gi, '€');
+	}
 	const description = kv['Описание'] || '';
 	const pubBadge = html.match(/Публикувана:\s*([^<]+)/i)?.[1]?.trim() || card?.date || '';
 	const { iso, ts } = parseBgDate(pubBadge);
@@ -161,13 +174,13 @@ export function mapBorsaToFieldlot(raw: BorsaListingRaw): FieldlotListing {
 	return enrichListing({
 		id: `ba-${raw.sourceId}`,
 		title: raw.good,
-		subtitle: `${reg.label} · ${SOURCE}`,
+		subtitle: `🇧🇬 ${reg.label} · ${SOURCE}`,
 		category: cat,
 		region: reg.region,
 		role: raw.role,
 		qty: raw.qty,
 		price: raw.price,
-		priceUnit: raw.priceUnit === '€' ? '€' : 'лв',
+		priceUnit: '€',
 		incoterm: 'По обява на източника',
 		harvest: raw.publishedAt
 			? `Публикувана ${new Date(raw.publishedAt).toLocaleDateString('bg-BG')}`

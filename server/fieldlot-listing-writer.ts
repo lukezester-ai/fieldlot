@@ -18,7 +18,7 @@ import {
 } from './llm-upstream.js';
 
 export type ListingDraftInput = {
-	lang?: 'bg' | 'en';
+	lang?: 'bg' | 'en' | 'de';
 	role?: 'sell' | 'buy';
 	product?: string;
 	category?: string;
@@ -54,12 +54,12 @@ export type ListingDraft = {
 	checklist: string[];
 };
 
-const REGION_LABELS: Record<string, { bg: string; en: string }> = {
-	dobrudzha: { bg: 'Добруджа', en: 'Dobrudzha' },
-	north: { bg: 'Север', en: 'North' },
-	south: { bg: 'Юг', en: 'South' },
-	west: { bg: 'Североизапад', en: 'Northwest' },
-	national: { bg: 'България', en: 'Bulgaria' },
+const REGION_LABELS: Record<string, { bg: string; en: string; de: string }> = {
+	dobrudzha: { bg: 'Добруджа', en: 'Dobrudzha', de: 'Dobrudscha' },
+	north: { bg: 'Север', en: 'North', de: 'Norden' },
+	south: { bg: 'Юг', en: 'South', de: 'Süden' },
+	west: { bg: 'Североизапад', en: 'Northwest', de: 'Nordwesten' },
+	national: { bg: 'България', en: 'Bulgaria', de: 'Bulgarien' },
 };
 
 function clean(s: string | undefined, max = 500): string {
@@ -69,16 +69,16 @@ function clean(s: string | undefined, max = 500): string {
 		.slice(0, max);
 }
 
-function regionLabel(region: string, lang: 'bg' | 'en'): string {
+function regionLabel(region: string, lang: 'bg' | 'en' | 'de'): string {
 	return REGION_LABELS[region]?.[lang] ?? region;
 }
 
-function defaultPriceUnit(role: 'sell' | 'buy', lang: 'bg' | 'en'): string {
+function defaultPriceUnit(role: 'sell' | 'buy', lang: 'bg' | 'en' | 'de'): string {
 	if (role === 'buy') return lang === 'en' ? 'buyer offer' : 'купувач';
 	return lang === 'en' ? 'BGN/t' : 'лв/т';
 }
 
-function buildChecklist(d: ListingDraft, lang: 'bg' | 'en'): string[] {
+function buildChecklist(d: ListingDraft, lang: 'bg' | 'en' | 'de'): string[] {
 	const missing: string[] = [];
 	const en = lang === 'en';
 	if (!d.qty || d.qty === '—') missing.push(en ? 'Quantity (tons)' : 'Количество (тонове)');
@@ -92,7 +92,7 @@ function buildChecklist(d: ListingDraft, lang: 'bg' | 'en'): string[] {
 	return missing;
 }
 
-function formatListingText(d: ListingDraft, lang: 'bg' | 'en'): string {
+function formatListingText(d: ListingDraft, lang: 'bg' | 'en' | 'de'): string {
 	const en = lang === 'en';
 	const catLabel = en ? CATEGORY_LABELS_EN[d.category] : CATEGORY_LABELS_BG[d.category];
 	const cropLabel = d.crop ? (CROP_LABELS_BG[d.crop] || d.crop) : '';
@@ -119,7 +119,7 @@ function formatListingText(d: ListingDraft, lang: 'bg' | 'en'): string {
 }
 
 export function draftListingFromFacts(input: ListingDraftInput): ListingDraft {
-	const lang: 'bg' | 'en' = input.lang === 'en' ? 'en' : 'bg';
+	const lang: 'bg' | 'en' | 'de' = input.lang === 'en' ? 'en' : input.lang === 'de' ? 'de' : 'bg';
 	const role: 'sell' | 'buy' = input.role === 'buy' ? 'buy' : 'sell';
 	const product = clean(input.product, 120) || (lang === 'en' ? 'Agro product' : 'Агро продукт');
 	const hay = [product, input.quality, input.notes].filter(Boolean).join(' ');
@@ -180,7 +180,7 @@ export function draftListingFromFacts(input: ListingDraftInput): ListingDraft {
 	return draft;
 }
 
-export function listingToDraft(item: FieldlotListing, lang: 'bg' | 'en' = 'bg'): ListingDraft {
+export function listingToDraft(item: FieldlotListing, lang: 'bg' | 'en' | 'de' = 'bg'): ListingDraft {
 	const localized = enrichListing(item);
 	const draft = draftListingFromFacts({
 		lang,
@@ -203,7 +203,7 @@ export function listingToDraft(item: FieldlotListing, lang: 'bg' | 'en' = 'bg'):
 
 export async function polishListingDraft(
 	draft: ListingDraft,
-	opts?: { lang?: 'bg' | 'en'; style?: 'professional' | 'short' },
+	opts?: { lang?: 'bg' | 'en' | 'de'; style?: 'professional' | 'short' },
 ): Promise<ListingDraft> {
 	const upstream = resolveTextChatUpstream();
 	if (!upstream) return draft;
@@ -261,7 +261,7 @@ export async function polishListingDraft(
 export async function editListingDraft(
 	base: ListingDraft,
 	editInstructions: string,
-	opts?: { lang?: 'bg' | 'en'; polish?: boolean },
+	opts?: { lang?: 'bg' | 'en' | 'de'; polish?: boolean },
 ): Promise<ListingDraft> {
 	const lang = opts?.lang ?? 'bg';
 	const instr = clean(editInstructions, 1500);
@@ -342,7 +342,7 @@ export async function handleDraftListingRequest(body: Record<string, unknown>): 
 	error?: string;
 }> {
 	const action = typeof body.action === 'string' ? body.action : 'draft';
-	const lang: 'bg' | 'en' = body.lang === 'en' ? 'en' : 'bg';
+	const lang: 'bg' | 'en' | 'de' = body.lang === 'en' ? 'en' : body.lang === 'de' ? 'de' : 'bg';
 	const polish = body.polish !== false;
 
 	if (action === 'edit') {

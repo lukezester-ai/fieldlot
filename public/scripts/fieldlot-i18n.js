@@ -4,7 +4,7 @@
 (function initFieldlotI18n(global) {
 	const { MESSAGES, LISTING_EN } = global.__fieldlotI18nCatalog || { MESSAGES: { bg: {}, en: {} }, LISTING_EN: {} };
 	const STORAGE_KEY = 'fieldlot-lang';
-	const SUPPORTED = new Set(['bg', 'en']);
+	const SUPPORTED = new Set(['bg', 'en', 'de']);
 
 	let currentLang = 'bg';
 
@@ -37,7 +37,9 @@
 	}
 
 	function localeTag() {
-		return currentLang === 'en' ? 'en-GB' : 'bg-BG';
+		if (currentLang === 'en') return 'en-GB';
+		if (currentLang === 'de') return 'de-DE';
+		return 'bg-BG';
 	}
 
 	function t(key, fallback) {
@@ -165,6 +167,16 @@
 		});
 	}
 
+	function renderFlags(str) {
+		if (!str) return '';
+		return String(str).replace(/([\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF])/g, (match) => {
+			const c1 = match.charCodeAt(1) - 0xDDE6 + 97;
+			const c2 = match.charCodeAt(3) - 0xDDE6 + 97;
+			const cc = String.fromCharCode(c1) + String.fromCharCode(c2);
+			return `<img src="https://flagcdn.com/w20/${cc}.png" alt="${match}" style="height:14px;vertical-align:text-bottom;margin-right:2px;display:inline-block;border-radius:2px;" class="flag-icon" />`;
+		});
+	}
+
 	currentLang = detectLang();
 	try {
 		global.localStorage.setItem(STORAGE_KEY, currentLang);
@@ -180,6 +192,7 @@
 		applyI18n,
 		localizeListing,
 		withLangUrl,
+		renderFlags,
 	};
 
 	function boot() {

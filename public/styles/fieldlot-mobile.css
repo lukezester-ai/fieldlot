@@ -391,13 +391,8 @@ body.nav-open {
 	}
 
 	.catalog-grid {
-		grid-template-columns: 1fr;
 		padding: 14px;
-		gap: 12px;
-	}
-
-	.listing-photo {
-		height: 140px;
+		gap: 10px;
 	}
 
 	.detail-panel {

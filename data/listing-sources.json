@@ -19,6 +19,13 @@
       "enabled": false,
       "name": "agri.bg — Агроборса (изключено — включи в Admin при нужда)",
       "maxLinks": 30
+    },
+    {
+      "id": "global-feed",
+      "type": "global-feed",
+      "enabled": true,
+      "name": "Global Feed Exchange — Международни обяви",
+      "maxLinks": 30
     }
   ]
 }

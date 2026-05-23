@@ -5,7 +5,7 @@
 (function initFieldlotImages(global) {
 	const M = {
 	"version": 3,
-	"source": "borsaagro.com",
+	"source": "borsaagro.com + Global Feed Exchange",
 	"hero": {
 		"background": {
 			"path": "/images/hero/background.jpg",
@@ -27,14 +27,14 @@
 		}
 	},
 	"categories": {
-		"veg": "/images/crops/pepper.jpg",
-		"fruit": "/images/crops/apple.jpg",
+		"veg": "/images/crops/cat_veg.png",
+		"fruit": "/images/crops/cat_fruit.png",
 		"grain": "/images/crops/wheat.jpg",
-		"oil": "/images/crops/oil.jpg",
-		"canned": "/images/crops/canned.jpg",
-		"fertilizer": "/images/crops/fertilizer.jpg",
-		"machines": "/images/crops/machines.jpg",
-		"feed": "/images/crops/feed.jpg"
+		"oil": "/images/crops/oil.webp",
+		"canned": "/images/crops/cat_canned.png",
+		"fertilizer": "/images/crops/cat_fertilizer.png",
+		"machines": "/images/crops/machines.webp",
+		"feed": "/images/crops/cat_feed.png"
 	},
 	"catalog": {
 		"heroBackground": {
@@ -59,7 +59,8 @@
 		"ba-79": "/images/crops/oil.jpg",
 		"ba-78": "/images/crops/sunflower.jpg",
 		"ba-77": "/images/crops/sunflower.jpg",
-		"ba-76": "/images/crops/sunflower.jpg"
+		"ba-76": "/images/crops/sunflower.jpg",
+		"ba-87": "/images/crops/barley.jpg"
 	},
 	"listingLabels": {
 		"wheat-dobr": "Пшеница",
@@ -70,15 +71,16 @@
 		"pepper-buy": "Лют пипер",
 		"rapeseed-vt": "Рапица",
 		"hay-vid": "Сено фуражно",
-		"ba-86": "Царевица",
-		"ba-84": "Олио соево нерафинирано",
-		"ba-83": "ЦАРЕВИЦА",
-		"ba-82": "ЦАРЕВИЦА",
-		"ba-81": "ПШЕНИЦА",
-		"ba-79": "ОЛИО СОЕВО НЕРАФИНИРАНО",
-		"ba-78": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-		"ba-77": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-		"ba-76": "СЛЪНЧОГЛЕД МАСЛОДАЕН"
+		"ba-86": "Царевица — посев",
+		"ba-84": "Олио / соеви продукти",
+		"ba-83": "Царевица — посев",
+		"ba-82": "Царевица — посев",
+		"ba-81": "Пшеница — зърно на поле",
+		"ba-79": "Олио / соеви продукти",
+		"ba-78": "Слънчоглед — маслодайни",
+		"ba-77": "Слънчоглед — маслодайни",
+		"ba-76": "Слънчоглед — маслодайни",
+		"ba-87": "Ечемик — житни класове"
 	},
 	"farmers": {
 		"spotlight": {
@@ -100,8 +102,8 @@
 			},
 			{
 				"id": "facility",
-				"path": "/images/logistics/warehouse.jpg",
-				"alt": "Склад и преработка",
+				"path": "/images/farmers/facility.jpg",
+				"alt": "Склад — палети и стелажи",
 				"labelKey": "farmers.slotFacility"
 			}
 		],
@@ -139,11 +141,11 @@
 	"logistics": {
 		"transport": {
 			"path": "/images/logistics/transport.jpg",
-			"alt": "Транспорт — камиони на рампи в логистичен център"
+			"alt": "Транспорт — хладилни камиони"
 		},
 		"warehouse": {
 			"path": "/images/logistics/warehouse.jpg",
-			"alt": "Склад — стелажи с палети"
+			"alt": "Склад — стелажи с палети и стока"
 		},
 		"tracking": {
 			"path": "/images/logistics/tracking.jpg",
@@ -154,6 +156,7 @@
 		{
 			"id": "hero",
 			"anchor": "#top",
+			"note": "main#top — hero секция",
 			"image": "/images/hero/background.jpg"
 		},
 		{
@@ -194,31 +197,120 @@
 	]
 };
 
-	const byCategory = {
-		grain: M.categories.grain,
-		oilseed: M.categories.oil,
-		fruit: M.categories.fruit,
-		veg: M.categories.veg,
-		feed: M.categories.feed,
+	const CROP_IMG = {
+		wheat: '/images/crops/wheat.jpg',
+		barley: '/images/crops/barley.jpg',
+		corn: '/images/crops/corn.jpg',
+		oats: '/images/crops/barley.jpg',
+		lentil: '/images/crops/feed.jpg',
+		sunflower: '/images/crops/sunflower.jpg',
+		rapeseed: '/images/crops/rapeseed.jpg',
+		soy: '/images/crops/oil.jpg',
+		tomato: '/images/hero/tomatoes.jpg',
+		pepper: '/images/crops/hot-pepper.jpg',
+		cucumber: '/images/hero/cucumbers.jpg',
+		apple: '/images/crops/apple.jpg',
+		herbs: '/images/crops/pepper.jpg',
+		preserves: '/images/crops/canned.jpg',
+		hay: '/images/crops/hay.jpg',
+		fertilizer: '/images/crops/fertilizer.jpg',
+		tractor: '/images/crops/machines.jpg',
 	};
 
-	const byTitleKeyword = [
-		[/пшеница/i, M.listings['wheat-dobr']],
-		[/слънчоглед/i, M.listings['sun-pl']],
-		[/царевица/i, M.listings['corn-buy']],
-		[/ечемик/i, M.listings['barley-sz']],
-		[/ябъл/i, M.listings['apple-plov']],
-		[/пипер/i, M.listings['pepper-buy']],
-		[/рапиц/i, M.listings['rapeseed-vt']],
-		[/сено/i, M.listings['hay-vid']],
+	const CAT_IMG = {
+		grain: CROP_IMG.wheat,
+		oil: CROP_IMG.sunflower,
+		oilseed: CROP_IMG.sunflower,
+		fruit: CROP_IMG.apple,
+		veg: CROP_IMG.pepper,
+		feed: CROP_IMG.hay,
+		canned: CROP_IMG.preserves,
+		fertilizer: CROP_IMG.fertilizer,
+		machines: CROP_IMG.tractor,
+	};
+
+	const ALT_BG = {
+		'/images/crops/wheat.jpg': 'Пшеница — зърно на поле',
+		'/images/crops/barley.jpg': 'Ечемик — житни класове',
+		'/images/crops/corn.jpg': 'Царевица — посев',
+		'/images/crops/sunflower.jpg': 'Слънчоглед — маслодайни',
+		'/images/crops/rapeseed.jpg': 'Рапица — маслодайни',
+		'/images/crops/oil.jpg': 'Олио / соеви продукти',
+		'/images/crops/apple.jpg': 'Ябълки — плодове',
+		'/images/crops/hot-pepper.jpg': 'Чушки / пипер',
+		'/images/crops/hay.jpg': 'Сено / фураж',
+		'/images/crops/canned.jpg': 'Консерви / преработка',
+		'/images/crops/fertilizer.jpg': 'Торове / агро входове',
+		'/images/crops/machines.jpg': 'Селскостопанска техника',
+		'/images/hero/tomatoes.jpg': 'Домати — зеленчуци',
+		'/images/hero/cucumbers.jpg': 'Краставици',
+	};
+
+	const TITLE_RULES = [
+		[/експелер|кюспе|шрот/i, 'sunflower'],
+		[/олио\s*соев|соево|соев/i, 'soy'],
+		[/олио|нерафиниран/i, 'soy'],
+		[/пшеница|пшен\b/i, 'wheat'],
+		[/ечемик/i, 'barley'],
+		[/царевица/i, 'corn'],
+		[/слънчоглед/i, 'sunflower'],
+		[/рапиц/i, 'rapeseed'],
+		[/лещ/i, 'lentil'],
+		[/овес/i, 'oats'],
+		[/сено|фураж/i, 'hay'],
+		[/домат/i, 'tomato'],
+		[/ябъл/i, 'apple'],
+		[/чушк|пипер/i, 'pepper'],
+		[/крастав/i, 'cucumber'],
+		[/тор|npk|уреа/i, 'fertilizer'],
+		[/трактор|комбайн|jcb/i, 'tractor'],
+		[/консерв|лютениц/i, 'preserves'],
 	];
 
-	function fromTitle(title) {
-		if (!title) return null;
-		for (const [re, src] of byTitleKeyword) {
-			if (re.test(title)) return src;
-		}
+	function cropFromTags(item) {
+		const tags = item.tags || [];
+		const tagged = tags.find((t) => /^crop:/i.test(t));
+		if (tagged) return tagged.replace(/^crop:/i, '').trim().toLowerCase();
 		return null;
+	}
+
+	function altFor(src, title) {
+		return ALT_BG[src] || (title ? title + ' — агро продукт' : 'Агро продукт');
+	}
+
+	function resolveListingImage(item) {
+		if (!item) {
+			return { src: CAT_IMG.grain, alt: altFor(CAT_IMG.grain), crop: 'wheat', category: 'grain' };
+		}
+		const title = item.title || '';
+		const category = item.category || 'grain';
+
+		if (item.imageUrl && /^https?:\/\//i.test(item.imageUrl)) {
+			return { src: item.imageUrl, alt: title, crop: cropFromTags(item), category };
+		}
+		if (item.id && M.listings[item.id]) {
+			const src = M.listings[item.id];
+			if (typeof src === 'string' && src.startsWith('/images/')) {
+				return { src, alt: M.listingLabels?.[item.id] || altFor(src, title), crop: cropFromTags(item), category };
+			}
+			if (typeof src === 'string' && /^https?:\/\//i.test(src)) {
+				return { src, alt: title, crop: cropFromTags(item), category };
+			}
+		}
+		const crop = cropFromTags(item);
+		if (crop && CROP_IMG[crop]) {
+			const src = CROP_IMG[crop];
+			return { src, alt: altFor(src, title), crop, category };
+		}
+		const hay = [title, item.subtitle, item.quality, ...(item.tags || [])].join(' ');
+		for (const [re, c] of TITLE_RULES) {
+			if (re.test(hay) && CROP_IMG[c]) {
+				const src = CROP_IMG[c];
+				return { src, alt: altFor(src, title), crop: c, category };
+			}
+		}
+		const src = CAT_IMG[category] || CAT_IMG.grain;
+		return { src, alt: altFor(src, title), crop, category };
 	}
 
 	function imgTag(src, alt, cls) {
@@ -254,20 +346,13 @@
 			warehouse: M.logistics.warehouse.path,
 			tracking: M.logistics.tracking.path,
 		},
-		byCategory,
 		byListingId: M.listings,
+		resolveListingImage,
 		forListing(item) {
-			if (!item) return byCategory.grain;
-			if (item.imageUrl) return item.imageUrl;
-			if (item.id && M.listings[item.id]) {
-				const src = M.listings[item.id];
-				if (typeof src === 'string' && /^https?:///i.test(src)) return src;
-				return src;
-			}
-			const fromT = fromTitle(item.title);
-			if (fromT) return fromT;
-			if (item.category && byCategory[item.category]) return byCategory[item.category];
-			return byCategory.grain;
+			return resolveListingImage(item).src;
+		},
+		forListingMeta(item) {
+			return resolveListingImage(item);
 		},
 		imgTag,
 	};

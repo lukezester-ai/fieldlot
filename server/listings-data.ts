@@ -6,6 +6,19 @@ import { getMaxListingAgeDays, pruneStaleListings } from './listings-freshness.j
 
 export type { FieldlotListing, ListingsSnapshot };
 
+/** Обяви без снимки — само текст (жълти страници). */
+export function stripListingMedia(listing: FieldlotListing): FieldlotListing {
+	const { imageUrl, image, ...rest } = listing as FieldlotListing & { image?: string };
+	return rest;
+}
+
+export function stripSnapshotMedia(snap: ListingsSnapshot): ListingsSnapshot {
+	return {
+		...snap,
+		listings: snap.listings.map(stripListingMedia),
+	};
+}
+
 const STATIC = liveSnapshot as ListingsSnapshot;
 const DEMO = demoListings as FieldlotListing[];
 

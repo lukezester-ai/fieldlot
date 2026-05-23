@@ -7,6 +7,7 @@ import { getRagIndexStatus } from './fieldlot-semantic-rag.js';
 import { getAllListings } from './fieldlot-rag.js';
 import { getListingsSnapshot } from './listings-data.js';
 import { handleRegisterInterestPost } from './register-interest.js';
+import { fetchExchangeSnapshot, getExchangeSnapshotCached } from './exchange-prices.js';
 import { isAnyLlmConfigured, resolveTextChatUpstream } from './llm-upstream.js';
 
 function clientIpFromNodeRequest(req: http.IncomingMessage): string | null {
@@ -67,6 +68,18 @@ const server = http.createServer(async (req, res) => {
 			const refresh = url.searchParams.get('refresh') === '1';
 			const snap = await getListingsSnapshot(refresh);
 			send(res, 200, snap);
+			return;
+		}
+
+		if (path === '/api/exchange-prices' && req.method === 'GET') {
+			const force = url.searchParams.get('refresh') === '1';
+			try {
+				const snap = force ? await fetchExchangeSnapshot() : await getExchangeSnapshotCached();
+				send(res, 200, { ok: true, ...snap });
+			} catch (e) {
+				const msg = e instanceof Error ? e.message : 'exchange fetch failed';
+				send(res, 502, { ok: false, error: msg });
+			}
 			return;
 		}
 

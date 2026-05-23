@@ -225,7 +225,7 @@ export async function searchFieldlotSemanticRag(
 		}));
 }
 
-export function formatSemanticHitsForPrompt(hits: FieldlotRagHit[], locale: 'bg' | 'en'): string {
+export function formatSemanticHitsForPrompt(hits: FieldlotRagHit[], locale: 'bg' | 'en' | 'de'): string {
 	if (!hits.length) return '';
 	const head =
 		locale === 'bg'

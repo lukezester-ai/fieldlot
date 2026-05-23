@@ -27,19 +27,43 @@
 			bg.style.setProperty('--hero-bg', `url("${IMG.hero}")`);
 			bg.style.backgroundImage = `linear-gradient(105deg, rgba(15, 51, 38, 0.52) 0%, rgba(26, 77, 58, 0.38) 45%, rgba(15, 26, 20, 0.35) 100%), url("${IMG.hero}")`;
 		}
-		const gallery = document.getElementById('hero-gallery');
-		const g = IMG.heroGallery;
-		if (!gallery || !g?.tomatoes) return;
-		const altTom = FieldlotI18n?.getLang() === 'en' ? 'Tomatoes' : 'Домати';
-		const altPep = FieldlotI18n?.getLang() === 'en' ? 'Peppers' : 'Чушки сурови';
-		const altCuc = FieldlotI18n?.getLang() === 'en' ? 'Cucumbers' : 'Краставици';
-		gallery.innerHTML = `
-			<div class="hero-gallery-main hero-gallery-slot--tomatoes">${IMG.imgTag(g.tomatoes, altTom, 'fl-photo')}</div>
-			<div class="hero-gallery-side">
-				<div class="hero-gallery-slot hero-gallery-slot--peppers">${IMG.imgTag(g.peppers, altPep, 'fl-photo')}</div>
-				<div class="hero-gallery-slot hero-gallery-slot--cucumbers">${IMG.imgTag(g.cucumbers, altCuc, 'fl-photo')}</div>
-			</div>`;
-		gallery.removeAttribute('aria-hidden');
+
+		const gal = document.getElementById('hero-gallery');
+		if (gal) {
+			const d = new Date();
+			const dateStr = d.toLocaleDateString(loc(), { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+			const marketStatus = t('hero.marketOpen', 'Пазарът е отворен');
+			const b2bStatus = t('hero.b2bLive', 'B2B Търговия на живо');
+			
+			const calendarSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>`;
+			const globeSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>`;
+			const chartSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
+
+			gal.innerHTML = `
+				<div class="hero-glass-card" style="animation-delay: 0s;">
+					<div class="hero-glass-icon" aria-hidden="true">${calendarSvg}</div>
+					<div class="hero-glass-text">
+						<span class="hero-glass-title">${escapeHtml(t('hero.date', 'Днешна дата'))}</span>
+						<span class="hero-glass-value">${escapeHtml(dateStr)}</span>
+					</div>
+				</div>
+				<div class="hero-glass-card" style="animation-delay: 0.15s;">
+					<div class="hero-glass-icon" aria-hidden="true">${globeSvg}</div>
+					<div class="hero-glass-text">
+						<span class="hero-glass-title">${escapeHtml(t('hero.market', 'Европейски пазар'))}</span>
+						<span class="hero-glass-value">${escapeHtml(marketStatus)}</span>
+					</div>
+				</div>
+				<div class="hero-glass-card" style="animation-delay: 0.3s;">
+					<div class="hero-glass-icon" aria-hidden="true">${chartSvg}</div>
+					<div class="hero-glass-text">
+						<span class="hero-glass-title">${escapeHtml(t('hero.trade', 'Борса & Обяви'))}</span>
+						<span class="hero-glass-value">${escapeHtml(b2bStatus)}</span>
+					</div>
+				</div>
+			`;
+			gal.removeAttribute('aria-hidden');
+		}
 	}
 
 	const CAT_ICONS = {
@@ -123,13 +147,11 @@
 			const slot = card.querySelector('.log-card-img');
 			const title = card.querySelector('h3')?.textContent || k;
 			if (!slot) return;
-			slot.innerHTML = IMG.imgTag(src, title, 'fl-photo');
-			const img = slot.querySelector('img');
-			if (img) {
-				img.addEventListener('error', () => {
-					slot.style.backgroundImage = `url("${src}")`;
-				});
-			}
+			slot.style.backgroundImage = `url("${src}")`;
+			slot.style.backgroundSize = 'cover';
+			slot.style.backgroundPosition = 'center';
+			slot.setAttribute('aria-label', title);
+			slot.innerHTML = '';
 		});
 	}
 
@@ -198,8 +220,9 @@
 			const chg = q.chg ?? 0;
 			const sign = chg >= 0 ? '+' : '−';
 			const chgTxt = `${sign}${Math.abs(chg).toFixed(1)}%`;
-			const label = en ? q.name : q.name;
-			return `<span>${label} ${q.priceBgn} ${q.unit || 'лв/тон'} · ${chgTxt}</span>`;
+			const label = window.FieldlotI18n ? window.FieldlotI18n.t('exchange.quote.' + q.id, q.name) : q.name;
+			const unit = window.FieldlotI18n?.getLang() === 'bg' ? 'лв/тон' : (window.FieldlotI18n?.getLang() === 'de' ? 'BGN/Tonne' : 'BGN/ton');
+			return `<span>${label} ${q.priceBgn} ${unit} · ${chgTxt}</span>`;
 		});
 		if (!items.length) return;
 		track.innerHTML = items.join('') + items.join('');
@@ -214,9 +237,9 @@
 			const data = await res.json();
 			if (!res.ok || !data.ok || !Array.isArray(data.quotes)) throw new Error(data.error || 'no data');
 			const rows = data.quotes.map((q) => ({
-				name: q.name,
+				name: window.FieldlotI18n ? window.FieldlotI18n.t('exchange.quote.' + q.id, q.name) : q.name,
 				price: q.priceBgn,
-				unit: q.unit || (FieldlotI18n?.getLang() === 'en' ? 'BGN/ton' : 'лв/тон'),
+				unit: window.FieldlotI18n?.getLang() === 'bg' ? 'лв/тон' : (window.FieldlotI18n?.getLang() === 'de' ? 'BGN/Tonne' : 'BGN/ton'),
 				chg: q.chg ?? 0,
 			}));
 			renderExchange(rows, { source: data.source, fetchedAt: data.fetchedAt });
@@ -225,36 +248,70 @@
 		}
 	}
 
+	const CAT_LABELS = {
+		veg: 'Зеленчуци',
+		fruit: 'Плодове',
+		grain: 'Зърно',
+		oil: 'Маслодайни',
+		feed: 'Фураж',
+		canned: 'Консерви',
+		fertilizer: 'Торове',
+		machines: 'Машини',
+	};
+
+	function escapeHtml(s) {
+		return String(s)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;');
+	}
+
+	function categoryLabel(item) {
+		const FC = window.FieldlotCategories;
+		const id = FC?.normCat ? FC.normCat(item.category) : item.category;
+		return CAT_LABELS[id] || id || '';
+	}
+
 	function cardHtml(item) {
 		const row = localize(item);
-		const src = IMG ? IMG.forListing(row) : '';
+		const roleClass = row.role === 'buy' ? 'buy' : 'sell';
 		const roleLabel = row.role === 'buy' ? t('listing.buy') : t('listing.sell');
+		const cat = categoryLabel(row);
 		const price =
-			row.price && row.price !== 'по дог.' && row.price !== 'заявка' && row.price !== 'по дог.' 
-				? `${row.price} <small>${row.priceUnit || ''}</small>`
-				: `${row.price || '—'} <small>${row.priceUnit || ''}</small>`;
+			row.price && row.price !== 'по дог.' && row.price !== 'заявка'
+				? `${escapeHtml(row.price)} <small>${escapeHtml(row.priceUnit || '')}</small>`
+				: `${escapeHtml(row.price || '—')} <small>${escapeHtml(row.priceUnit || '')}</small>`;
 		const cta = row.role === 'buy' ? t('listing.offer') : t('listing.buyBtn');
-		const photo = src
-			? `<img src="${src}" alt="${row.title}" loading="lazy" referrerpolicy="no-referrer" /><span class="product-card-badge">${roleLabel}</span>`
-			: `<span class="product-card-badge">${roleLabel}</span>`;
 		const catUrl =
 			(window.FieldlotI18n ? FieldlotI18n.withLangUrl('/catalog.html') : '/catalog.html') +
 			`?id=${encodeURIComponent(row.id)}`;
-		return `<article class="product-card">
-			<div class="product-card-img">${photo}</div>
-			<div class="product-card-body">
-				<h3>${row.title}</h3>
-				<p class="product-meta">${row.subtitle || ''}</p>
-				<div class="product-meta-row">
-					<span>🚛 ${row.qty || '—'}</span>
-					<span class="product-rating">⭐ 4.${7 + (row.id.length % 3)}</span>
+		const contact = row.contact
+			? `<p class="yp-entry-line yp-entry-contact">${escapeHtml(row.contact)}</p>`
+			: '';
+		const tagsArray = (row.tags || []).filter(t => t.toLowerCase() !== (cat || '').toLowerCase());
+		const tags = tagsArray
+			.slice(0, 2)
+			.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
+			.join('');
+		return `<article class="yp-entry listing-card">
+			<div class="yp-entry-main">
+				<div class="yp-entry-head">
+					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
+					${cat ? `<span class="tag yp-cat">${escapeHtml(cat)}</span>` : ''}
+					${tags}
 				</div>
-				<div class="product-price">${price}</div>
-				<p class="product-seller">${row.contact || ''}</p>
+				<h3 class="yp-entry-title">${escapeHtml(row.title)}</h3>
+				<p class="yp-entry-line">${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(row.subtitle || '')) : escapeHtml(row.subtitle || '')} · ${escapeHtml(row.qty || '—')}</p>
+				<p class="yp-entry-line yp-entry-muted">${escapeHtml(row.incoterm || '')}${row.quality ? ` · ${escapeHtml(row.quality)}` : ''}</p>
+				${contact}
 			</div>
-			<div class="product-card-actions">
-				<a class="btn btn-secondary" href="${catUrl}">${t('listing.connect')}</a>
-				<a class="btn btn-primary" href="${catUrl}">${cta}</a>
+			<div class="yp-entry-aside">
+				<div class="price">${price}</div>
+				<div class="product-card-actions">
+					<a class="btn btn-secondary" href="${catUrl}">${escapeHtml(t('listing.connect'))}</a>
+					<a class="btn btn-primary" href="${catUrl}">${escapeHtml(cta)}</a>
+				</div>
 			</div>
 		</article>`;
 	}
@@ -262,20 +319,39 @@
 	async function loadListings() {
 		const grid = document.getElementById('home-listings');
 		if (!grid) return;
+		let staticData = [];
 		try {
 			const res = await fetch('/data/live-listings.json');
-			if (!res.ok) throw new Error('fetch');
-			const data = await res.json();
-			const all = Array.isArray(data) ? data : data.listings || [];
-			const borsa = all.filter((item) => item.source === 'borsaagro.com');
-			const sorted = [...borsa].sort((a, b) => {
+			if (res.ok) {
+				const data = await res.json();
+				staticData = Array.isArray(data) ? data : data.listings || [];
+			}
+		} catch {}
+
+		let fbData = [];
+		try {
+			// Wait for firebase to be loaded (since it's a bundled module)
+			let retries = 20;
+			while (!window.fetchFirebaseListings && retries > 0) {
+				await new Promise(r => setTimeout(r, 100));
+				retries--;
+			}
+			if (window.fetchFirebaseListings) {
+				fbData = await window.fetchFirebaseListings(20);
+			}
+		} catch (e) {
+			console.error("Firebase listings fetch error:", e);
+		}
+
+		try {
+			const all = [...fbData, ...staticData];
+			const sorted = all.sort((a, b) => {
 				const ta = Date.parse(a.publishedAt || '') || 0;
 				const tb = Date.parse(b.publishedAt || '') || 0;
 				return tb - ta;
-			});
-			const slice = (sorted.length ? sorted : all).slice(0, 4);
-			grid.innerHTML = slice.map((item) => cardHtml(item)).join('');
-			window.__fieldlotVisibleIds = slice.map((x) => x.id);
+			}).slice(0, 6);
+			grid.innerHTML = sorted.map((item) => cardHtml(item)).join('');
+			window.__fieldlotVisibleIds = sorted.map((x) => x.id);
 			const statEl = document.getElementById('hero-stat-count');
 			if (statEl && all.length) statEl.textContent = String(all.length);
 		} catch {

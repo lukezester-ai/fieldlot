@@ -52,7 +52,7 @@ button, input, select, textarea {
 	border-radius: var(--fl-radius);
 	display: grid;
 	place-items: center;
-	background: var(--fl-brand);
+	background: var(--fl-brand-solid);
 	color: #fff;
 	flex-shrink: 0;
 }
@@ -100,7 +100,7 @@ button, input, select, textarea {
 }
 
 .lang-switch button.is-active {
-	background: var(--fl-brand);
+	background: var(--fl-brand-solid);
 	color: #fff;
 }
 
@@ -142,13 +142,13 @@ button, input, select, textarea {
 
 .nav-cta,
 .btn-primary {
-	background: var(--fl-brand);
+	background: var(--fl-brand-solid);
 	color: #fff;
 }
 
 .nav-cta:hover,
 .btn-primary:hover {
-	background: var(--fl-brand-hover);
+	background: var(--fl-brand-solid-hover);
 }
 
 .btn-secondary {

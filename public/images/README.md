@@ -1,15 +1,17 @@
-# Fieldlot images (bundled with the site)
+# Fieldlot images
 
-Снимките са **локални** в тази папка — зареждат се на Vercel без външен CDN.
+JPG files under `hero/`, `crops/`, `farmers/`, `logistics/` match `data/fieldlot-image-manifest.json`.
 
-| Папка | Съдържание |
-|-------|------------|
-| `hero/` | `background.jpg` (фон зад заглавието), `fresh.jpg`, `tomatoes.jpg`, `farm.jpg` |
-| `crops/` | По една снимка на култура от демо каталога |
-| `farmers/` | `spotlight.jpg` + 4 топ фермери |
-| `logistics/` | transport, warehouse, tracking |
+**Sync (download + regenerate JS):**
 
-**Manifest за UI + RAG:** `/data/fieldlot-image-manifest.json`  
-**JS:** `public/scripts/fieldlot-images.js`
+```bash
+npm run sync:images
+```
 
-За нови снимки: замени `.jpg` файл и обнови manifest при нужда.
+**Regenerate only** `public/scripts/fieldlot-images.js` (no download):
+
+```bash
+node scripts/sync-images-from-manifest.mjs
+```
+
+License: Pexels (see `scripts/fix-crop-images.mjs` URLs). Do not commit unrelated stock photos.

@@ -635,7 +635,7 @@ textarea:focus {
 	z-index: 50;
 	border: 1px solid var(--fl-line);
 	border-radius: var(--fl-radius);
-	background: var(--fl-brand);
+	background: var(--fl-brand-solid);
 	color: #fff;
 	padding: 12px 16px;
 	box-shadow: var(--fl-shadow);
@@ -644,7 +644,7 @@ textarea:focus {
 	cursor: pointer;
 }
 
-.llm-launch:hover { background: var(--fl-brand-hover); }
+.llm-launch:hover { background: var(--fl-brand-solid-hover); }
 
 .llm-panel {
 	position: fixed;

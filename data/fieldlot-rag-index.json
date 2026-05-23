@@ -1,5 +1,5 @@
 {
-	"updatedAt": "2026-05-18T06:42:59.888Z",
+	"updatedAt": "2026-05-23T11:43:30.017Z",
 	"model": "keyword-only",
 	"chunks": [
 		{
@@ -105,10 +105,122 @@
 			"text": "Снимки (/images/, manifest): Hero галерия — tomatoes, peppers (чушки), cucumbers. Категории: oil→oil.jpg (олио/бутилки), feed→feed.jpg (чували), machines→machines.jpg (комбайн), fertilizer→fertilizer.jpg. Логистика transport→хладилен камион. Каталог: прозрачен панел, фон background.jpg. Обяви: sun-pl→sunflower, corn-buy→corn, pepper-buy→hot-pepper, rapeseed-vt→rapeseed, hay-vid→hay."
 		},
 		{
+			"id": "listing:ba-106",
+			"kind": "listing",
+			"title": "царевица",
+			"text": "царевица 🇧🇬 България · borsaagro.com grain crop:corn national sell 1 000.00 102.26 € Зърно Продажба borsaagro.com crop:corn",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/106",
+			"listingId": "ba-106"
+		},
+		{
+			"id": "listing:ba-105",
+			"kind": "listing",
+			"title": "царевица",
+			"text": "царевица 🇧🇬 България · borsaagro.com grain crop:corn national sell — — € Зърно Продажба borsaagro.com crop:corn",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/105",
+			"listingId": "ba-105"
+		},
+		{
+			"id": "listing:ba-102",
+			"kind": "listing",
+			"title": "царевица",
+			"text": "царевица 🇧🇬 България · borsaagro.com grain crop:corn national sell 100.00 51.13 € Зърно Продажба borsaagro.com crop:corn",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/102",
+			"listingId": "ba-102"
+		},
+		{
+			"id": "listing:ba-101",
+			"kind": "listing",
+			"title": "царевица",
+			"text": "царевица 🇧🇬 България · borsaagro.com grain crop:corn national sell 200.00 255.65 € Зърно Продажба borsaagro.com crop:corn",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/101",
+			"listingId": "ba-101"
+		},
+		{
+			"id": "listing:ba-100",
+			"kind": "listing",
+			"title": "царевица",
+			"text": "царевица 🇧🇬 България · borsaagro.com grain crop:corn national sell 200.00 — € Зърно Продажба borsaagro.com crop:corn",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/100",
+			"listingId": "ba-100"
+		},
+		{
+			"id": "listing:ba-98",
+			"kind": "listing",
+			"title": "rapeseed",
+			"text": "rapeseed 🇧🇬 България · borsaagro.com oil crop:rapeseed national sell 100.00 43.46 € Олио Продажба borsaagro.com crop:rapeseed",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/98",
+			"listingId": "ba-98"
+		},
+		{
+			"id": "listing:ba-97",
+			"kind": "listing",
+			"title": "rapeseed",
+			"text": "rapeseed 🇧🇬 България · borsaagro.com oil crop:rapeseed national sell 100.00 — € Олио Продажба borsaagro.com crop:rapeseed",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/97",
+			"listingId": "ba-97"
+		},
+		{
+			"id": "listing:ba-95",
+			"kind": "listing",
+			"title": "нерафинирано слънчогледово олио",
+			"text": "нерафинирано слънчогледово олио 🇧🇬 България · borsaagro.com oil crop:sunflower national sell 500.00 511.29 € Олио Продажба borsaagro.com crop:sunflower",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/95",
+			"listingId": "ba-95"
+		},
+		{
+			"id": "listing:ba-94",
+			"kind": "listing",
+			"title": "рапица",
+			"text": "рапица 🇧🇬 България · borsaagro.com oil crop:rapeseed national sell 500.00 409.03 € Олио Продажба borsaagro.com crop:rapeseed",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/94",
+			"listingId": "ba-94"
+		},
+		{
+			"id": "listing:ba-92",
+			"kind": "listing",
+			"title": "пшеница",
+			"text": "пшеница 🇧🇬 България · borsaagro.com grain crop:wheat national sell 300.00 127.82 € Зърно Продажба borsaagro.com crop:wheat",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/92",
+			"listingId": "ba-92"
+		},
+		{
+			"id": "listing:ba-91",
+			"kind": "listing",
+			"title": "corn",
+			"text": "corn 🇧🇬 България · borsaagro.com grain crop:corn national sell 100.00 51.13 € Зърно Продажба borsaagro.com crop:corn",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/91",
+			"listingId": "ba-91"
+		},
+		{
+			"id": "listing:ba-89",
+			"kind": "listing",
+			"title": "смена",
+			"text": "смена 🇧🇬 България · borsaagro.com grain national sell 200.00 102.26 € Зърно Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/89",
+			"listingId": "ba-89"
+		},
+		{
+			"id": "listing:ba-88",
+			"kind": "listing",
+			"title": "ячмень",
+			"text": "ячмень 🇧🇬 България · borsaagro.com grain national sell 200.00 102.26 € Зърно Продажба borsaagro.com",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/88",
+			"listingId": "ba-88"
+		},
+		{
+			"id": "listing:ba-87",
+			"kind": "listing",
+			"title": "ЕЧЕМИК ФУРАЖЕН",
+			"text": "ЕЧЕМИК ФУРАЖЕН 🇧🇬 България · borsaagro.com grain crop:barley national sell 200.00 102.26 € Зърно Продажба borsaagro.com crop:barley",
+			"url": "https://borsaagro.com/potrebitelski-obqvi/87",
+			"listingId": "ba-87"
+		},
+		{
 			"id": "listing:ba-86",
 			"kind": "listing",
 			"title": "Царевица",
-			"text": "Царевица България · borsaagro.com grain crop:corn national sell 500.00 100.00 лв Зърно Продажба borsaagro.com crop:corn",
+			"text": "Царевица 🇧🇬 България · borsaagro.com grain crop:corn national sell 500.00 51.13 € Зърно Продажба borsaagro.com crop:corn",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/86",
 			"listingId": "ba-86"
 		},
@@ -116,65 +228,249 @@
 			"id": "listing:ba-84",
 			"kind": "listing",
 			"title": "Олио соево нерафинирано",
-			"text": "Олио соево нерафинирано България · borsaagro.com oil national sell 100.00 1 000.00 лв Олио Продажба borsaagro.com",
+			"text": "Олио соево нерафинирано 🇧🇬 България · borsaagro.com oil national sell 100.00 511.29 € Олио Продажба borsaagro.com",
 			"url": "https://borsaagro.com/potrebitelski-obqvi/84",
 			"listingId": "ba-84"
 		},
 		{
-			"id": "listing:ba-83",
+			"id": "listing:gf-zji9oiu",
 			"kind": "listing",
-			"title": "ЦАРЕВИЦА",
-			"text": "ЦАРЕВИЦА България · borsaagro.com grain crop:corn national sell 200.00 200.00 лв Зърно Продажба borsaagro.com crop:corn",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/83",
-			"listingId": "ba-83"
+			"title": "Selling Claas Lexion Combine",
+			"text": "Selling Claas Lexion Combine 🇩🇪 Munich, DE · Global Feed feed Germany sell 2 pcs 71400.00 € Фураж machines sell Global DE",
+			"url": "#global-0rpexfg",
+			"listingId": "gf-zji9oiu"
 		},
 		{
-			"id": "listing:ba-82",
+			"id": "listing:gf-d646e91",
 			"kind": "listing",
-			"title": "ЦАРЕВИЦА",
-			"text": "ЦАРЕВИЦА България · borsaagro.com grain crop:corn national sell 200.00 350.00 лв Зърно Продажба borsaagro.com crop:corn",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/82",
-			"listingId": "ba-82"
+			"title": "Selling Peaches",
+			"text": "Selling Peaches 🇮🇹 Milan, IT · Global Feed fruit Italy sell 24 mt 1.25 € Плодове fruit sell Global IT",
+			"url": "#global-ihn2gal",
+			"listingId": "gf-d646e91"
 		},
 		{
-			"id": "listing:ba-81",
+			"id": "listing:gf-czcjxsb",
 			"kind": "listing",
-			"title": "ПШЕНИЦА",
-			"text": "ПШЕНИЦА България · borsaagro.com grain crop:wheat national sell 100.00 100.00 лв Зърно Продажба borsaagro.com crop:wheat",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/81",
-			"listingId": "ba-81"
+			"title": "Buying Rapeseed",
+			"text": "Buying Rapeseed 🇵🇱 Gdansk, PL · Global Feed oil crop:rapeseed Poland buy 160 mt 450.00 € Олио oil buy Global PL crop:rapeseed",
+			"url": "#global-qx6hgo1",
+			"listingId": "gf-czcjxsb"
 		},
 		{
-			"id": "listing:ba-79",
+			"id": "listing:gf-bpmr7gy",
 			"kind": "listing",
-			"title": "ОЛИО СОЕВО НЕРАФИНИРАНО",
-			"text": "ОЛИО СОЕВО НЕРАФИНИРАНО България · borsaagro.com oil crop:soy national sell 24.00 тон 980.00 € Олио Продажба borsaagro.com crop:soy",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/79",
-			"listingId": "ba-79"
+			"title": "Selling Fresh Tomatoes",
+			"text": "Selling Fresh Tomatoes 🇩🇪 Munich, DE · Global Feed veg crop:tomato Germany sell 32 mt 0.64 € Зеленчуци veg sell Global DE crop:tomato",
+			"url": "#global-vsf6m0v",
+			"listingId": "gf-bpmr7gy"
 		},
 		{
-			"id": "listing:ba-78",
+			"id": "listing:gf-igio44y",
 			"kind": "listing",
-			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oil crop:sunflower national sell 150.00 тон 190.00 € Олио Продажба borsaagro.com crop:sunflower",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/78",
-			"listingId": "ba-78"
+			"title": "Selling Potatoes",
+			"text": "Selling Potatoes 🇮🇹 Milan, IT · Global Feed veg Italy sell 24 mt 0.78 € Зеленчуци veg sell Global IT",
+			"url": "#global-k05hkwy",
+			"listingId": "gf-igio44y"
 		},
 		{
-			"id": "listing:ba-77",
+			"id": "listing:gf-vwwouvj",
 			"kind": "listing",
-			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oil crop:sunflower national sell 150.00 тон 190.00 € Олио Продажба borsaagro.com crop:sunflower",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/77",
-			"listingId": "ba-77"
+			"title": "Selling Green Peppers",
+			"text": "Selling Green Peppers 🇫🇷 Lyon, FR · Global Feed veg crop:pepper France sell 16 mt 0.83 € Зеленчуци veg sell Global FR crop:pepper",
+			"url": "#global-vwagp9j",
+			"listingId": "gf-vwwouvj"
 		},
 		{
-			"id": "listing:ba-76",
+			"id": "listing:gf-uq3886h",
 			"kind": "listing",
-			"title": "СЛЪНЧОГЛЕД МАСЛОДАЕН",
-			"text": "СЛЪНЧОГЛЕД МАСЛОДАЕН България · borsaagro.com oil crop:sunflower national sell 10.00 тон 500.00 € Олио Продажба borsaagro.com crop:sunflower",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/76",
-			"listingId": "ba-76"
+			"title": "Selling Potatoes",
+			"text": "Selling Potatoes 🇮🇹 Milan, IT · Global Feed veg Italy sell 16 mt 0.82 € Зеленчуци veg sell Global IT",
+			"url": "#global-1dr0s8c",
+			"listingId": "gf-uq3886h"
+		},
+		{
+			"id": "listing:gf-t7xk18p",
+			"kind": "listing",
+			"title": "Selling Peaches",
+			"text": "Selling Peaches 🇷🇴 Constanta, RO · Global Feed fruit Romania sell 27 mt 1.18 € Плодове fruit sell Global RO",
+			"url": "#global-zmdq77f",
+			"listingId": "gf-t7xk18p"
+		},
+		{
+			"id": "listing:gf-1h7qti7",
+			"kind": "listing",
+			"title": "Buying Crude Sunflower Oil",
+			"text": "Buying Crude Sunflower Oil 🇷🇴 Bucharest, RO · Global Feed oil crop:sunflower Romania buy 120 mt 405.00 € Олио oil buy Global RO crop:sunflower",
+			"url": "#global-s3wkre5",
+			"listingId": "gf-1h7qti7"
+		},
+		{
+			"id": "listing:gf-sv6ysrv",
+			"kind": "listing",
+			"title": "Buying Cherries",
+			"text": "Buying Cherries 🇮🇹 Bari, IT · Global Feed fruit Italy buy 9 mt 1.10 € Плодове fruit buy Global IT",
+			"url": "#global-yzb0i9x",
+			"listingId": "gf-sv6ysrv"
+		},
+		{
+			"id": "listing:gf-6lnw9cd",
+			"kind": "listing",
+			"title": "Selling Crude Sunflower Oil",
+			"text": "Selling Crude Sunflower Oil 🇬🇷 Thessaloniki, GR · Global Feed oil crop:sunflower Greece sell 320 mt 360.00 € Олио oil sell Global GR crop:sunflower",
+			"url": "#global-3ax8po9",
+			"listingId": "gf-6lnw9cd"
+		},
+		{
+			"id": "listing:gf-vuwjmns",
+			"kind": "listing",
+			"title": "Buying Sunflower Seeds",
+			"text": "Buying Sunflower Seeds 🇮🇹 Bari, IT · Global Feed oil crop:sunflower Italy buy 120 mt 414.00 € Олио oil buy Global IT crop:sunflower",
+			"url": "#global-3oyb18h",
+			"listingId": "gf-vuwjmns"
+		},
+		{
+			"id": "listing:gf-lft2ehj",
+			"kind": "listing",
+			"title": "Selling Seeder Amazone",
+			"text": "Selling Seeder Amazone 🇫🇷 Paris, FR · Global Feed feed France sell 2 pcs 76500.00 € Фураж machines sell Global FR",
+			"url": "#global-96f63n6",
+			"listingId": "gf-lft2ehj"
+		},
+		{
+			"id": "listing:gf-p434ar6",
+			"kind": "listing",
+			"title": "Selling John Deere Tractor 8R",
+			"text": "Selling John Deere Tractor 8R 🇮🇹 Milan, IT · Global Feed machines crop:tractor Italy sell 2 pcs 100300.00 € Техника machines sell Global IT crop:tractor",
+			"url": "#global-2re6bpg",
+			"listingId": "gf-p434ar6"
+		},
+		{
+			"id": "listing:gf-bbq7y3w",
+			"kind": "listing",
+			"title": "Selling Milling Wheat Class 1",
+			"text": "Selling Milling Wheat Class 1 🇫🇷 Rouen, FR · Global Feed grain crop:wheat France sell 400 mt 180.40 € Зърно grain sell Global FR crop:wheat",
+			"url": "#global-fp26kq6",
+			"listingId": "gf-bbq7y3w"
+		},
+		{
+			"id": "listing:gf-mjrkjs5",
+			"kind": "listing",
+			"title": "Selling Feed Barley",
+			"text": "Selling Feed Barley 🇫🇷 Lyon, FR · Global Feed grain crop:barley France sell 400 mt 255.20 € Зърно grain sell Global FR crop:barley",
+			"url": "#global-v95m7lh",
+			"listingId": "gf-mjrkjs5"
+		},
+		{
+			"id": "listing:gf-ln67w15",
+			"kind": "listing",
+			"title": "Buying Watermelons",
+			"text": "Buying Watermelons 🇫🇷 Rouen, FR · Global Feed fruit France buy 18 mt 1.42 € Плодове fruit buy Global FR",
+			"url": "#global-s4ow0f7",
+			"listingId": "gf-ln67w15"
+		},
+		{
+			"id": "listing:gf-to7m5bb",
+			"kind": "listing",
+			"title": "Selling Fresh Tomatoes",
+			"text": "Selling Fresh Tomatoes 🇷🇴 Constanta, RO · Global Feed veg crop:tomato Romania sell 36 mt 0.96 € Зеленчуци veg sell Global RO crop:tomato",
+			"url": "#global-w6x7nzg",
+			"listingId": "gf-to7m5bb"
+		},
+		{
+			"id": "listing:gf-fczgx3o",
+			"kind": "listing",
+			"title": "Selling Cherries",
+			"text": "Selling Cherries 🇵🇱 Gdansk, PL · Global Feed fruit Poland sell 15 mt 1.32 € Плодове fruit sell Global PL",
+			"url": "#global-7l9vl8t",
+			"listingId": "gf-fczgx3o"
+		},
+		{
+			"id": "listing:gf-r1anyrb",
+			"kind": "listing",
+			"title": "Selling Potatoes",
+			"text": "Selling Potatoes 🇩🇪 Frankfurt, DE · Global Feed veg Germany sell 28 mt 0.69 € Зеленчуци veg sell Global DE",
+			"url": "#global-ovt7540",
+			"listingId": "gf-r1anyrb"
+		},
+		{
+			"id": "listing:gf-g1su6r2",
+			"kind": "listing",
+			"title": "Selling Corn (Maize)",
+			"text": "Selling Corn (Maize) 🇬🇷 Thessaloniki, GR · Global Feed grain crop:corn Greece sell 900 mt 198.00 € Зърно grain sell Global GR crop:corn",
+			"url": "#global-ncet916",
+			"listingId": "gf-g1su6r2"
+		},
+		{
+			"id": "listing:gf-afbjdcf",
+			"kind": "listing",
+			"title": "Selling Onions",
+			"text": "Selling Onions 🇮🇹 Milan, IT · Global Feed veg Italy sell 40 mt 0.72 € Зеленчуци veg sell Global IT",
+			"url": "#global-v0jxb2g",
+			"listingId": "gf-afbjdcf"
+		},
+		{
+			"id": "listing:gf-7h73qri",
+			"kind": "listing",
+			"title": "Selling Claas Lexion Combine",
+			"text": "Selling Claas Lexion Combine 🇬🇷 Thessaloniki, GR · Global Feed feed Greece sell 2 pcs 95200.00 € Фураж machines sell Global GR",
+			"url": "#global-vycjjay",
+			"listingId": "gf-7h73qri"
+		},
+		{
+			"id": "listing:gf-6q6ga4w",
+			"kind": "listing",
+			"title": "Selling Watermelons",
+			"text": "Selling Watermelons 🇩🇪 Frankfurt, DE · Global Feed fruit Germany sell 21 mt 1.20 € Плодове fruit sell Global DE",
+			"url": "#global-lciuh4j",
+			"listingId": "gf-6q6ga4w"
+		},
+		{
+			"id": "listing:gf-90t5v1a",
+			"kind": "listing",
+			"title": "Selling Feed Barley",
+			"text": "Selling Feed Barley 🇩🇪 Frankfurt, DE · Global Feed grain crop:barley Germany sell 400 mt 259.60 € Зърно grain sell Global DE crop:barley",
+			"url": "#global-cgzrsto",
+			"listingId": "gf-90t5v1a"
+		},
+		{
+			"id": "listing:gf-q21n3n1",
+			"kind": "listing",
+			"title": "Buying Peaches",
+			"text": "Buying Peaches 🇫🇷 Rouen, FR · Global Feed fruit France buy 12 mt 1.34 € Плодове fruit buy Global FR",
+			"url": "#global-rgvcecv",
+			"listingId": "gf-q21n3n1"
+		},
+		{
+			"id": "listing:gf-tng5bpt",
+			"kind": "listing",
+			"title": "Buying Watermelons",
+			"text": "Buying Watermelons 🇷🇴 Constanta, RO · Global Feed fruit Romania buy 30 mt 0.96 € Плодове fruit buy Global RO",
+			"url": "#global-zzsxuj7",
+			"listingId": "gf-tng5bpt"
+		},
+		{
+			"id": "listing:gf-shbk98y",
+			"kind": "listing",
+			"title": "Buying Apples (Gala)",
+			"text": "Buying Apples (Gala) 🇫🇷 Rouen, FR · Global Feed fruit crop:apple France buy 9 mt 1.30 € Плодове fruit buy Global FR crop:apple",
+			"url": "#global-0ibhmgc",
+			"listingId": "gf-shbk98y"
+		},
+		{
+			"id": "listing:gf-5c418a7",
+			"kind": "listing",
+			"title": "Selling Potatoes",
+			"text": "Selling Potatoes 🇮🇹 Milan, IT · Global Feed veg Italy sell 20 mt 0.90 € Зеленчуци veg sell Global IT",
+			"url": "#global-ckv00y0",
+			"listingId": "gf-5c418a7"
+		},
+		{
+			"id": "listing:gf-di7mul5",
+			"kind": "listing",
+			"title": "Selling Potatoes",
+			"text": "Selling Potatoes 🇬🇷 Athens, GR · Global Feed veg Greece sell 28 mt 0.77 € Зеленчуци veg sell Global GR",
+			"url": "#global-9tvx2zv",
+			"listingId": "gf-di7mul5"
 		}
 	]
 }

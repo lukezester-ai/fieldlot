@@ -7,6 +7,7 @@ import {
 	matchListingCategory,
 	normalizeCategory,
 } from './fieldlot-categories.js';
+import { listingImageRagLine, resolveListingImage } from './listing-image-resolve.js';
 import { getAllListingsSync, type FieldlotListing } from './listings-data.js';
 
 export type { FieldlotListing };
@@ -21,7 +22,7 @@ export type FieldlotChatFilters = {
 
 export type FieldlotChatContext = {
 	page?: 'landing' | 'catalog' | string;
-	lang?: 'bg' | 'en' | string;
+	lang?: 'bg' | 'en' | 'de' | string;
 	listingId?: string;
 	filters?: FieldlotChatFilters;
 	visibleListingIds?: string[];
@@ -134,21 +135,17 @@ function scoreListing(
 	return score;
 }
 
-function listingImagePath(id: string): string {
-	const map = imageManifest.listings as Record<string, string>;
-	return map[id] ?? '';
-}
-
 function formatListing(item: FieldlotListing): string {
 	const roleLabel = item.role === 'buy' ? 'търсене' : 'продажба';
-	const labels = imageManifest.listingLabels as Record<string, string> | undefined;
-	const cropLabel = labels?.[item.id] ?? item.title;
+	const manifestMap = imageManifest.listings as Record<string, string>;
+	const meta = resolveListingImage(item, manifestMap);
 	const crop = listingCrop(item);
 	return [
 		`[id:${item.id}]`,
 		`${item.title} (${roleLabel})`,
 		`Категория: ${normalizeCategory(item.category)}${crop ? ` · култура: ${crop}` : ''}`,
-		`Култура/снимка: ${cropLabel} → ${listingImagePath(item.id)}`,
+		listingImageRagLine(item, manifestMap),
+		`alt: ${meta.altBg}`,
 		`Локация: ${item.subtitle}`,
 		`Количество: ${item.qty}`,
 		`Цена: ${item.price} ${item.priceUnit}`,
@@ -220,7 +217,7 @@ export function buildFieldlotRagContext(
 		'',
 		'=== RAG: ПРАВИЛА ===',
 		'1) Отговаряй САМО от блоковете по-горе — не измисляй оферти, URL, цени или функции.',
-		'2) За снимки: ползвай точните пътища от IMAGE MANIFEST; кажи коя снимка към коя обява/секция отговаря.',
+		'2) За снимки: всяка обява има РАЗЛИЧНА снимка по култура (пшеница≠ечемик≠царевица≠слънчоглед≠олио). Ползвай реда „Снимка в UI“ от каталога — НЕ описвай царевица при пшеница/ечемик.',
 		'3) Навигация: / , /catalog.html , /#cta , /#categories , /#listings , /#exchange , /#logistics , /#farmers , /#ai',
 		'4) Регистрация: /#cta · форма POST /api/register-interest',
 		'5) Чат backend: Mistral (MISTRAL_API_KEY) → Ollama → OpenAI',

@@ -67,7 +67,7 @@ function parseVisionJson(text: string): Partial<AgroImageClassification> & Recor
 export async function classifyAgroImage(opts: {
 	imageBase64: string;
 	mimeType?: string;
-	lang?: 'bg' | 'en';
+	lang?: 'bg' | 'en' | 'de';
 }): Promise<AgroImageClassification> {
 	const key = readMistralKey();
 	const openaiKey = (process.env.OPENAI_API_KEY ?? '').trim();

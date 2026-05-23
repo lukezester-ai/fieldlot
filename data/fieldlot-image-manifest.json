@@ -1,6 +1,6 @@
 {
 	"version": 3,
-	"source": "borsaagro.com",
+	"source": "borsaagro.com + Global Feed Exchange",
 	"hero": {
 		"background": {
 			"path": "/images/hero/background.jpg",
@@ -22,14 +22,14 @@
 		}
 	},
 	"categories": {
-		"veg": "/images/crops/pepper.jpg",
-		"fruit": "/images/crops/apple.jpg",
+		"veg": "/images/crops/cat_veg.png",
+		"fruit": "/images/crops/cat_fruit.png",
 		"grain": "/images/crops/wheat.jpg",
-		"oil": "/images/crops/oil.jpg",
-		"canned": "/images/crops/canned.jpg",
-		"fertilizer": "/images/crops/fertilizer.jpg",
-		"machines": "/images/crops/machines.jpg",
-		"feed": "/images/crops/feed.jpg"
+		"oil": "/images/crops/oil.webp",
+		"canned": "/images/crops/cat_canned.png",
+		"fertilizer": "/images/crops/cat_fertilizer.png",
+		"machines": "/images/crops/machines.webp",
+		"feed": "/images/crops/cat_feed.png"
 	},
 	"catalog": {
 		"heroBackground": {
@@ -54,7 +54,8 @@
 		"ba-79": "/images/crops/oil.jpg",
 		"ba-78": "/images/crops/sunflower.jpg",
 		"ba-77": "/images/crops/sunflower.jpg",
-		"ba-76": "/images/crops/sunflower.jpg"
+		"ba-76": "/images/crops/sunflower.jpg",
+		"ba-87": "/images/crops/barley.jpg"
 	},
 	"listingLabels": {
 		"wheat-dobr": "Пшеница",
@@ -65,15 +66,16 @@
 		"pepper-buy": "Лют пипер",
 		"rapeseed-vt": "Рапица",
 		"hay-vid": "Сено фуражно",
-		"ba-86": "Царевица",
-		"ba-84": "Олио соево нерафинирано",
-		"ba-83": "ЦАРЕВИЦА",
-		"ba-82": "ЦАРЕВИЦА",
-		"ba-81": "ПШЕНИЦА",
-		"ba-79": "ОЛИО СОЕВО НЕРАФИНИРАНО",
-		"ba-78": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-		"ba-77": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-		"ba-76": "СЛЪНЧОГЛЕД МАСЛОДАЕН"
+		"ba-86": "Царевица — посев",
+		"ba-84": "Олио / соеви продукти",
+		"ba-83": "Царевица — посев",
+		"ba-82": "Царевица — посев",
+		"ba-81": "Пшеница — зърно на поле",
+		"ba-79": "Олио / соеви продукти",
+		"ba-78": "Слънчоглед — маслодайни",
+		"ba-77": "Слънчоглед — маслодайни",
+		"ba-76": "Слънчоглед — маслодайни",
+		"ba-87": "Ечемик — житни класове"
 	},
 	"farmers": {
 		"spotlight": {
@@ -95,8 +97,8 @@
 			},
 			{
 				"id": "facility",
-				"path": "/images/logistics/warehouse.jpg",
-				"alt": "Склад и преработка",
+				"path": "/images/farmers/facility.jpg",
+				"alt": "Склад — палети и стелажи",
 				"labelKey": "farmers.slotFacility"
 			}
 		],
@@ -134,11 +136,11 @@
 	"logistics": {
 		"transport": {
 			"path": "/images/logistics/transport.jpg",
-			"alt": "Транспорт — камиони на рампи в логистичен център"
+			"alt": "Транспорт — хладилни камиони"
 		},
 		"warehouse": {
 			"path": "/images/logistics/warehouse.jpg",
-			"alt": "Склад — стелажи с палети"
+			"alt": "Склад — стелажи с палети и стока"
 		},
 		"tracking": {
 			"path": "/images/logistics/tracking.jpg",
@@ -149,6 +151,7 @@
 		{
 			"id": "hero",
 			"anchor": "#top",
+			"note": "main#top — hero секция",
 			"image": "/images/hero/background.jpg"
 		},
 		{

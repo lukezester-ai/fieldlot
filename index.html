@@ -8,14 +8,17 @@
 	<script>
 		(function(){try{var p=new URLSearchParams(location.search).get('lang');var s=localStorage.getItem('fieldlot-lang');var l=p||s;if(l==='en'||l==='bg')document.documentElement.lang=l;}catch(e){}})();
 	</script>
+	<script src="/scripts/fieldlot-theme.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
 	<link rel="stylesheet" href="/styles/fieldlot-theme.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-ui.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-ecosystem.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-yellow-pages.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-landing.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-auth.css" />
 	<meta name="theme-color" content="#1a4d3a" />
 </head>
 <body>
@@ -37,9 +40,15 @@
 					<span class="header-search-icon" aria-hidden="true"></span>
 					<input type="search" name="q" data-i18n-placeholder="nav.searchPlaceholder" placeholder="Търси домати, олио, пшеница…" autocomplete="off" />
 				</form>
-				<div class="lang-switch" role="group" data-i18n-aria="lang.label" aria-label="Език">
-					<button type="button" data-lang="bg" aria-pressed="true">BG</button>
-					<button type="button" data-lang="en" aria-pressed="false">EN</button>
+				<div style="display: flex; gap: 8px; align-items: center;">
+					<button type="button" class="theme-toggle" onclick="window.FieldlotTheme.toggleTheme()" aria-label="Toggle Dark Mode">
+						<svg viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.758a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z"/></svg>
+					</button>
+					<div class="lang-switch" role="group" data-i18n-aria="lang.label" aria-label="Език">
+						<button type="button" data-lang="en" aria-pressed="false">EN</button>
+						<button type="button" data-lang="de" aria-pressed="false">DE</button>
+						<button type="button" data-lang="bg" aria-pressed="true">BG</button>
+					</div>
 				</div>
 				<button
 					type="button"
@@ -53,9 +62,9 @@
 					<span></span><span></span><span></span>
 				</button>
 				<div class="header-actions">
-					<a class="btn btn-ghost" href="#cta" data-i18n="nav.login">Вход</a>
-					<a class="btn btn-ghost" href="#cta" data-i18n="nav.register">Регистрация</a>
-					<a class="btn btn-publish" href="#cta" data-i18n="nav.publish">Публикувай</a>
+					<a class="btn btn-ghost" href="#cta" data-i18n="nav.login" title="Ранен достъп — форма по-долу">Вход</a>
+					<a class="btn btn-ghost" href="#cta" data-i18n="nav.register" title="Заявка за ранен достъп">Регистрация</a>
+					<button type="button" class="btn btn-publish" data-i18n="nav.publish">Публикувай</button>
 				</div>
 			</div>
 			<nav class="header-nav" id="site-header-nav" data-i18n-aria="nav.sections" aria-label="Пазарни секции">
@@ -75,7 +84,7 @@
 		</div>
 	</div>
 
-	<main>
+	<main id="top">
 		<section class="hero-eco">
 			<div class="hero-eco-bg" aria-hidden="true"></div>
 			<div class="hero-eco-inner">
@@ -124,44 +133,32 @@
 					<h2 data-i18n="listings.title">Активни обяви</h2>
 					<p data-i18n="listings.lead">Карти като в модерен B2B пазар — количество, регион, цена и директен контакт.</p>
 				</div>
-				<div class="product-grid reveal" id="home-listings"></div>
+				<div class="yp-board catalog-grid reveal" id="home-listings"></div>
 				<p class="demo-strip reveal" data-i18n="listings.demoStrip">Обяви от borsaagro.com · пълният <a href="/catalog.html">каталог</a></p>
 			</div>
 		</section>
 
-		<section class="eco-section" id="top-producers">
+		<section class="eco-section" id="how-it-works">
 			<div class="container">
 				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow" data-i18n="farmers.eyebrow">Производители</p>
-					<h2 data-i18n="farmers.title">Топ фермери на платформата</h2>
-					<p data-i18n="farmers.lead">Стопанство, поле или база — виж кого срещаш преди сделката.</p>
+					<p class="eco-eyebrow" data-i18n="how.eyebrow">Как работи</p>
+					<h2 data-i18n="how.title">Как работи Fieldlot</h2>
+					<p data-i18n="how.lead">Лесен и бърз процес от регистрация до успешна сделка.</p>
 				</div>
-				<div class="farm-showcase-grid reveal" id="top-farmers" aria-label="Място за профили на производители">
-					<a class="farm-showcase-card" href="#cta" data-farm-slot="farm">
-						<div class="farm-showcase-img" data-farm-img="farm" role="img" aria-hidden="true"></div>
-						<div class="farm-showcase-caption">
-							<span class="farm-showcase-badge" data-i18n="farmers.badge">Свободно място</span>
-							<p data-i18n="farmers.slotFarm">Тук може да бъде вашата ферма</p>
-						</div>
-					</a>
-					<a class="farm-showcase-card" href="#cta" data-farm-slot="field">
-						<div class="farm-showcase-img" data-farm-img="field" role="img" aria-hidden="true"></div>
-						<div class="farm-showcase-caption">
-							<span class="farm-showcase-badge" data-i18n="farmers.badge">Свободно място</span>
-							<p data-i18n="farmers.slotField">Тук може да бъде вашето стопанство</p>
-						</div>
-					</a>
-					<a class="farm-showcase-card" href="#cta" data-farm-slot="facility">
-						<div class="farm-showcase-img" data-farm-img="facility" role="img" aria-hidden="true"></div>
-						<div class="farm-showcase-caption">
-							<span class="farm-showcase-badge" data-i18n="farmers.badge">Свободно място</span>
-							<p data-i18n="farmers.slotFacility">Тук може да бъде вашият склад или цех</p>
-						</div>
-					</a>
+				<div class="farm-showcase-grid reveal" style="gap: 24px;">
+					<div class="how-card" style="padding: 32px 24px; text-align: center; border: 1px solid var(--border-color, #e0e0e0); background: var(--bg-card, #ffffff); border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: unset;">
+						<h3 data-i18n="how.step1" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 12px; color: var(--primary-color);">1. Регистрация</h3>
+						<p data-i18n="how.step1Desc" style="color: var(--text-muted); font-size: 1rem; line-height: 1.5; margin: 0;">Създай профил за броени минути.</p>
+					</div>
+					<div class="how-card" style="padding: 32px 24px; text-align: center; border: 1px solid var(--border-color, #e0e0e0); background: var(--bg-card, #ffffff); border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: unset;">
+						<h3 data-i18n="how.step2" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 12px; color: var(--primary-color);">2. Обяви и Търсене</h3>
+						<p data-i18n="how.step2Desc" style="color: var(--text-muted); font-size: 1rem; line-height: 1.5; margin: 0;">Публикувай продукция или намери това, което търсиш.</p>
+					</div>
+					<div class="how-card" style="padding: 32px 24px; text-align: center; border: 1px solid var(--border-color, #e0e0e0); background: var(--bg-card, #ffffff); border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: unset;">
+						<h3 data-i18n="how.step3" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 12px; color: var(--primary-color);">3. Директна Сделка</h3>
+						<p data-i18n="how.step3Desc" style="color: var(--text-muted); font-size: 1rem; line-height: 1.5; margin: 0;">Свържи се директно без скрити такси.</p>
+					</div>
 				</div>
-				<p class="farm-showcase-cta reveal">
-					<a class="btn btn-secondary" href="#cta" data-i18n="farmers.cta">Публикувай профил (ранен достъп)</a>
-				</p>
 			</div>
 		</section>
 
@@ -223,7 +220,7 @@
 						</div>
 					</div>
 				</div>
-				<p style="margin-top:20px;text-align:center">
+				<p style="margin-top:20px;text-align:center;display:none;">
 					<a class="btn btn-primary" href="#cta" data-i18n="logistics.cta">Намери транспорт (ранен достъп)</a>
 				</p>
 			</div>
@@ -345,9 +342,13 @@
 	<script src="/scripts/fieldlot-i18n.js"></script>
 	<script src="/scripts/fieldlot-api-status.js"></script>
 	<script src="/scripts/fieldlot-images.js"></script>
-	<script src="/scripts/ecosystem-home.js"></script>
+	<script src="/scripts/fieldlot-categories.js"></script>
+	<script type="module" src="/scripts/ecosystem-home.js"></script>
 	<script src="/scripts/fieldlot-lead-form.js"></script>
 	<script src="/scripts/fieldlot-chat.js"></script>
+	<script type="module" src="/firebase-init.js"></script>
+	<script type="module" src="/auth-ui.js"></script>
+	<script type="module" src="/publish-ui.js"></script>
 	<script>
 		FieldlotChat.mount({
 			page: 'landing',

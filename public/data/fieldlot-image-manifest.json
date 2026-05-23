@@ -1,6 +1,6 @@
 {
 	"version": 3,
-	"source": "Един източник за UI + RAG. Локални /images/*.jpg",
+	"source": "borsaagro.com + Global Feed Exchange",
 	"hero": {
 		"background": {
 			"path": "/images/hero/background.jpg",
@@ -22,14 +22,14 @@
 		}
 	},
 	"categories": {
-		"veg": "/images/crops/pepper.jpg",
-		"fruit": "/images/crops/apple.jpg",
+		"veg": "/images/crops/cat_veg.png",
+		"fruit": "/images/crops/cat_fruit.png",
 		"grain": "/images/crops/wheat.jpg",
-		"oil": "/images/crops/oil.jpg",
-		"canned": "/images/crops/canned.jpg",
-		"fertilizer": "/images/crops/fertilizer.jpg",
-		"machines": "/images/crops/machines.jpg",
-		"feed": "/images/crops/feed.jpg"
+		"oil": "/images/crops/oil.webp",
+		"canned": "/images/crops/cat_canned.png",
+		"fertilizer": "/images/crops/cat_fertilizer.png",
+		"machines": "/images/crops/machines.webp",
+		"feed": "/images/crops/cat_feed.png"
 	},
 	"catalog": {
 		"heroBackground": {
@@ -45,7 +45,17 @@
 		"apple-plov": "/images/crops/apple.jpg",
 		"pepper-buy": "/images/crops/hot-pepper.jpg",
 		"rapeseed-vt": "/images/crops/rapeseed.jpg",
-		"hay-vid": "/images/crops/hay.jpg"
+		"hay-vid": "/images/crops/hay.jpg",
+		"ba-86": "/images/crops/corn.jpg",
+		"ba-84": "/images/crops/oil.jpg",
+		"ba-83": "/images/crops/corn.jpg",
+		"ba-82": "/images/crops/corn.jpg",
+		"ba-81": "/images/crops/wheat.jpg",
+		"ba-79": "/images/crops/oil.jpg",
+		"ba-78": "/images/crops/sunflower.jpg",
+		"ba-77": "/images/crops/sunflower.jpg",
+		"ba-76": "/images/crops/sunflower.jpg",
+		"ba-87": "/images/crops/barley.jpg"
 	},
 	"listingLabels": {
 		"wheat-dobr": "Пшеница",
@@ -55,13 +65,43 @@
 		"apple-plov": "Ябълки",
 		"pepper-buy": "Лют пипер",
 		"rapeseed-vt": "Рапица",
-		"hay-vid": "Сено фуражно"
+		"hay-vid": "Сено фуражно",
+		"ba-86": "Царевица — посев",
+		"ba-84": "Олио / соеви продукти",
+		"ba-83": "Царевица — посев",
+		"ba-82": "Царевица — посев",
+		"ba-81": "Пшеница — зърно на поле",
+		"ba-79": "Олио / соеви продукти",
+		"ba-78": "Слънчоглед — маслодайни",
+		"ba-77": "Слънчоглед — маслодайни",
+		"ba-76": "Слънчоглед — маслодайни",
+		"ba-87": "Ечемик — житни класове"
 	},
 	"farmers": {
 		"spotlight": {
 			"path": "/images/farmers/spotlight.jpg",
 			"alt": "Профил на фермер с доверие"
 		},
+		"showcase": [
+			{
+				"id": "farm",
+				"path": "/images/hero/farm.jpg",
+				"alt": "Стопанство и поле",
+				"labelKey": "farmers.slotFarm"
+			},
+			{
+				"id": "field",
+				"path": "/images/hero/background.jpg",
+				"alt": "Зърнено поле",
+				"labelKey": "farmers.slotField"
+			},
+			{
+				"id": "facility",
+				"path": "/images/farmers/facility.jpg",
+				"alt": "Склад — палети и стелажи",
+				"labelKey": "farmers.slotFacility"
+			}
+		],
 		"top": [
 			{
 				"id": "ivan",
@@ -96,11 +136,11 @@
 	"logistics": {
 		"transport": {
 			"path": "/images/logistics/transport.jpg",
-			"alt": "Транспорт — камиони на рампи в логистичен център"
+			"alt": "Транспорт — хладилни камиони"
 		},
 		"warehouse": {
 			"path": "/images/logistics/warehouse.jpg",
-			"alt": "Склад — стелажи с палети"
+			"alt": "Склад — стелажи с палети и стока"
 		},
 		"tracking": {
 			"path": "/images/logistics/tracking.jpg",
@@ -108,13 +148,46 @@
 		}
 	},
 	"sections": [
-		{ "id": "hero", "anchor": "#top", "image": "/images/hero/background.jpg" },
-		{ "id": "categories", "anchor": "#categories", "note": "8 категории — виж categories" },
-		{ "id": "listings", "anchor": "#listings", "note": "4 demo карти от каталога" },
-		{ "id": "exchange", "anchor": "#exchange", "note": "демо цени, без снимки" },
-		{ "id": "logistics", "anchor": "#logistics", "note": "transport хладилен камион" },
-		{ "id": "farmers", "anchor": "#farmers", "image": "/images/farmers/spotlight.jpg" },
-		{ "id": "ai", "anchor": "#ai", "note": "Fieldlot Guide чат" },
-		{ "id": "cta", "anchor": "#cta", "note": "форма ранен достъп" }
+		{
+			"id": "hero",
+			"anchor": "#top",
+			"note": "main#top — hero секция",
+			"image": "/images/hero/background.jpg"
+		},
+		{
+			"id": "categories",
+			"anchor": "#categories",
+			"note": "8 категории — виж categories"
+		},
+		{
+			"id": "listings",
+			"anchor": "#listings",
+			"note": "4 demo карти от каталога"
+		},
+		{
+			"id": "exchange",
+			"anchor": "#exchange",
+			"note": "демо цени, без снимки"
+		},
+		{
+			"id": "logistics",
+			"anchor": "#logistics",
+			"note": "transport хладилен камион"
+		},
+		{
+			"id": "farmers",
+			"anchor": "#farmers",
+			"image": "/images/farmers/spotlight.jpg"
+		},
+		{
+			"id": "ai",
+			"anchor": "#ai",
+			"note": "Fieldlot Guide чат"
+		},
+		{
+			"id": "cta",
+			"anchor": "#cta",
+			"note": "форма ранен достъп"
+		}
 	]
 }
