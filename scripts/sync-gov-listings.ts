@@ -9,6 +9,13 @@ async function main() {
 	console.log(
 		`[sync-listings] RAG index: ${result.rag.chunkCount} chunks, ${result.rag.embedded} embedded`,
 	);
+	const mistral = (process.env.MISTRAL_API_KEY ?? '').trim();
+	if (mistral && result.rag.chunkCount > 0 && result.rag.embedded === 0) {
+		console.error(
+			'[sync-listings] FATAL: chunks exist but 0 embeddings while MISTRAL_API_KEY is set. Fix keys or Mistral embed API before shipping.',
+		);
+		process.exit(1);
+	}
 	if (result.wroteFiles) {
 		console.log('[sync-listings] wrote data/live-listings.json + manifest + public/data');
 	}

@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { isAdminAuthorized } from './admin-auth.js';
@@ -5,6 +6,19 @@ import { getRagIndexStatus } from './fieldlot-semantic-rag.js';
 import { loadSourcesConfig } from './listing-sources/index.js';
 import { getListingsSnapshot } from './listings-data.js';
 import { runListingsSyncPipeline } from './sync-listings-pipeline.js';
+
+/** spawnSync позволява `shell: true`; execSync в @types/node приема `shell` само като string. */
+function runInheritShell(command: string, args: readonly string[]): void {
+	const r = spawnSync(command, [...args], {
+		stdio: 'inherit',
+		cwd: process.cwd(),
+		shell: true,
+	});
+	if (r.error) throw r.error;
+	if (r.status !== null && r.status !== 0) {
+		throw new Error(`Command exited with code ${r.status}`);
+	}
+}
 
 function unauthorized() {
 	return { ok: false as const, status: 401, error: 'Unauthorized' };
@@ -47,26 +61,42 @@ export async function handleAdminPost(
 	if (!isAdminAuthorized(authHeader)) return { status: 401, body: unauthorized() };
 
 	if (action === 'sync-listings') {
-		const result = await runListingsSyncPipeline({ writeToDisk: true });
-		return {
-			status: 200,
-			body: {
-				ok: true,
-				count: result.snapshot.count,
-				source: result.snapshot.source,
-				fetchedAt: result.snapshot.fetchedAt,
-				rag: result.rag,
-				wroteFiles: result.wroteFiles,
-				paths: result.paths,
-			},
-		};
+		try {
+			const result = await runListingsSyncPipeline({ writeToDisk: true });
+			return {
+				status: 200,
+				body: {
+					ok: true,
+					count: result.snapshot.count,
+					source: result.snapshot.source,
+					fetchedAt: result.snapshot.fetchedAt,
+					rag: result.rag,
+					wroteFiles: result.wroteFiles,
+					paths: result.paths,
+				},
+			};
+		} catch (err: any) {
+			return { status: 500, body: { ok: false, error: err.message || String(err) } };
+		}
+	}
+
+	if (action === 'curate-photos') {
+		try {
+			runInheritShell('npx', ['tsx', 'scripts/agent-curate-photos.ts']);
+			return { status: 200, body: { ok: true, message: 'Photo curation completed.' } };
+		} catch (err: any) {
+			return { status: 500, body: { ok: false, error: err.message || String(err) } };
+		}
 	}
 
 	if (action === 'sync-images') {
-		const { execSync } = await import('node:child_process');
-		execSync('node scripts/fix-crop-images.mjs', { stdio: 'inherit', cwd: process.cwd() });
-		execSync('node scripts/sync-images-from-manifest.mjs', { stdio: 'inherit', cwd: process.cwd() });
-		return { status: 200, body: { ok: true, message: 'Images synced from manifest' } };
+		try {
+			runInheritShell('node', ['scripts/fix-crop-images.mjs']);
+			runInheritShell('node', ['scripts/sync-images-from-manifest.mjs']);
+			return { status: 200, body: { ok: true, message: 'Images synced from manifest' } };
+		} catch (err: any) {
+			return { status: 500, body: { ok: false, error: err.message || String(err) } };
+		}
 	}
 
 	if (action === 'save-knowledge') {

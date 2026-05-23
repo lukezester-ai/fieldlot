@@ -17,7 +17,10 @@
 		"preview": "concurrently -k \"vite preview --port 5174 --strictPort\" \"tsx server/dev-api.ts\"",
 		"typecheck": "tsc --noEmit",
 		"test": "npm run typecheck && node scripts/smoke-api.mjs",
-		"test:backend": "node scripts/smoke-backend.mjs"
+		"test:backend": "node scripts/smoke-backend.mjs",
+		"bot": "tsx scripts/agent-telegram-bot.ts",
+		"poster": "tsx scripts/agent-social-poster.ts",
+		"newsletter": "tsx scripts/agent-newsletter.ts"
 	},
 	"devDependencies": {
 		"@types/node": "^22.10.1",
@@ -27,5 +30,8 @@
 		"tsx": "^4.19.2",
 		"typescript": "^5.9.3",
 		"vite": "^7.1.12"
+	},
+	"dependencies": {
+		"sharp": "^0.34.5"
 	}
 }

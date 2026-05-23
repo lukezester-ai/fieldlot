@@ -25,16 +25,18 @@ import {
 	resolveTextChatUpstream,
 	type TextChatUpstream,
 } from './llm-upstream.js';
+import { loadMemory, saveMemory } from './agents/memory.js';
+import { runMultiAgentWorkflow } from './agents/workflow.js';
 
 export type FieldlotChatTurn = { role: 'user' | 'assistant'; content: string };
 
-type ToolCall = {
+export type ToolCall = {
 	id: string;
 	type: string;
 	function: { name: string; arguments: string };
 };
 
-type ChatCompletionMessage = {
+export type ChatCompletionMessage = {
 	role: string;
 	content?: string | null;
 	tool_calls?: ToolCall[];
@@ -97,7 +99,7 @@ function isTurn(v: unknown): v is FieldlotChatTurn {
 	return (o.role === 'user' || o.role === 'assistant') && typeof o.content === 'string';
 }
 
-async function callChatCompletions(
+export async function callChatCompletions(
 	upstream: TextChatUpstream,
 	messages: ChatCompletionMessage[],
 	opts: { tools?: boolean; maxTokens?: number },
@@ -251,15 +253,11 @@ export async function handleFieldlotChatPost(
 	const systemContent = `${lang === 'en' ? FIELDLOT_SYSTEM_EN : FIELDLOT_SYSTEM_BG}\n\n${formatCategoriesForRag(lang)}\n\n${rag.systemContext}${semanticBlock ? `\n\n${semanticBlock}` : ''}${visionBlock}${exchangeBlock}`;
 	const agentEnabled = upstream.supportsTools && process.env.FIELDLOT_AGENT_DISABLED !== '1';
 
-	const chatMessages: ChatCompletionMessage[] = [
-		{ role: 'system', content: systemContent },
-		...cleaned.map((m) => ({ role: m.role, content: m.content })),
-	];
-
-	const actions: AgentActionRecord[] = [];
-	let listingDraft: ListingDraft | undefined;
-
 	if (!agentEnabled) {
+		const chatMessages: ChatCompletionMessage[] = [
+			{ role: 'system', content: systemContent },
+			...cleaned.map((m) => ({ role: m.role, content: m.content })),
+		];
 		try {
 			const { message } = await callChatCompletions(upstream, chatMessages, { tools: false });
 			const rawReply = openAIMessageContentToString(message.content);
@@ -287,91 +285,39 @@ export async function handleFieldlotChatPost(
 	}
 
 	const toolCtx = { lang, clientIp: opts?.clientIp ?? null };
+	const sessionId = opts?.clientIp || 'default_session';
+	const previousMemory = await loadMemory(sessionId);
+	
+	const coreMessages: ChatCompletionMessage[] = [
+		{ role: 'system', content: systemContent },
+		...previousMemory,
+		...cleaned.map((m) => ({ role: m.role, content: m.content }) as ChatCompletionMessage),
+	];
 
-	for (let step = 0; step < MAX_AGENT_STEPS; step++) {
-		try {
-			const { message } = await callChatCompletions(upstream, chatMessages, {
-				tools: true,
-				maxTokens: 1100,
-			});
-
-			const toolCalls = message.tool_calls?.filter(
-				(tc) => tc?.function?.name && typeof tc.function.arguments === 'string',
-			);
-
-			if (!toolCalls?.length) {
-				const rawReply = openAIMessageContentToString(message.content);
-				if (!rawReply) {
-					return { ok: false, status: 502, error: 'Празно съдържание от модела' };
-				}
-				return {
-					ok: true,
-					reply: truncate(rawReply.trim(), MAX_REPLY_CHARS),
-					rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
-					semanticHits: semanticHits.length ? semanticHits : undefined,
-					actions: actions.length ? actions : undefined,
-					imageClassification,
-					listingDraft,
-					agentMode: true,
-				};
-			}
-
-			chatMessages.push({
-				role: 'assistant',
-				content: message.content ?? null,
-				tool_calls: toolCalls,
-			});
-
-			for (const tc of toolCalls) {
-				const { result, action } = await executeAgentTool(
-					tc.function.name,
-					tc.function.arguments,
-					toolCtx,
-				);
-				actions.push(action);
-				if (tc.function.name === 'draft_listing' || tc.function.name === 'edit_listing') {
-					try {
-						const parsed = JSON.parse(result) as { draft?: ListingDraft };
-						if (parsed.draft?.formattedText) listingDraft = parsed.draft;
-					} catch {
-						/* ignore */
-					}
-				}
-				chatMessages.push({
-					role: 'tool',
-					tool_call_id: tc.id,
-					content: result,
-				});
-			}
-		} catch (e) {
-			const label = chatProviderLabel(upstream.provider);
-			const msg = e instanceof Error ? e.message : 'LLM error';
-			return {
-				ok: false,
-				status: 502,
-				error: `${label}: ${msg}`,
-				hint:
-					upstream.provider === 'ollama'
-						? 'Пусни Ollama (ollama serve) и провери OLLAMA_BASE_URL.'
-						: undefined,
-			};
-		}
+	let workflowResult;
+	try {
+		workflowResult = await runMultiAgentWorkflow(coreMessages, toolCtx, systemContent, upstream);
+	} catch (err) {
+		const msg = err instanceof Error ? err.message : 'Workflow failed';
+		return { ok: false, status: 502, error: msg };
 	}
 
-	const en = lang === 'en';
+	// Save back to memory (append new turns)
+	const memoryToSave = [
+		...previousMemory,
+		...cleaned.map((m) => ({ role: m.role, content: m.content }) as ChatCompletionMessage),
+		{ role: 'assistant', content: workflowResult.reply }
+	];
+	await saveMemory(sessionId, memoryToSave);
+
 	return {
 		ok: true,
-		reply: truncate(
-			en
-				? 'I ran several actions but need a simpler question to finish — try again.'
-				: 'Изпълних няколко действия, но ми трябва по-прост въпрос — опитай отново.',
-			MAX_REPLY_CHARS,
-		),
+		reply: truncate(workflowResult.reply.trim(), MAX_REPLY_CHARS),
 		rag: { listingIds: rag.listingIds, knowledgeIds: rag.knowledgeIds },
 		semanticHits: semanticHits.length ? semanticHits : undefined,
-		actions,
+		actions: workflowResult.actions?.length ? workflowResult.actions : undefined,
 		imageClassification,
-		listingDraft,
+		listingDraft: workflowResult.listingDraft,
 		agentMode: true,
 	};
 }

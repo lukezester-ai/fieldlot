@@ -1,5 +1,5 @@
 {
-	"updatedAt": "2026-05-18T06:42:59.888Z",
+	"updatedAt": "2026-05-23T18:29:14.800Z",
 	"model": "keyword-only",
 	"chunks": [
 		{
@@ -103,78 +103,6 @@
 			"kind": "knowledge",
 			"title": "site-images",
 			"text": "Снимки (/images/, manifest): Hero галерия — tomatoes, peppers (чушки), cucumbers. Категории: oil→oil.jpg (олио/бутилки), feed→feed.jpg (чували), machines→machines.jpg (комбайн), fertilizer→fertilizer.jpg. Логистика transport→хладилен камион. Каталог: прозрачен панел, фон background.jpg. Обяви: sun-pl→sunflower, corn-buy→corn, pepper-buy→hot-pepper, rapeseed-vt→rapeseed, hay-vid→hay."
-		},
-		{
-			"id": "listing:ba-86",
-			"kind": "listing",
-			"title": "Царевица",
-			"text": "Царевица България · borsaagro.com grain crop:corn national sell 500.00 100.00 лв Зърно Продажба borsaagro.com crop:corn",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/86",
-			"listingId": "ba-86"
-		},
-		{
-			"id": "listing:ba-84",
-			"kind": "listing",
-			"title": "Олио соево нерафинирано",
-			"text": "Олио соево нерафинирано България · borsaagro.com oil national sell 100.00 1 000.00 лв Олио Продажба borsaagro.com",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/84",
-			"listingId": "ba-84"
-		},
-		{
-			"id": "listing:ba-83",
-			"kind": "listing",
-			"title": "ЦАРЕВИЦА",
-			"text": "ЦАРЕВИЦА България · borsaagro.com grain crop:corn national sell 200.00 200.00 лв Зърно Продажба borsaagro.com crop:corn",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/83",
-			"listingId": "ba-83"
-		},
-		{
-			"id": "listing:ba-82",
-			"kind": "listing",
-			"title": "ЦАРЕВИЦА",
-			"text": "ЦАРЕВИЦА България · borsaagro.com grain crop:corn national sell 200.00 350.00 лв Зърно Продажба borsaagro.com crop:corn",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/82",
-			"listingId": "ba-82"
-		},
-		{
-			"id": "listing:ba-81",
-			"kind": "listing",
-			"title": "ПШЕНИЦА",
-			"text": "ПШЕНИЦА България · borsaagro.com grain crop:wheat national sell 100.00 100.00 лв Зърно Продажба borsaagro.com crop:wheat",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/81",
-			"listingId": "ba-81"
-		},
-		{
-			"id": "listing:ba-79",
-			"kind": "listing",
-			"title": "ОЛИО СОЕВО НЕРАФИНИРАНО",
-			"text": "ОЛИО СОЕВО НЕРАФИНИРАНО България · borsaagro.com oil crop:soy national sell 24.00 тон 980.00 € Олио Продажба borsaagro.com crop:soy",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/79",
-			"listingId": "ba-79"
-		},
-		{
-			"id": "listing:ba-78",
-			"kind": "listing",
-			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oil crop:sunflower national sell 150.00 тон 190.00 € Олио Продажба borsaagro.com crop:sunflower",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/78",
-			"listingId": "ba-78"
-		},
-		{
-			"id": "listing:ba-77",
-			"kind": "listing",
-			"title": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ /",
-			"text": "ЕКСПЕЛЕР СЛЪНЧОГЛЕДОВ / КЮСПЕ / България · borsaagro.com oil crop:sunflower national sell 150.00 тон 190.00 € Олио Продажба borsaagro.com crop:sunflower",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/77",
-			"listingId": "ba-77"
-		},
-		{
-			"id": "listing:ba-76",
-			"kind": "listing",
-			"title": "СЛЪНЧОГЛЕД МАСЛОДАЕН",
-			"text": "СЛЪНЧОГЛЕД МАСЛОДАЕН България · borsaagro.com oil crop:sunflower national sell 10.00 тон 500.00 € Олио Продажба borsaagro.com crop:sunflower",
-			"url": "https://borsaagro.com/potrebitelski-obqvi/76",
-			"listingId": "ba-76"
 		}
 	]
 }

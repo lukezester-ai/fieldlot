@@ -335,6 +335,38 @@ export const FIELDLOT_AGENT_TOOLS = [
 	{
 		type: 'function' as const,
 		function: {
+			name: 'get_weather_forecast',
+			description: 'Get a 3-day weather forecast (max/min temp, precipitation) for a given city/location. Useful when users ask about weather conditions for harvesting or transport.',
+			parameters: {
+				type: 'object',
+				properties: {
+					city: { type: 'string', description: 'Name of the city or location (e.g., Добрич, Пловдив)' }
+				},
+				required: ['city'],
+				additionalProperties: false
+			}
+		}
+	},
+	{
+		type: 'function' as const,
+		function: {
+			name: 'calculate_transport_cost',
+			description: 'Calculate driving distance and estimated transport cost between two cities. Useful for logistics queries.',
+			parameters: {
+				type: 'object',
+				properties: {
+					from_city: { type: 'string', description: 'Starting city (e.g., Русе)' },
+					to_city: { type: 'string', description: 'Destination city (e.g., Варна)' },
+					tonnage: { type: 'number', description: 'Total weight in tons (default 24)' }
+				},
+				required: ['from_city', 'to_city'],
+				additionalProperties: false
+			}
+		}
+	},
+	{
+		type: 'function' as const,
+		function: {
 			name: 'fetch_fieldlot_api',
 			description:
 				'Call a Fieldlot read-only API path on this site. Allowed: /api/exchange-prices, /api/listings, /data/live-listings.json',
@@ -637,6 +669,74 @@ export async function executeAgentTool(
 				return {
 					result: JSON.stringify({ ok: true, path, data }),
 					action: { tool: name, ok: true, summary },
+				};
+			}
+
+			case 'get_weather_forecast': {
+				const city = (args as { city: string }).city;
+				
+				const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=bg`);
+				const geoData = await geoRes.json() as any;
+				if (!geoData.results?.length) {
+					return { result: JSON.stringify({ error: `Градът '${city}' не е намерен.` }), action: { tool: name, ok: false, summary: `Времето: ${city} (ненамерен)` } };
+				}
+				const { latitude, longitude, name: foundName } = geoData.results[0];
+
+				const wxRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto&forecast_days=3`);
+				const wxData = await wxRes.json() as any;
+				const daily = wxData.daily;
+				
+				const forecast = daily.time.map((t: string, i: number) => ({
+					date: t,
+					maxTempC: daily.temperature_2m_max[i],
+					minTempC: daily.temperature_2m_min[i],
+					precipMm: daily.precipitation_sum[i]
+				}));
+
+				return { result: JSON.stringify({ location: foundName, forecast }), action: { tool: name, ok: true, summary: `Времето: ${foundName}` } };
+			}
+
+			case 'calculate_transport_cost': {
+				const from = (args as { from_city: string }).from_city;
+				const to = (args as { to_city: string }).to_city;
+				const tons = (args as { tonnage?: number }).tonnage || 24;
+
+				const geocode = async (c: string) => {
+					const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(c)}&count=1&language=bg`);
+					const d = await r.json() as any;
+					return d.results?.[0] ? { lat: d.results[0].latitude, lon: d.results[0].longitude, name: d.results[0].name } : null;
+				};
+
+				const geoFrom = await geocode(from);
+				const geoTo = await geocode(to);
+				
+				if (!geoFrom || !geoTo) {
+					return { result: JSON.stringify({ error: `Неуспешно намиране на координати за един от градовете.` }), action: { tool: name, ok: false, summary: `Транспорт ${from}->${to} (неуспех)` } };
+				}
+
+				const osrmRes = await fetch(`https://router.project-osrm.org/route/v1/driving/${geoFrom.lon},${geoFrom.lat};${geoTo.lon},${geoTo.lat}?overview=false`);
+				const osrmData = await osrmRes.json() as any;
+
+				if (osrmData.code !== 'Ok' || !osrmData.routes?.length) {
+					return { result: JSON.stringify({ error: `Няма намерен маршрут между ${geoFrom.name} и ${geoTo.name}.` }), action: { tool: name, ok: false, summary: `Няма маршрут` } };
+				}
+
+				const distanceKm = osrmData.routes[0].distance / 1000;
+				const PRICE_PER_KM = 2.50; 
+				const trucksNeeded = Math.ceil(tons / 24);
+				const totalCost = distanceKm * PRICE_PER_KM * trucksNeeded;
+
+				return {
+					result: JSON.stringify({
+						from: geoFrom.name,
+						to: geoTo.name,
+						distanceKm: Math.round(distanceKm),
+						trucksNeeded,
+						totalCostBGN: Math.round(totalCost),
+						pricePerKm: PRICE_PER_KM,
+						notes: `Based on 24-ton trucks. Distance: ${Math.round(distanceKm)} km.`
+					}),
+					action: { tool: name, ok: true, summary: `Транспорт: ${geoFrom.name} -> ${geoTo.name}` }
 				};
 			}
 

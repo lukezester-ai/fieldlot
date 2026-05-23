@@ -108,6 +108,21 @@ document.getElementById('sync-images')?.addEventListener('click', async () => {
 	}
 });
 
+document.getElementById('curate-photos')?.addEventListener('click', async () => {
+	const log = document.getElementById('sync-log');
+	const btn = document.getElementById('curate-photos');
+	btn.disabled = true;
+	log.textContent = 'Curating photos (this may take a while)...';
+	try {
+		const data = await apiPost('curate-photos', {});
+		log.textContent = JSON.stringify(data, null, 2);
+	} catch (e) {
+		log.textContent = e instanceof Error ? e.message : String(e);
+	} finally {
+		btn.disabled = false;
+	}
+});
+
 document.getElementById('save-knowledge')?.addEventListener('click', async () => {
 	try {
 		const chunks = JSON.parse(document.getElementById('knowledge-json').value);
