@@ -272,31 +272,17 @@
 			</div>
 		</section>
 
-		<section class="container footer-cta reveal" id="cta">
-			<div>
-				<p class="section-title" data-i18n="cta.eyebrow">Ранен достъп</p>
-				<h2 data-i18n="cta.title">Влез в първата вълна на платформата</h2>
-				<p class="section-lead" data-i18n="cta.lead">Фермери, купувачи и логистика — изграждаме дигиталната агро екосистема за България и региона.</p>
-			</div>
-			<form id="lead-form" class="lead-form" autocomplete="on">
-				<div class="form-grid">
-					<label><span data-i18n="form.name">Име и фамилия *</span><input id="fullName" name="fullName" type="text" required minlength="2" maxlength="120" /></label>
-					<label><span data-i18n="form.email">Имейл *</span><input id="businessEmail" name="businessEmail" type="email" required maxlength="200" /></label>
-					<label><span data-i18n="form.company">Фирма / стопанство</span><input id="companyName" name="companyName" type="text" maxlength="200" /></label>
-					<label><span data-i18n="form.phone">Телефон</span><input id="phone" name="phone" type="tel" maxlength="20" data-i18n-placeholder="form.phonePh" placeholder="+359…" /></label>
-					<label class="full"><span data-i18n="form.role">Роля / интерес</span><textarea id="marketFocus" name="marketFocus" maxlength="800" data-i18n-placeholder="form.rolePh" placeholder="Производител, купувач, логистика…"></textarea></label>
-				</div>
-				<label class="check">
-					<input id="subscribeAlerts" name="subscribeAlerts" type="checkbox" />
-					<span data-i18n="form.alerts">Искам известия за старта на платформата</span>
-				</label>
+		<section class="container footer-cta reveal" id="cta" style="max-width: 600px; text-align: center; padding-top: 6rem;">
+			<h2 style="font-size: 2.5rem; margin-bottom: 1rem;" data-i18n="cta.title">Готови ли сте за промяната?</h2>
+			<p style="margin-bottom: 2rem; color: var(--neutral-600);" data-i18n="cta.lead">Запишете се за ранен достъп и получете предимство пред конкуренцията, когато стартираме.</p>
+			
+			<form id="lead-form" class="waitlist-form" style="display: flex; flex-direction: column; gap: 1rem;">
+				<input id="businessEmail" name="businessEmail" type="email" style="padding: 1rem; border-radius: 40px; border: 1px solid var(--neutral-200); width: 100%; box-sizing: border-box; font-size: 1rem; text-align: center;" placeholder="Вашият имейл адрес" required />
+				<button type="submit" class="btn-primary" id="lead-submit" style="width: 100%; justify-content: center; border-radius: 40px; padding: 1rem; font-size: 1.1rem; border: none; font-weight: 600;" disabled data-i18n="form.submit">🚀 Искам ранен достъп</button>
+				<p id="lead-status" class="form-status" role="status" aria-live="polite" style="margin-top: 1rem;"></p>
+				<!-- Скрити полета за съвместимост -->
+				<input type="hidden" id="fullName" name="fullName" value="Анонимен Абонат" />
 				<input class="hp" type="text" id="hpCompanyWebsite" name="hpCompanyWebsite" tabindex="-1" autocomplete="off" />
-				<div class="form-actions">
-					<button type="submit" class="btn btn-primary" id="lead-submit" disabled data-i18n="form.submit">Изпрати заявка</button>
-					<a class="btn btn-secondary" href="mailto:info@agrinexus.eu">info@agrinexus.eu</a>
-				</div>
-				<p id="lead-status" class="form-status" role="status" aria-live="polite"></p>
-				<p class="fine-print" data-i18n="form.fine">Демо фаза · без комисионна · без escrow. Не е правен или финансов съвет.</p>
 			</form>
 		</section>
 	</main>

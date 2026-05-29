@@ -139,26 +139,22 @@
 			? `<p class="yp-entry-line yp-entry-contact">${escapeHtml(item.contact)}</p>`
 			: '';
 
-		const article = document.createElement('article');
+		const article = document.createElement('a');
 		article.className = 'listing-card yp-entry';
-		article.tabIndex = 0;
+		article.href = '#';
 		article.dataset.id = item.id;
 		article.innerHTML = `
-			<div class="yp-entry-main">
-				<div class="yp-entry-head">
-					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
-					${cat ? `<span class="tag yp-cat">${escapeHtml(cat)}</span>` : ''}
-					${(item.tags || []).filter(t => t.toLowerCase() !== (cat || '').toLowerCase()).slice(0, 2).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
-				</div>
-				<h2 class="yp-entry-title">${escapeHtml(item.title)}</h2>
-				<p class="yp-entry-line">${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)} · ${escapeHtml(item.qty)}</p>
-				<p class="yp-entry-line yp-entry-muted">${escapeHtml(item.incoterm)}${item.quality ? ` · ${escapeHtml(item.quality)}` : ''}</p>
-				${contactLine}
+			<div class="badge">${escapeHtml(roleLabel)}</div>
+			<h3 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 8px;">${escapeHtml(item.title)}</h3>
+			<div class="price">${escapeHtml(item.price)} <span style="font-size: 1rem;">${escapeHtml(item.priceUnit)}</span></div>
+			<div class="location">
+				<span aria-hidden="true">📍</span> ${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)}
 			</div>
-			<div class="yp-entry-aside">
-				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
-				${sourceTag}
-			</div>
+			<p style="color: var(--neutral-600); font-size: 0.85rem; margin-bottom: 1rem; flex-grow: 1;">
+				${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)} ${item.quality ? `· ${escapeHtml(item.quality)}` : ''}
+			</p>
+			${cat ? `<div style="margin-bottom: 1rem;"><span class="badge" style="background: var(--neutral-100); color: var(--neutral-700);">${escapeHtml(cat)}</span></div>` : ''}
+			<button class="btn-contact">${escapeHtml(t('catalog.detailCta') || 'Виж детайли')}</button>
 		`;
 		article.addEventListener('click', () => openDetail(raw));
 		article.addEventListener('keydown', (e) => {
