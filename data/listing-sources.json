@@ -23,9 +23,16 @@
     {
       "id": "global-feed",
       "type": "global-feed",
-      "enabled": true,
+      "enabled": false,
       "name": "Global Feed Exchange — Международни обяви",
       "maxLinks": 30
+    },
+    {
+      "id": "europe-feed",
+      "type": "europe",
+      "enabled": true,
+      "name": "Fieldlot Europe — Обяви от Европа",
+      "maxLinks": 50
     }
   ]
 }

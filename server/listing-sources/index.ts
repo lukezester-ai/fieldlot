@@ -11,6 +11,7 @@ import { fetchAgroListings } from './agro-listings-fetcher.js';
 import { fetchAgriListings } from './agri-listings-fetcher.js';
 import { fetchGovHtmlListings, type GovHtmlSourceConfig } from './gov-html-fetcher.js';
 import { fetchGlobalFeedListings } from './global-feed-generator.js';
+import { fetchEuropeListings } from './europe-scraper.js';
 import { fetchMockListings } from '../mock-listings-generator.js';
 
 type SourceRow = {
@@ -93,6 +94,12 @@ export async function fetchAllListingsSnapshot(detailLimit = 40): Promise<Listin
 				const rows = await fetchGlobalFeedListings(src.maxLinks ?? 20);
 				all.push(...rows);
 				sourceNames.push('Global Feed Exchange');
+				continue;
+			}
+			if (src.type === 'europe') {
+				const rows = await fetchEuropeListings(src.maxLinks ?? 30);
+				all.push(...rows);
+				sourceNames.push('Fieldlot Europe');
 				continue;
 			}
 		} catch (e) {
