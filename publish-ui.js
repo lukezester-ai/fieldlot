@@ -12,11 +12,11 @@ const publishModalHTML = `
 }
 .fl-publish-backdrop.open { opacity: 1; pointer-events: auto; }
 .fl-publish-modal {
-	background: white; width: 100%; max-width: 500px;
+	background: var(--bg-card); width: 100%; max-width: 500px;
 	border-radius: var(--radius-lg); padding: 32px; position: relative;
 	box-shadow: var(--shadow-lg); transform: translateY(20px);
-	transition: transform 0.3s; border: 1px solid var(--neutral-100);
-	max-height: 90vh; overflow-y: auto;
+	transition: transform 0.3s; border: 1px solid var(--border-color);
+	max-height: 90vh; overflow-y: auto; color: var(--text-main);
 }
 .fl-publish-backdrop.open .fl-publish-modal { transform: translateY(0); }
 .fl-publish-close {
@@ -24,16 +24,16 @@ const publishModalHTML = `
 	font-size: 28px; cursor: pointer; color: var(--neutral-400); transition: color 0.2s;
 }
 .fl-publish-close:hover { color: var(--neutral-900); }
-.fl-publish-title { font-size: 1.8rem; margin-bottom: 24px; color: var(--neutral-900); font-weight: 700; }
+.fl-publish-title { font-size: 1.8rem; margin-bottom: 24px; color: var(--text-main); font-weight: 700; }
 .fl-form-group { margin-bottom: 16px; }
-.fl-form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--neutral-700); font-size: 0.9rem; }
+.fl-form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; }
 .fl-form-group input, .fl-form-group select, .fl-form-group textarea {
-	width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--neutral-200);
-	background: var(--neutral-50); color: var(--neutral-900); font-family: inherit; font-size: 1rem;
+	width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-color);
+	background: var(--bg-body); color: var(--text-main); font-family: inherit; font-size: 1rem;
 	transition: border-color 0.2s, background 0.2s; box-sizing: border-box;
 }
 .fl-form-group input:focus, .fl-form-group select:focus, .fl-form-group textarea:focus {
-	outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 3px var(--primary-soft);
+	outline: none; border-color: var(--primary); background: var(--bg-card); box-shadow: 0 0 0 3px var(--primary-soft);
 }
 .fl-submit-btn {
 	width: 100%; padding: 14px; background: var(--primary); color: white;

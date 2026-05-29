@@ -74,14 +74,14 @@
 			</div>
 		</section>
 
-		<form class="toolbar" id="filters" role="search" data-i18n-aria="catalog.filterSearch" aria-label="Филтри на каталога" style="background: white; padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--neutral-100); display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; position: relative; z-index: 10; margin-bottom: 2rem;">
+		<form class="toolbar" id="filters" role="search" data-i18n-aria="catalog.filterSearch" aria-label="Филтри на каталога" style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; position: relative; z-index: 10; margin-bottom: 2rem;">
 			<label style="flex: 1; min-width: 200px;">
 				<span data-i18n="catalog.filterSearch" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Търсене</span>
-				<input type="search" id="q" data-i18n-placeholder="catalog.searchPh" placeholder="пшеница, Добруджа…" autocomplete="off" style="width: 100%; border-radius: 8px; border: 1px solid var(--neutral-200); padding: 0.6rem 1rem;" />
+				<input type="search" id="q" data-i18n-placeholder="catalog.searchPh" placeholder="пшеница, Добруджа…" autocomplete="off" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);" />
 			</label>
 			<label style="flex: 1; min-width: 150px;">
 				<span data-i18n="catalog.filterCat" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Категория</span>
-				<select id="category" style="width: 100%; border-radius: 8px; border: 1px solid var(--neutral-200); padding: 0.6rem 1rem;">
+				<select id="category" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="veg" data-i18n="catalog.cat.veg">Зеленчуци</option>
 					<option value="fruit" data-i18n="catalog.cat.fruit">Плодове</option>
@@ -95,7 +95,7 @@
 			</label>
 			<label style="flex: 1; min-width: 150px;">
 				<span data-i18n="catalog.filterCrop" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Култура</span>
-				<select id="crop" style="width: 100%; border-radius: 8px; border: 1px solid var(--neutral-200); padding: 0.6rem 1rem;">
+				<select id="crop" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="wheat" data-i18n="catalog.crop.wheat">Пшеница</option>
 					<option value="barley" data-i18n="catalog.crop.barley">Ечемик</option>
@@ -108,7 +108,7 @@
 			</label>
 			<label style="flex: 1; min-width: 150px;">
 				<span data-i18n="catalog.filterRegion" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Регион</span>
-				<select id="region" style="width: 100%; border-radius: 8px; border: 1px solid var(--neutral-200); padding: 0.6rem 1rem;">
+				<select id="region" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="national" data-i18n="catalog.region.national">Цяла България</option>
 					<option value="dobrudzha" data-i18n="catalog.region.dobrudzha">Добруджа</option>
@@ -119,13 +119,13 @@
 			</label>
 			<label style="flex: 1; min-width: 150px;">
 				<span data-i18n="catalog.filterRole" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Тип</span>
-				<select id="role" style="width: 100%; border-radius: 8px; border: 1px solid var(--neutral-200); padding: 0.6rem 1rem;">
+				<select id="role" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="sell" data-i18n="catalog.role.sell">Продажба</option>
 					<option value="buy" data-i18n="catalog.role.buy">Търсене</option>
 				</select>
 			</label>
-			<button type="button" class="btn btn-outline" id="reset-filters" data-i18n="catalog.reset" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid var(--neutral-300); background: transparent;">Изчисти</button>
+			<button type="button" class="btn btn-outline" id="reset-filters" data-i18n="catalog.reset" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main);">Изчисти</button>
 		</form>
 
 		<div class="results-meta" style="margin-bottom: 1rem; color: var(--neutral-600);">

@@ -33,7 +33,7 @@
 			display: flex;
 			flex-direction: column;
 			gap: 0.5rem;
-			background: white;
+			background: var(--bg-card);
 			padding: 1rem;
 			border-radius: var(--radius-lg);
 			box-shadow: var(--shadow-sm);
@@ -42,7 +42,7 @@
 		.dashboard-nav a {
 			padding: 0.8rem 1rem;
 			text-decoration: none;
-			color: var(--neutral-600);
+			color: var(--text-muted);
 			font-weight: 500;
 			border-radius: var(--radius-md);
 			transition: all 0.2s;
@@ -65,11 +65,12 @@
 			align-items: center;
 			margin-bottom: 2rem;
 			padding-bottom: 1rem;
-			border-bottom: 1px solid var(--neutral-200);
+			border-bottom: 1px solid var(--border-color);
 		}
 		.dashboard-header h1 {
 			margin: 0;
 			font-size: 2rem;
+			color: var(--text-main);
 		}
 		
 		@media (max-width: 768px) {
@@ -146,15 +147,15 @@
 					<div class="dashboard-header">
 						<h1>Настройки на профила</h1>
 					</div>
-					<div style="background: white; padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--neutral-100);">
+					<div style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
 						<form id="profile-form" style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 400px;">
 							<div>
-								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--neutral-700);">Имейл адрес (не може да се променя)</label>
-								<input type="email" id="profile-email" disabled style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--neutral-200); background: var(--neutral-50);" />
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Имейл адрес (не може да се променя)</label>
+								<input type="email" id="profile-email" disabled style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main);" />
 							</div>
 							<div>
-								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--neutral-700);">Име на стопанството / Фирма</label>
-								<input type="text" id="profile-company" placeholder="Въведете име..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--neutral-200);" />
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Име на стопанството / Фирма</label>
+								<input type="text" id="profile-company" placeholder="Въведете име..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);" />
 							</div>
 							<button type="submit" class="btn btn-primary" style="border-radius: 40px; padding: 0.8rem; width: 100%;">Запази промените</button>
 						</form>

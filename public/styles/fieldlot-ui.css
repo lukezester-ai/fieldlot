@@ -230,15 +230,15 @@ button, input, select, textarea {
 	display: flex;
 	align-items: center;
 	gap: 1rem;
-	background: var(--neutral-50);
+	background: var(--bg-body);
 	border-radius: var(--radius-md);
 	padding: 1.2rem 1.5rem;
 	transition: all 0.2s;
 	cursor: pointer;
 	text-decoration: none;
-	color: var(--neutral-900);
+	color: var(--text-main);
 	font-weight: 600;
-	border: 1px solid var(--neutral-200);
+	border: 1px solid var(--border-color);
 }
 
 .category-card:hover {
@@ -249,7 +249,7 @@ button, input, select, textarea {
 
 .category-icon {
 	font-size: 2rem;
-	background: white;
+	background: var(--bg-card);
 	width: 52px;
 	height: 52px;
 	display: flex;
@@ -277,16 +277,16 @@ button, input, select, textarea {
 }
 
 .listing-card {
-	background: white;
+	background: var(--bg-card);
 	border-radius: var(--radius-lg);
 	padding: 1.5rem;
 	box-shadow: var(--shadow-sm);
-	border: 1px solid var(--neutral-100);
+	border: 1px solid var(--border-color);
 	transition: all 0.25s ease;
 	display: flex;
 	flex-direction: column;
 	text-decoration: none;
-	color: inherit;
+	color: var(--text-main);
 }
 
 .listing-card:hover {
@@ -315,7 +315,7 @@ button, input, select, textarea {
 }
 
 .listing-card .location {
-	color: var(--neutral-600);
+	color: var(--text-muted);
 	font-size: 0.875rem;
 	display: flex;
 	align-items: center;
@@ -325,7 +325,7 @@ button, input, select, textarea {
 
 .listing-card .btn-contact {
 	background: transparent;
-	border: 1px solid var(--neutral-300);
+	border: 1px solid var(--border-color);
 	border-radius: 40px;
 	padding: 0.5rem 1rem;
 	font-weight: 500;
