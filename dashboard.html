@@ -115,6 +115,7 @@
 			<div class="nav-links">
 				<a href="/">Начало</a>
 				<a href="/catalog.html">Каталог</a>
+				<a href="/logistics.html">Логистика</a>
 			</div>
 			<div class="header-actions" style="display:flex; align-items:center; gap: 8px;">
 				<!-- Auth JS ще инжектира логин статуса тук -->
@@ -148,16 +149,71 @@
 						<h1>Настройки на профила</h1>
 					</div>
 					<div style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
-						<form id="profile-form" style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 400px;">
-							<div>
-								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Имейл адрес (не може да се променя)</label>
-								<input type="email" id="profile-email" disabled style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main);" />
+						<form id="profile-form" style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 600px;">
+							<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+								<div style="flex: 1; min-width: 250px;">
+									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Имейл адрес (не може да се променя)</label>
+									<input type="email" id="profile-email" disabled style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main);" />
+								</div>
+								<div style="flex: 1; min-width: 250px;">
+									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Име на стопанството / Фирма</label>
+									<input type="text" id="profile-company" placeholder="Въведете име..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);" />
+								</div>
 							</div>
+							
 							<div>
-								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Име на стопанството / Фирма</label>
-								<input type="text" id="profile-company" placeholder="Въведете име..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);" />
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Основна дейност</label>
+								<select id="profile-type" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
+									<option value="">Изберете дейност...</option>
+									<option value="grain">Зърнопроизводител</option>
+									<option value="veg">Зеленчукопроизводител</option>
+									<option value="fruit">Овощарство</option>
+									<option value="livestock">Животновъд</option>
+									<option value="trader">Търговец / Логистика</option>
+									<option value="other">Друго</option>
+								</select>
 							</div>
-							<button type="submit" class="btn btn-primary" style="border-radius: 40px; padding: 0.8rem; width: 100%;">Запази промените</button>
+
+							<div>
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Описание на стопанството / История</label>
+								<textarea id="profile-desc" rows="4" placeholder="Разкажете накратко за вашето стопанство, от колко време сте на пазара, с какво се гордеете..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-family: inherit; resize: vertical;"></textarea>
+							</div>
+
+							<div>
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Сертификати и Стандарти</label>
+								<div style="display: flex; flex-wrap: wrap; gap: 1rem; padding: 0.5rem 0;">
+									<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;"><input type="checkbox" name="certs" value="globalgap" /> GLOBALG.A.P</label>
+									<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;"><input type="checkbox" name="certs" value="bio" /> Био Сертифициран</label>
+									<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;"><input type="checkbox" name="certs" value="iso" /> ISO</label>
+									<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;"><input type="checkbox" name="certs" value="haccp" /> HACCP</label>
+								</div>
+							</div>
+
+							<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+								<div style="flex: 1; min-width: 250px;">
+									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Снимка / Лого</label>
+									<input type="file" id="profile-image" accept="image/*" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px dashed var(--border-color); background: var(--bg-body); color: var(--text-main);" />
+									<div id="profile-image-preview" style="margin-top: 10px; max-width: 150px; border-radius: 8px; overflow: hidden; display: none;">
+										<img src="" alt="Preview" style="width: 100%; height: auto; display: block;" />
+									</div>
+								</div>
+								<div style="flex: 1; min-width: 250px;">
+									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Видео презентация (YouTube линк)</label>
+									<input type="url" id="profile-video" placeholder="https://youtube.com/watch?v=..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);" />
+								</div>
+							</div>
+
+							<div style="margin-top: 1rem; padding: 1rem; background: var(--primary-soft); border-radius: 8px; border: 1px solid var(--primary-dark); color: var(--primary-dark);">
+								<label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-weight: 500;">
+									<input type="checkbox" id="profile-public-consent" style="margin-top: 0.25rem; transform: scale(1.2);" />
+									<span>
+										<strong>Публичен профил</strong><br/>
+										<small style="opacity: 0.9;">Съгласен съм горната информация (описание, сертификати, снимки) да се показва в моите обяви като "Етикет на доверие", за да привлече повече купувачи.</small>
+									</span>
+								</label>
+							</div>
+
+							<button type="submit" class="btn btn-primary" id="btn-save-profile" style="border-radius: 40px; padding: 1rem; width: 100%; font-size: 1.1rem; margin-top: 0.5rem;">Запази промените</button>
 						</form>
 					</div>
 				</div>
@@ -172,9 +228,42 @@
 		</div>
 	</footer>
 
+	<button type="button" class="llm-launch" id="llm-fab" aria-expanded="false" aria-controls="llm-panel">AI Guide</button>
+	<div class="llm-panel" id="llm-panel" role="dialog" aria-label="Fieldlot Guide" aria-modal="false">
+		<div class="llm-head">
+			<div><strong>Fieldlot Guide</strong><span class="llm-status" id="llm-status">…</span></div>
+			<button type="button" class="llm-close" id="llm-close" data-i18n-aria="nav.close" aria-label="Затвори">×</button>
+		</div>
+		<div class="llm-msgs" id="llm-msgs" aria-live="polite"></div>
+		<p class="llm-hint" data-i18n="chat.hint">RAG · категории, култури · качи снимка</p>
+		<div class="llm-quick" id="llm-quick" role="group" aria-label="Бързи въпроси">
+			<button type="button" class="llm-quick-btn" data-prompt="Напиши обява за продажба на пшеница: 80 т, Добруджа, FCA, хлебен индекс ~58" data-i18n="chat.quickDraft">Нова обява</button>
+			<button type="button" class="llm-quick-btn" data-prompt="Редактирай последната обява — направи текста по-кратък и по-професионален" data-i18n="chat.quickEdit">Редакция</button>
+			<button type="button" class="llm-quick-btn" data-prompt="Покажи обяви за ечемик в каталога" data-i18n="chat.quickBarley">Ечемик</button>
+		</div>
+		<div class="llm-foot">
+			<input type="file" id="llm-photo" accept="image/jpeg,image/png,image/webp" hidden />
+			<button type="button" class="llm-photo" id="llm-photo-btn" title="Качи снимка" aria-label="Снимка" data-i18n-aria="chat.photoBtn">+</button>
+			<textarea id="llm-input" rows="2" maxlength="2000" data-i18n-placeholder="chat.placeholder" placeholder="Напр. Каква е цената на пшеницата?"></textarea>
+			<button type="button" class="llm-send" id="llm-send" data-i18n-aria="chat.send" aria-label="Изпрати">→</button>
+		</div>
+	</div>
+
+	<script src="/scripts/fieldlot-i18n-messages.js"></script>
+	<script src="/scripts/fieldlot-i18n.js"></script>
+	<script src="/scripts/fieldlot-api-status.js"></script>
+	<script src="/scripts/fieldlot-images.js"></script>
+	<script src="/scripts/fieldlot-categories.js"></script>
 	<script type="module" src="/firebase-init.js"></script>
 	<script type="module" src="/auth-ui.js"></script>
 	<script type="module" src="/publish-ui.js"></script>
 	<script type="module" src="/scripts/dashboard-page.js"></script>
+	<script src="/scripts/fieldlot-chat.js"></script>
+	<script>
+		FieldlotChat.mount({
+			page: 'dashboard',
+			openTriggers: ['llm-fab'],
+		});
+	</script>
 </body>
 </html>

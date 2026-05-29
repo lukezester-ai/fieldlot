@@ -78,7 +78,7 @@
 	};
 
 	function initCategoryIcons() {
-		document.querySelectorAll('.category-card[data-cat] .category-icon').forEach((icon) => {
+		document.querySelectorAll('.cat-card[data-cat] .icon').forEach((icon) => {
 			const card = icon.closest('[data-cat]');
 			const key = card?.getAttribute('data-cat');
 			if (key && CAT_ICONS[key]) icon.textContent = CAT_ICONS[key];

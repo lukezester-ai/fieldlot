@@ -216,6 +216,7 @@ button, input, select, textarea {
 		scroll-behavior: auto !important;
 		transition: none !important;
 		animation: none !important;
+	}
 }
 
 /* Глобални стилове за карти и категории (споделени с каталога) */

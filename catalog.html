@@ -57,6 +57,7 @@
 			<div class="nav-links">
 				<a href="/" data-i18n="nav.home">Начало</a>
 				<a href="/catalog.html" aria-current="page" data-i18n="nav.catalog">Каталог</a>
+				<a href="/logistics.html" data-i18n="nav.logistics">Логистика</a>
 				<a href="/#cta" data-i18n="nav.earlyAccess">Ранен достъп</a>
 			</div>
 			<a class="nav-cta" href="/#cta" data-i18n="nav.join">Включи се</a>
@@ -160,6 +161,27 @@
 		</div>
 	</footer>
 
+	<button type="button" class="llm-launch" id="llm-fab" aria-expanded="false" aria-controls="llm-panel">AI Guide</button>
+	<div class="llm-panel" id="llm-panel" role="dialog" aria-label="Fieldlot Guide" aria-modal="false">
+		<div class="llm-head">
+			<div><strong>Fieldlot Guide</strong><span class="llm-status" id="llm-status">…</span></div>
+			<button type="button" class="llm-close" id="llm-close" data-i18n-aria="nav.close" aria-label="Затвори">×</button>
+		</div>
+		<div class="llm-msgs" id="llm-msgs" aria-live="polite"></div>
+		<p class="llm-hint" data-i18n="chat.hint">RAG · категории, култури · качи снимка</p>
+		<div class="llm-quick" id="llm-quick" role="group" aria-label="Бързи въпроси">
+			<button type="button" class="llm-quick-btn" data-prompt="Напиши обява за продажба на пшеница: 80 т, Добруджа, FCA, хлебен индекс ~58" data-i18n="chat.quickDraft">Нова обява</button>
+			<button type="button" class="llm-quick-btn" data-prompt="Редактирай последната обява — направи текста по-кратък и по-професионален" data-i18n="chat.quickEdit">Редакция</button>
+			<button type="button" class="llm-quick-btn" data-prompt="Покажи обяви за ечемик в каталога" data-i18n="chat.quickBarley">Ечемик</button>
+		</div>
+		<div class="llm-foot">
+			<input type="file" id="llm-photo" accept="image/jpeg,image/png,image/webp" hidden />
+			<button type="button" class="llm-photo" id="llm-photo-btn" title="Качи снимка" aria-label="Снимка" data-i18n-aria="chat.photoBtn">+</button>
+			<textarea id="llm-input" rows="2" maxlength="2000" data-i18n-placeholder="chat.placeholder" placeholder="Напр. Каква е цената на пшеницата?"></textarea>
+			<button type="button" class="llm-send" id="llm-send" data-i18n-aria="chat.send" aria-label="Изпрати">→</button>
+		</div>
+	</div>
+
 	<script src="/scripts/fieldlot-i18n-messages.js"></script>
 	<script src="/scripts/fieldlot-i18n.js"></script>
 	<script src="/scripts/fieldlot-api-status.js"></script>
@@ -167,7 +189,17 @@
 	<script src="/scripts/fieldlot-pdf.js" type="module"></script>
 	<script src="/scripts/fieldlot-categories.js"></script>
 	<script type="module" src="/scripts/catalog-page.js"></script>
+	<script src="/scripts/fieldlot-chat.js"></script>
 	<script type="module" src="/firebase-init.js"></script>
-		<script src="/scripts/fieldlot-mobile.js"></script>
+	<script>
+		FieldlotChat.mount({
+			page: 'catalog',
+			openTriggers: ['llm-fab'],
+			getContext: () => ({
+				filters: window.FieldlotCatalog?.getFilters?.() || {},
+			})
+		});
+	</script>
+	<script src="/scripts/fieldlot-mobile.js"></script>
 </body>
 </html>

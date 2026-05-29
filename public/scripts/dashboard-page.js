@@ -1,11 +1,35 @@
-import { auth, db } from "../firebase-init.js";
+import { auth, db, storage } from "../firebase-init.js";
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
 import { collection, query, where, getDocs, doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const grid = document.getElementById("dashboard-listings-grid");
 const emailInput = document.getElementById("profile-email");
 const companyInput = document.getElementById("profile-company");
+const typeInput = document.getElementById("profile-type");
+const descInput = document.getElementById("profile-desc");
+const videoInput = document.getElementById("profile-video");
+const imageInput = document.getElementById("profile-image");
+const imagePreview = document.getElementById("profile-image-preview");
+const publicConsentInput = document.getElementById("profile-public-consent");
+const certCheckboxes = document.querySelectorAll('input[name="certs"]');
 const profileForm = document.getElementById("profile-form");
+
+// Handle image preview
+imageInput.addEventListener('change', () => {
+	const file = imageInput.files[0];
+	if (file) {
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			imagePreview.querySelector('img').src = e.target.result;
+			imagePreview.style.display = 'block';
+		};
+		reader.readAsDataURL(file);
+	} else {
+		imagePreview.style.display = 'none';
+		imagePreview.querySelector('img').src = '';
+	}
+});
 
 const tabListings = document.getElementById("tab-listings");
 const tabProfile = document.getElementById("tab-profile");
@@ -56,6 +80,21 @@ onAuthStateChanged(auth, async (user) => {
 		if (userDoc.exists()) {
 			const data = userDoc.data();
 			if (data.companyName) companyInput.value = data.companyName;
+			if (data.profileType) typeInput.value = data.profileType;
+			if (data.profileDesc) descInput.value = data.profileDesc;
+			if (data.profileVideo) videoInput.value = data.profileVideo;
+			if (data.publicConsent) publicConsentInput.checked = data.publicConsent;
+			
+			if (data.certs && Array.isArray(data.certs)) {
+				certCheckboxes.forEach(cb => {
+					cb.checked = data.certs.includes(cb.value);
+				});
+			}
+
+			if (data.profileImageUrl) {
+				imagePreview.querySelector('img').src = data.profileImageUrl;
+				imagePreview.style.display = 'block';
+			}
 		}
 	} catch (e) {
 		console.error("Error fetching profile:", e);
@@ -75,9 +114,37 @@ profileForm.addEventListener("submit", async (e) => {
 	btn.disabled = true;
 	
 	try {
-		await setDoc(doc(db, "users", currentUser.uid), {
-			companyName: companyInput.value
-		}, { merge: true });
+		// Collect selected certs
+		const selectedCerts = Array.from(certCheckboxes)
+			.filter(cb => cb.checked)
+			.map(cb => cb.value);
+
+		let profileImageUrl = imagePreview.querySelector('img').src; // keep existing if no new file
+		if (profileImageUrl.startsWith('data:')) {
+			profileImageUrl = ''; // it's just a local preview, let's wait for upload
+		}
+
+		if (imageInput.files.length > 0) {
+			const file = imageInput.files[0];
+			const storageRef = ref(storage, `profiles/${currentUser.uid}_${Date.now()}_${file.name}`);
+			const snapshot = await uploadBytes(storageRef, file);
+			profileImageUrl = await getDownloadURL(snapshot.ref);
+		}
+
+		const profileData = {
+			companyName: companyInput.value,
+			profileType: typeInput.value,
+			profileDesc: descInput.value,
+			profileVideo: videoInput.value,
+			publicConsent: publicConsentInput.checked,
+			certs: selectedCerts,
+		};
+		if (profileImageUrl) {
+			profileData.profileImageUrl = profileImageUrl;
+		}
+
+		await setDoc(doc(db, "users", currentUser.uid), profileData, { merge: true });
+		
 		btn.textContent = "Запазено!";
 		setTimeout(() => {
 			btn.textContent = originalText;

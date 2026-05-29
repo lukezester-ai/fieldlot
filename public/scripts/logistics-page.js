@@ -1,7 +1,7 @@
 /**
- * Fieldlot catalog — live listings (yellow-pages style, no photos)
+ * Fieldlot logistics — transport & machinery listings
  */
-(function initCatalogPage(global) {
+(function initLogisticsPage(global) {
 	const I18n = () => window.FieldlotI18n;
 	const t = (k, fb) => (I18n() ? I18n().t(k, fb) : fb || k);
 
@@ -9,8 +9,6 @@
 	const countEl = document.getElementById('results-count');
 	const qEl = document.getElementById('q');
 	const catEl = document.getElementById('category');
-	const cropEl = document.getElementById('crop');
-	const regEl = document.getElementById('region');
 	const roleEl = document.getElementById('role');
 	const FC = () => global.FieldlotCategories;
 	const backdrop = document.getElementById('detail-backdrop');
@@ -37,19 +35,12 @@
 	}
 
 	const CAT_LABELS = {
-		veg: 'Зеленчуци',
-		fruit: 'Плодове',
-		grain: 'Зърно',
-		oil: 'Маслодайни',
-		feed: 'Фураж',
-		canned: 'Консерви',
-		fertilizer: 'Торове',
-		machines: 'Машини',
+		transport: 'Транспорт',
+		machinery: 'Земеделска техника',
 	};
 
 	function categoryLabel(item) {
-		const id = FC()?.normCat ? FC().normCat(item.category) : item.category;
-		return CAT_LABELS[id] || id || '';
+		return CAT_LABELS[item.category] || item.category || 'Услуга';
 	}
 
 	function sortListings(items) {
@@ -68,59 +59,45 @@
 	}
 
 	async function loadListings() {
-		grid.innerHTML = `<p class="meta yp-loading">${escapeHtml(t('catalog.loading'))}</p>`;
-		let staticData = [];
-		try {
-			const res = await fetch('/data/live-listings.json');
-			if (res.ok) {
-				const data = await res.json();
-				staticData = Array.isArray(data.listings) ? data.listings : [];
-			}
-		} catch {}
-
+		grid.innerHTML = `<p class="meta yp-loading">Зареждане на обяви…</p>`;
 		let fbData = [];
 		try {
 			let retries = 20;
-			while (!window.fetchFirebaseListings && retries > 0) {
+			while (!window.fetchFirebaseLogistics && retries > 0) {
 				await new Promise(r => setTimeout(r, 100));
 				retries--;
 			}
-			if (window.fetchFirebaseListings) {
-				fbData = await window.fetchFirebaseListings(100);
+			if (window.fetchFirebaseLogistics) {
+				fbData = await window.fetchFirebaseLogistics(100);
 			}
 		} catch (e) {
-			console.error("Firebase listings fetch error:", e);
+			console.error("Firebase logistics fetch error:", e);
+		}
+		
+		// Demo data if empty
+		if (fbData.length === 0) {
+			fbData = [
+				{ id: 'mock1', title: 'Транспорт със Зърновоз 24т', subtitle: 'Варна', category: 'transport', price: 'По договаряне', priceUnit: '', qty: '24 тона', role: 'offer', publishedAt: new Date().toISOString(), isFirebase: false },
+				{ id: 'mock2', title: 'Търся комбайн за жътва на пшеница', subtitle: 'Добрич', category: 'machinery', price: 'По договаряне', priceUnit: '', qty: '500 дка', role: 'seek', publishedAt: new Date(Date.now() - 86400000).toISOString(), isFirebase: false },
+				{ id: 'mock3', title: 'Услуги с трактор и пръскачка', subtitle: 'Пловдив', category: 'machinery', price: '12', priceUnit: 'лв/дка', qty: 'До 1000 дка', role: 'offer', publishedAt: new Date(Date.now() - 172800000).toISOString(), isFirebase: false },
+				{ id: 'mock4', title: 'Хладилен транспорт за плодове', subtitle: 'Сливен', category: 'transport', price: 'По договаряне', priceUnit: '', qty: '3.5 тона', role: 'offer', publishedAt: new Date(Date.now() - 259200000).toISOString(), isFirebase: false },
+				{ id: 'mock5', title: 'Търся транспорт за 100т царевица', subtitle: 'Русе -> Бургас', category: 'transport', price: 'Търси оферти', priceUnit: '', qty: '100 тона', role: 'seek', publishedAt: new Date(Date.now() - 345600000).toISOString(), isFirebase: false }
+			];
 		}
 
-		allListings = sortListings(stripMedia([...fbData, ...staticData]));
+		allListings = sortListings(stripMedia(fbData));
 	}
 
 	function filterListings() {
 		const q = qEl.value.trim().toLowerCase();
 		const cat = catEl?.value || '';
-		const crop = cropEl?.value || '';
-		const reg = regEl?.value || '';
 		const role = roleEl?.value || '';
 		return allListings.filter((raw) => {
 			const item = loc(raw);
-			if (cat) {
-				if (FC()?.matchCategory) {
-					if (!FC().matchCategory(item, cat)) return false;
-				} else if (item.category !== cat) return false;
-			}
-			if (crop) {
-				if (FC()?.matchCrop) {
-					if (!FC().matchCrop(item, crop)) return false;
-				}
-			}
-			if (reg) {
-				if (FC()?.matchRegion) {
-					if (!FC().matchRegion(item, reg)) return false;
-				} else if (item.region !== reg && item.region !== 'national') return false;
-			}
+			if (cat && item.category !== cat) return false;
 			if (role && item.role !== role) return false;
 			if (!q) return true;
-			const hay = [item.title, item.subtitle, item.quality, item.contact, ...(item.tags || [])]
+			const hay = [item.title, item.subtitle, item.contact]
 				.join(' ')
 				.toLowerCase();
 			return hay.includes(q);
@@ -170,13 +147,26 @@
 		const items = filterListings();
 		grid.innerHTML = '';
 		if (items.length === 0) {
-			grid.innerHTML = `<div class="empty-state"><p>${t('catalog.empty')}</p><p>${t('catalog.emptyHint')}</p></div>`;
+			grid.innerHTML = `<div class="empty-state"><p>Няма намерени обяви</p></div>`;
 		} else {
-			items.forEach((raw) => grid.appendChild(renderCard(raw)));
+			items.forEach((raw, index) => {
+				grid.appendChild(renderCard(raw));
+				// Вградена реклама след всяка 3-та обява (само ако има повече обяви след нея)
+				if ((index + 1) % 3 === 0 && index < items.length - 1) {
+					const ad = document.createElement('div');
+					ad.className = 'in-feed-ad';
+					ad.style = 'grid-column: 1 / -1; background: var(--primary-soft); border: 2px dashed var(--primary-light); padding: 1.5rem; text-align: center; border-radius: var(--radius-md); margin-bottom: 1rem;';
+					ad.innerHTML = `
+						<span style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--primary);">Реклама</span>
+						<h4 style="margin: 0.5rem 0; color: var(--primary-dark);">Търсите сигурни резервни части?</h4>
+						<p style="margin: 0 0 1rem; color: var(--text-muted); font-size: 0.9rem;">Вземете 10% отстъпка за всички филтри и масла този месец.</p>
+						<button class="btn btn-primary" style="font-size: 0.85rem; padding: 0.4rem 1rem;">Научи повече</button>
+					`;
+					grid.appendChild(ad);
+				}
+			});
 		}
-		const n = items.length;
-		const word = n === 1 ? t('catalog.offerOne') : t('catalog.offers');
-		countEl.innerHTML = `<strong>${n}</strong> ${word}`;
+		countEl.innerHTML = `<strong>${items.length}</strong> обяви`;
 	}
 
 	async function openDetail(raw) {
@@ -299,16 +289,14 @@
 		if (q && qEl) qEl.value = q;
 	}
 
-	[qEl, catEl, cropEl, regEl, roleEl].forEach((el) => {
+	[qEl, catEl, roleEl].forEach((el) => {
 		el?.addEventListener('input', render);
 		el?.addEventListener('change', render);
 	});
 	document.getElementById('reset-filters')?.addEventListener('click', () => {
 		qEl.value = '';
 		if (catEl) catEl.value = '';
-		if (cropEl) cropEl.value = '';
-		regEl.value = '';
-		roleEl.value = '';
+		if (roleEl) roleEl.value = '';
 		render();
 	});
 

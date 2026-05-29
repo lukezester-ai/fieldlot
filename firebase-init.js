@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, collection, getDocs, query, orderBy, limit } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, orderBy, limit, doc, getDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -38,13 +38,27 @@ window.fetchFirebaseListings = async function(limitCount = 20) {
         publishedAt: d.createdAt ? new Date(d.createdAt).toISOString() : new Date().toISOString(),
         contact: d.userEmail || "Фермер",
         tags: d.category ? [d.category] : [],
-        isFirebase: true
+        isFirebase: true,
+        userId: d.userId
       });
     });
   } catch (e) {
     console.error("Firebase listings fetch error:", e);
   }
   return fbData;
+};
+
+window.fetchUserProfile = async function(userId) {
+  if (!userId) return null;
+  try {
+    const userDoc = await getDoc(doc(db, "users", userId));
+    if (userDoc.exists()) {
+      return userDoc.data();
+    }
+  } catch (e) {
+    console.error("Error fetching user profile:", e);
+  }
+  return null;
 };
 
 console.log("Firebase initialized successfully!");
