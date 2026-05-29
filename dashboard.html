@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="bg">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Моят профил — Fieldlot</title>
+	<meta name="description" content="Управление на вашите обяви във Fieldlot." />
+	
+	<script src="/scripts/fieldlot-theme.js"></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+	
+	<link rel="stylesheet" href="/styles/fieldlot-theme.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-ui.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-catalog.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-yellow-pages.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-auth.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
+
+	<style>
+		.dashboard-layout {
+			display: flex;
+			gap: 2rem;
+			margin-top: 3rem;
+			min-height: 60vh;
+		}
+		.dashboard-sidebar {
+			width: 250px;
+			flex-shrink: 0;
+		}
+		.dashboard-nav {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+			background: white;
+			padding: 1rem;
+			border-radius: var(--radius-lg);
+			box-shadow: var(--shadow-sm);
+			border: 1px solid var(--neutral-100);
+		}
+		.dashboard-nav a {
+			padding: 0.8rem 1rem;
+			text-decoration: none;
+			color: var(--neutral-600);
+			font-weight: 500;
+			border-radius: var(--radius-md);
+			transition: all 0.2s;
+		}
+		.dashboard-nav a:hover {
+			background: var(--neutral-50);
+			color: var(--primary);
+		}
+		.dashboard-nav a.active {
+			background: var(--primary-soft);
+			color: var(--primary-dark);
+			font-weight: 600;
+		}
+		.dashboard-content {
+			flex: 1;
+		}
+		.dashboard-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 2rem;
+			padding-bottom: 1rem;
+			border-bottom: 1px solid var(--neutral-200);
+		}
+		.dashboard-header h1 {
+			margin: 0;
+			font-size: 2rem;
+		}
+		
+		@media (max-width: 768px) {
+			.dashboard-layout {
+				flex-direction: column;
+			}
+			.dashboard-sidebar {
+				width: 100%;
+			}
+			.dashboard-nav {
+				flex-direction: row;
+				overflow-x: auto;
+			}
+			.dashboard-header {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 1rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<header class="site-header">
+		<nav class="nav" aria-label="Основна навигация">
+			<a class="brand" href="/">
+				<span class="brand-mark" aria-hidden="true">
+					<svg width="23" height="23" viewBox="0 0 24 24" fill="none">
+						<path d="M6 15c5.8.4 9.5-2.8 11.4-8.9C11.1 6 6.8 9.3 6 15Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+					</svg>
+				</span>
+				<span>
+					<span class="brand-title">FIELDLOT</span>
+					<span class="brand-sub">Agro market access</span>
+				</span>
+			</a>
+			<div style="display: flex; gap: 8px; align-items: center;">
+				<button type="button" class="theme-toggle" onclick="window.FieldlotTheme.toggleTheme()" aria-label="Toggle Dark Mode">
+					<svg viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.758a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z"/></svg>
+				</button>
+			</div>
+			
+			<div class="nav-links">
+				<a href="/">Начало</a>
+				<a href="/catalog.html">Каталог</a>
+			</div>
+			<div class="header-actions" style="display:flex; align-items:center; gap: 8px;">
+				<!-- Auth JS ще инжектира логин статуса тук -->
+			</div>
+		</nav>
+	</header>
+
+	<main class="container">
+		<div class="dashboard-layout">
+			<aside class="dashboard-sidebar">
+				<nav class="dashboard-nav">
+					<a href="#listings" class="active" id="tab-listings">Моите обяви</a>
+					<a href="#profile" id="tab-profile">Настройки на профила</a>
+				</nav>
+			</aside>
+			
+			<section class="dashboard-content">
+				<div id="view-listings">
+					<div class="dashboard-header">
+						<h1>Моите обяви</h1>
+						<button class="btn btn-primary" id="btn-new-listing" style="border-radius: 40px;">+ Нова обява</button>
+					</div>
+					
+					<div id="dashboard-listings-grid" class="listings-grid" aria-live="polite">
+						<p class="meta" style="grid-column: 1 / -1;">Зареждане на обявите ви...</p>
+					</div>
+				</div>
+
+				<div id="view-profile" style="display: none;">
+					<div class="dashboard-header">
+						<h1>Настройки на профила</h1>
+					</div>
+					<div style="background: white; padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--neutral-100);">
+						<form id="profile-form" style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 400px;">
+							<div>
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--neutral-700);">Имейл адрес (не може да се променя)</label>
+								<input type="email" id="profile-email" disabled style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--neutral-200); background: var(--neutral-50);" />
+							</div>
+							<div>
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--neutral-700);">Име на стопанството / Фирма</label>
+								<input type="text" id="profile-company" placeholder="Въведете име..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--neutral-200);" />
+							</div>
+							<button type="submit" class="btn btn-primary" style="border-radius: 40px; padding: 0.8rem; width: 100%;">Запази промените</button>
+						</form>
+					</div>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container">
+			<p>© Fieldlot · Табло</p>
+			<p>Контакт: <a href="mailto:info@agrinexus.eu">info@agrinexus.eu</a> · <a href="/">Към началото</a></p>
+		</div>
+	</footer>
+
+	<script type="module" src="/firebase-init.js"></script>
+	<script type="module" src="/auth-ui.js"></script>
+	<script type="module" src="/publish-ui.js"></script>
+	<script type="module" src="/scripts/dashboard-page.js"></script>
+</body>
+</html>

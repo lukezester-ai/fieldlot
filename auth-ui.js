@@ -121,12 +121,12 @@ onAuthStateChanged(auth, (user) => {
 	if (user) {
 		// Logged in
 		headerActions.innerHTML = `
-			<div style="font-size: 13px; font-weight: 600; color: var(--fl-emerald); margin-right: 12px; display:flex; align-items:center; gap:8px;">
+			<a href="/dashboard.html" class="btn btn-ghost" style="color: var(--fl-emerald); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px;">
 				<span style="display:inline-block; width:8px; height:8px; background:var(--fl-emerald); border-radius:50%;"></span>
-				${user.email.split('@')[0]}
-			</div>
+				Моят профил
+			</a>
 			<button type="button" class="btn btn-ghost" id="nav-logout">Изход</button>
-			<button type="button" class="btn btn-publish" id="nav-publish" data-i18n="nav.publish">Публикувай</button>
+			<button type="button" class="btn btn-publish" id="nav-publish" data-i18n="nav.publish" style="background: var(--primary); color: white; border-radius: 40px;">Публикувай</button>
 		`;
 		document.getElementById('nav-logout').addEventListener('click', () => {
 			signOut(auth);
