@@ -107,13 +107,7 @@ export async function fetchAllListingsSnapshot(detailLimit = 40): Promise<Listin
 		}
 	}
 
-	try {
-		const mockRows = await fetchMockListings(40);
-		all.push(...mockRows);
-		sourceNames.push('Демо Борса');
-	} catch (e) {
-		console.warn('[listing-sources] mock generator failed:', e);
-	}
+
 
 	let merged = dedupeListings(all);
 	if (salesOnlyEnabled()) {
