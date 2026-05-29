@@ -892,73 +892,6 @@ textarea:focus {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 	gap: 1.8rem;
-	margin: 2rem 0 3rem;
-}
-
-.category-card {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	background: var(--neutral-50);
-	border-radius: var(--radius-md);
-	padding: 1.2rem 1.5rem;
-	transition: all 0.2s;
-	cursor: pointer;
-	text-decoration: none;
-	color: var(--neutral-900);
-	font-weight: 600;
-	border: 1px solid var(--neutral-200);
-}
-
-.category-card:hover {
-	background: var(--primary-soft);
-	transform: translateX(4px);
-	border-color: var(--primary-light);
-}
-
-.category-icon {
-	font-size: 2rem;
-	background: white;
-	width: 52px;
-	height: 52px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 60px;
-	box-shadow: var(--shadow-sm);
-}
-
-.offer-count {
-	margin-left: auto;
-	background: var(--primary-light);
-	color: white;
-	padding: 2px 10px;
-	border-radius: 30px;
-	font-size: 0.75rem;
-	font-weight: 600;
-}
-
-.listings-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-	gap: 1.8rem;
-	margin: 2rem 0 3rem;
-}
-
-.listing-card {
-	background: white;
-	border-radius: var(--radius-lg);
-	padding: 1.5rem;
-	box-shadow: var(--shadow-sm);
-	border: 1px solid var(--neutral-100);
-	transition: all 0.25s ease;
-	display: flex;
-	flex-direction: column;
-}
-
-.listing-card:hover {
-	transform: translateY(-6px);
-	box-shadow: var(--shadow-md);
 	border-color: var(--primary-light);
 }
 
@@ -1093,15 +1026,15 @@ textarea:focus {
 	display: flex;
 	align-items: center;
 	gap: 1rem;
-	background: var(--neutral-50);
+	background: var(--bg-body);
 	border-radius: var(--radius-md);
 	padding: 1.2rem 1.5rem;
 	transition: all 0.2s;
 	cursor: pointer;
 	text-decoration: none;
-	color: var(--neutral-900);
+	color: var(--text-main);
 	font-weight: 600;
-	border: 1px solid var(--neutral-200);
+	border: 1px solid var(--border-color);
 }
 
 .category-card:hover {
@@ -1112,7 +1045,7 @@ textarea:focus {
 
 .category-icon {
 	font-size: 2rem;
-	background: white;
+	background: var(--bg-card);
 	width: 52px;
 	height: 52px;
 	display: flex;
@@ -1140,14 +1073,15 @@ textarea:focus {
 }
 
 .listing-card {
-	background: white;
+	background: var(--bg-card);
 	border-radius: var(--radius-lg);
 	padding: 1.5rem;
 	box-shadow: var(--shadow-sm);
-	border: 1px solid var(--neutral-100);
+	border: 1px solid var(--border-color);
 	transition: all 0.25s ease;
 	display: flex;
 	flex-direction: column;
+	color: var(--text-main);
 }
 
 .listing-card:hover {
