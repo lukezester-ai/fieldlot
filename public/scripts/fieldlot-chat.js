@@ -45,10 +45,24 @@
 			return base;
 		}
 
+		const headToggle = document.getElementById('llm-head-toggle');
+		const llmBody = document.getElementById('llm-body');
+
 		function setOpen(next) {
 			panel.classList.toggle('open', next);
 			fab.setAttribute('aria-expanded', String(next));
-			if (next) setTimeout(() => input.focus(), 80);
+			headToggle?.setAttribute('aria-expanded', String(next));
+			if (next) {
+				llmBody?.classList.remove('collapsed');
+				setTimeout(() => input.focus(), 80);
+			}
+		}
+
+		function toggleBodyCollapse() {
+			if (!llmBody) return;
+			llmBody.classList.toggle('collapsed');
+			const expanded = !llmBody.classList.contains('collapsed');
+			headToggle?.setAttribute('aria-expanded', String(expanded));
 		}
 
 		function addMsg(role, content) {
@@ -270,6 +284,22 @@
 
 		fab.addEventListener('click', () => setOpen(!panel.classList.contains('open')));
 		if (closeBtn) closeBtn.addEventListener('click', () => setOpen(false));
+		if (headToggle) {
+			headToggle.addEventListener('click', (e) => {
+				if (e.target.closest('.llm-close')) return;
+				if (!panel.classList.contains('open')) {
+					setOpen(true);
+					return;
+				}
+				toggleBodyCollapse();
+			});
+			headToggle.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					headToggle.click();
+				}
+			});
+		}
 		sendBtn.addEventListener('click', send);
 		input.addEventListener('keydown', (event) => {
 			if (event.key === 'Enter' && !event.shiftKey) {
@@ -289,16 +319,23 @@
 			addMsg('assistant', opts.welcome || t('chat.welcome'));
 		}
 
-		const quick = document.getElementById('llm-quick');
-		quick?.querySelectorAll('[data-prompt]').forEach((btn) => {
-			btn.addEventListener('click', () => {
-				const p = btn.getAttribute('data-prompt');
-				if (!p) return;
-				input.value = p;
-				setOpen(true);
-				input.focus();
+		function bindPromptButtons(root) {
+			(root || document).querySelectorAll('[data-prompt]').forEach((btn) => {
+				if (btn.dataset.promptBound === '1') return;
+				btn.dataset.promptBound = '1';
+				btn.addEventListener('click', () => {
+					const p = btn.getAttribute('data-prompt');
+					if (!p) return;
+					input.value = p;
+					setOpen(true);
+					input.focus();
+					if (btn.hasAttribute('data-send-now') && apiOnline) send();
+				});
 			});
-		});
+		}
+
+		bindPromptButtons(document.getElementById('llm-quick'));
+		bindPromptButtons(document.querySelector('.ai-suggestions'));
 
 		function appendDraftBox(parent, draft) {
 			if (!draft?.formattedText) return;

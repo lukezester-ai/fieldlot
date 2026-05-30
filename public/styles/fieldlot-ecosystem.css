@@ -347,8 +347,14 @@ body {
 /* —— Categories —— */
 .cat-grid {
 	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 12px;
+}
+
+@media (min-width: 720px) {
+	.cat-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
 }
 
 .cat-card {
@@ -588,6 +594,50 @@ body {
 .chg-down {
 	color: var(--fl-down);
 	font-weight: 600;
+}
+
+.price-trend {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.price-trend.up {
+	color: #2b8c4a;
+}
+
+.price-trend.down {
+	color: #c0392b;
+}
+
+.price-trend.neutral {
+	color: #7f8c8d;
+}
+
+.commodity-price .value {
+	font-weight: 600;
+}
+
+.hero-ticker .ticker-quote {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.cat-card .offer-count {
+	margin: 6px 0 0;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--fl-accent);
+	opacity: 0.95;
+}
+
+.cat-card--photo .offer-count {
+	color: #fff;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 /* —— Logistics —— */

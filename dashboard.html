@@ -33,27 +33,27 @@
 			display: flex;
 			flex-direction: column;
 			gap: 0.5rem;
-			background: var(--bg-card);
+			background: var(--paper);
 			padding: 1rem;
 			border-radius: var(--radius-lg);
 			box-shadow: var(--shadow-sm);
-			border: 1px solid var(--neutral-100);
+			border: 1px solid var(--line);
 		}
 		.dashboard-nav a {
 			padding: 0.8rem 1rem;
 			text-decoration: none;
-			color: var(--text-muted);
+			color: var(--muted);
 			font-weight: 500;
 			border-radius: var(--radius-md);
 			transition: all 0.2s;
 		}
 		.dashboard-nav a:hover {
-			background: var(--neutral-50);
-			color: var(--primary);
+			background: var(--soft);
+			color: var(--fl-brand-solid);
 		}
 		.dashboard-nav a.active {
-			background: var(--primary-soft);
-			color: var(--primary-dark);
+			background: var(--fl-brand-soft);
+			color: var(--fl-brand-deep);
 			font-weight: 600;
 		}
 		.dashboard-content {
@@ -65,12 +65,12 @@
 			align-items: center;
 			margin-bottom: 2rem;
 			padding-bottom: 1rem;
-			border-bottom: 1px solid var(--border-color);
+			border-bottom: 1px solid var(--line);
 		}
 		.dashboard-header h1 {
 			margin: 0;
 			font-size: 2rem;
-			color: var(--text-main);
+			color: var(--ink);
 		}
 		
 		@media (max-width: 768px) {
@@ -139,7 +139,7 @@
 						<button class="btn btn-primary" id="btn-new-listing" style="border-radius: 40px;">+ Нова обява</button>
 					</div>
 					
-					<div id="dashboard-listings-grid" class="listings-grid" aria-live="polite">
+					<div id="dashboard-yp-board catalog-grid" class="yp-board catalog-grid" aria-live="polite">
 						<p class="meta" style="grid-column: 1 / -1;">Зареждане на обявите ви...</p>
 					</div>
 				</div>
@@ -148,22 +148,22 @@
 					<div class="dashboard-header">
 						<h1>Настройки на профила</h1>
 					</div>
-					<div style="background: var(--bg-card); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+					<div style="background: var(--paper); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--line);">
 						<form id="profile-form" style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 600px;">
 							<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
 								<div style="flex: 1; min-width: 250px;">
-									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Имейл адрес (не може да се променя)</label>
-									<input type="email" id="profile-email" disabled style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main);" />
+									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted);">Имейл адрес (не може да се променя)</label>
+									<input type="email" id="profile-email" disabled style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--line); background: var(--soft); color: var(--ink);" />
 								</div>
 								<div style="flex: 1; min-width: 250px;">
-									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Име на стопанството / Фирма</label>
-									<input type="text" id="profile-company" placeholder="Въведете име..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);" />
+									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted);">Име на стопанството / Фирма</label>
+									<input type="text" id="profile-company" placeholder="Въведете име..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); color: var(--ink);" />
 								</div>
 							</div>
 							
 							<div>
-								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Основна дейност</label>
-								<select id="profile-type" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted);">Основна дейност</label>
+								<select id="profile-type" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); color: var(--ink);">
 									<option value="">Изберете дейност...</option>
 									<option value="grain">Зърнопроизводител</option>
 									<option value="veg">Зеленчукопроизводител</option>
@@ -175,12 +175,12 @@
 							</div>
 
 							<div>
-								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Описание на стопанството / История</label>
-								<textarea id="profile-desc" rows="4" placeholder="Разкажете накратко за вашето стопанство, от колко време сте на пазара, с какво се гордеете..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-family: inherit; resize: vertical;"></textarea>
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted);">Описание на стопанството / История</label>
+								<textarea id="profile-desc" rows="4" placeholder="Разкажете накратко за вашето стопанство, от колко време сте на пазара, с какво се гордеете..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-family: inherit; resize: vertical;"></textarea>
 							</div>
 
 							<div>
-								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Сертификати и Стандарти</label>
+								<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted);">Сертификати и Стандарти</label>
 								<div style="display: flex; flex-wrap: wrap; gap: 1rem; padding: 0.5rem 0;">
 									<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;"><input type="checkbox" name="certs" value="globalgap" /> GLOBALG.A.P</label>
 									<label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;"><input type="checkbox" name="certs" value="bio" /> Био Сертифициран</label>
@@ -191,19 +191,19 @@
 
 							<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
 								<div style="flex: 1; min-width: 250px;">
-									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Снимка / Лого</label>
-									<input type="file" id="profile-image" accept="image/*" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px dashed var(--border-color); background: var(--bg-body); color: var(--text-main);" />
+									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted);">Снимка / Лого</label>
+									<input type="file" id="profile-image" accept="image/*" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px dashed var(--line); background: var(--soft); color: var(--ink);" />
 									<div id="profile-image-preview" style="margin-top: 10px; max-width: 150px; border-radius: 8px; overflow: hidden; display: none;">
 										<img src="" alt="Preview" style="width: 100%; height: auto; display: block;" />
 									</div>
 								</div>
 								<div style="flex: 1; min-width: 250px;">
-									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Видео презентация (YouTube линк)</label>
-									<input type="url" id="profile-video" placeholder="https://youtube.com/watch?v=..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);" />
+									<label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--muted);">Видео презентация (YouTube линк)</label>
+									<input type="url" id="profile-video" placeholder="https://youtube.com/watch?v=..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); color: var(--ink);" />
 								</div>
 							</div>
 
-							<div style="margin-top: 1rem; padding: 1rem; background: var(--primary-soft); border-radius: 8px; border: 1px solid var(--primary-dark); color: var(--primary-dark);">
+							<div style="margin-top: 1rem; padding: 1rem; background: var(--fl-brand-soft); border-radius: 8px; border: 1px solid var(--fl-brand-deep); color: var(--fl-brand-deep);">
 								<label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-weight: 500;">
 									<input type="checkbox" id="profile-public-consent" style="margin-top: 0.25rem; transform: scale(1.2);" />
 									<span>

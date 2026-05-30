@@ -461,3 +461,42 @@ body.nav-open {
 		text-align: center;
 	}
 }
+
+@media (max-width: 640px) {
+	.footer-cta {
+		grid-template-columns: 1fr;
+		gap: 24px;
+	}
+
+	.early-access-form .form-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.early-access-form input,
+	.early-access-form textarea,
+	.early-access-form select,
+	.early-access-form .form-actions .btn {
+		width: 100%;
+	}
+
+	.early-access-form .form-actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.early-access-form .form-actions .btn {
+		margin-bottom: 0;
+	}
+
+	.early-access-form .form-actions .btn + .btn {
+		margin-top: 10px;
+	}
+
+	.ai-suggestions {
+		max-width: none;
+	}
+
+	.categories .cat-grid {
+		grid-template-columns: 1fr;
+	}
+}

@@ -201,18 +201,17 @@ function createCard(id, item) {
 	
 	// Create visual elements
 	article.innerHTML = `
-		<div class="badge" style="background: var(--neutral-100); color: var(--neutral-700);">Продава</div>
-		<h3 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 8px;">${escapeHtml(item.title)}</h3>
-		<div class="price">${item.price ? escapeHtml(item.price) : "по договаряне"} <span style="font-size: 1rem;">лв</span></div>
-		<div class="location">
-			<span aria-hidden="true">📍</span> ${escapeHtml(item.location || "България")}
+		<div class="yp-entry-main">
+			<div class="yp-entry-head">
+				<span class="tag sell">Продава</span>
+				${item.category ? `<span class="tag yp-cat">${escapeHtml(item.category)}</span>` : ''}
+			</div>
+			<h3 class="yp-entry-title">${escapeHtml(item.title)}</h3>
+			<p class="yp-entry-line">${escapeHtml(item.location || "България")} · ${escapeHtml(item.qty || "")}</p>
 		</div>
-		<p style="color: var(--neutral-600); font-size: 0.85rem; margin-bottom: 1rem; flex-grow: 1;">
-			${escapeHtml(item.qty || "")}
-		</p>
-		${item.category ? `<div style="margin-bottom: 1rem;"><span class="badge" style="background: var(--primary-soft); color: var(--primary-dark);">${escapeHtml(item.category)}</span></div>` : ''}
-		<div style="display: flex; gap: 0.5rem; margin-top: auto;">
-			<button class="btn btn-outline btn-delete" style="flex: 1; border-color: red; color: red; text-align: center; border-radius: 40px; padding: 0.5rem; background: transparent; cursor: pointer;">Изтрий</button>
+		<div class="yp-entry-aside">
+			<div class="price">${item.price ? escapeHtml(item.price) : "по договаряне"} <small>лв</small></div>
+			<button class="btn btn-secondary btn-delete" style="color: red; border-color: red; background: transparent; padding: 4px 8px; margin-top: 8px;">Изтрий</button>
 		</div>
 	`;
 	

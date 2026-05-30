@@ -23,7 +23,7 @@
 		const saved = getSavedTheme();
 		if (saved === 'dark' || saved === 'light') {
 			applyTheme(saved);
-		} else if (getPrefersDark()) {
+		} else {
 			applyTheme('dark');
 		}
 	}

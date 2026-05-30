@@ -66,57 +66,67 @@
 
 	<main class="container">
 		<!-- ТОП РЕКЛАМА -->
-		<div style="width: 100%; max-width: 900px; margin: 2rem auto; background: var(--neutral-100); border: 2px dashed var(--border-color); border-radius: var(--radius-md); text-align: center; padding: 2rem; color: var(--neutral-500); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px;">
-			<span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--neutral-400); margin-bottom: 0.5rem;">Рекламна площ</span>
-			<strong style="font-size: 1.1rem; color: var(--neutral-600);">Вашият бизнес тук</strong>
-			<a href="/#cta" style="color: var(--primary); font-size: 0.9rem; margin-top: 0.5rem; text-decoration: none;">Свържете се с нас</a>
+		<div style="width: 100%; max-width: 900px; margin: 2rem auto; border-radius: var(--radius-md); overflow: hidden; position: relative; min-height: 160px; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; text-decoration: none;">
+			<img src="/images/hero/farm.jpg" alt="Реклама Транспорт" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.85;">
+			<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);"></div>
+			<div style="position: relative; z-index: 1; text-align: center; color: white; padding: 2rem;">
+				<span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: var(--fl-brand-solid-light); margin-bottom: 0.5rem; display: block;">Реклама</span>
+				<strong style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">Международен Агро Транспорт</strong>
+				<span style="font-size: 1rem; color: rgba(255,255,255,0.9);">Сигурни доставки за цяла Европа</span>
+			</div>
 		</div>
 
 		<section class="catalog-hero" style="padding: 2rem 0 3rem; text-align: center; margin-bottom: -2rem;">
 			<div class="catalog-hero-panel">
-				<h1 style="margin-bottom: 1rem; font-size: 2.8rem; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">Логистика и Техника</h1>
-				<p style="max-width: 600px; margin: 0 auto 2rem; color: var(--neutral-600);">
+				<h1 style="margin-bottom: 1rem; font-size: 2.8rem; background: linear-gradient(135deg, var(--fl-brand-deep) 0%, var(--fl-brand-solid) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">Логистика и Техника</h1>
+				<p style="max-width: 600px; margin: 0 auto 2rem; color: var(--muted);">
 					Намерете транспорт за вашата продукция или земеделска техника за обработка.
 				</p>
 			</div>
 		</section>
 
-		<form class="toolbar" id="filters" role="search" style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; position: relative; z-index: 10; margin-bottom: 2rem;">
+		<form class="toolbar" id="filters" role="search" style="background: var(--paper); padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; position: relative; z-index: 10; margin-bottom: 2rem;">
 			<label style="flex: 1; min-width: 200px;">
-				<span style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Търсене</span>
-				<input type="search" id="q" placeholder="зърновоз, трактор…" autocomplete="off" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);" />
+				<span style="font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block;">Търсене</span>
+				<input type="search" id="q" placeholder="зърновоз, трактор…" autocomplete="off" style="width: 100%; border-radius: 8px; border: 1px solid var(--line); padding: 0.6rem 1rem; background: var(--soft); color: var(--ink);" />
 			</label>
 			<label style="flex: 1; min-width: 150px;">
-				<span style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Категория</span>
-				<select id="category" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
+				<span style="font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block;">Категория</span>
+				<select id="category" style="width: 100%; border-radius: 8px; border: 1px solid var(--line); padding: 0.6rem 1rem; background: var(--soft); color: var(--ink);">
 					<option value="">Всички услуги</option>
 					<option value="transport">Транспорт (Камиони)</option>
 					<option value="machinery">Земеделска техника</option>
 				</select>
 			</label>
 			<label style="flex: 1; min-width: 150px;">
-				<span style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Тип</span>
-				<select id="role" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
+				<span style="font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block;">Тип</span>
+				<select id="role" style="width: 100%; border-radius: 8px; border: 1px solid var(--line); padding: 0.6rem 1rem; background: var(--soft); color: var(--ink);">
 					<option value="">Всички</option>
 					<option value="offer">Предлагам (Собственик)</option>
 					<option value="seek">Търся (Фермер)</option>
 				</select>
 			</label>
-			<button type="button" class="btn btn-outline" id="reset-filters" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main);">Изчисти</button>
+			<button type="button" class="btn btn-outline" id="reset-filters" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--ink);">Изчисти</button>
 		</form>
 
-		<div class="results-meta" style="margin-bottom: 1rem; color: var(--neutral-600);">
+		<div class="results-meta" style="margin-bottom: 1rem; color: var(--muted);">
 			<span id="results-count"><strong>0</strong> <span>обяви</span></span>
 		</div>
 
 		<div style="display: flex; gap: 2rem;">
-			<div class="listings-grid" id="catalog-grid" aria-live="polite" style="flex: 1;"></div>
+			<div class="yp-board catalog-grid" id="catalog-grid" aria-live="polite" style="flex: 1;"></div>
 			
 			<!-- САЙДБАР РЕКЛАМА (видим само на голям екран) -->
 			<aside class="logistics-sidebar-ad" style="width: 300px; display: none;">
-				<div style="width: 100%; height: 600px; background: var(--neutral-100); border: 2px dashed var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; position: sticky; top: 100px;">
-					<span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--neutral-400); margin-bottom: 0.5rem;">Реклама</span>
-					<strong style="font-size: 1.1rem; color: var(--neutral-600);">Страхотно място за вашия бранд</strong>
+				<div style="width: 100%; height: 600px; border-radius: var(--radius-md); overflow: hidden; position: sticky; top: 100px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+					<img src="/images/farmers/facility.jpg" alt="Реклама Склад" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
+					<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);"></div>
+					<div style="position: relative; z-index: 1; color: white; padding: 2rem; margin-top: auto;">
+						<span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: var(--fl-brand-solid-light); margin-bottom: 1rem; display: block;">Реклама</span>
+						<strong style="font-size: 1.8rem; display: block; margin-bottom: 1rem; line-height: 1.2;">Модерни Зърнобази</strong>
+						<span style="font-size: 1rem; color: rgba(255,255,255,0.9); display: block; margin-bottom: 1.5rem;">Съхранение и сушене при най-добри условия</span>
+						<a class="btn btn-primary" href="/#cta" style="border-radius: 40px; padding: 0.6rem 1.5rem; width: 100%;">Свържете се</a>
+					</div>
 				</div>
 			</aside>
 		</div>

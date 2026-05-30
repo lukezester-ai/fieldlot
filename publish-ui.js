@@ -12,38 +12,36 @@ const publishModalHTML = `
 }
 .fl-publish-backdrop.open { opacity: 1; pointer-events: auto; }
 .fl-publish-modal {
-	background: var(--bg-card); width: 100%; max-width: 500px;
-	border-radius: var(--radius-lg); padding: 32px; position: relative;
-	box-shadow: var(--shadow-lg); transform: translateY(20px);
-	transition: transform 0.3s; border: 1px solid var(--border-color);
-	max-height: 90vh; overflow-y: auto; color: var(--text-main);
+	background: var(--paper); width: 100%; max-width: 500px;
+	border-radius: 12px; padding: 24px; position: relative;
+	box-shadow: var(--shadow); transform: translateY(20px);
+	transition: transform 0.3s;
+	max-height: 90vh; overflow-y: auto;
 }
 .fl-publish-backdrop.open .fl-publish-modal { transform: translateY(0); }
 .fl-publish-close {
 	position: absolute; top: 16px; right: 16px; background: none; border: none;
-	font-size: 28px; cursor: pointer; color: var(--neutral-400); transition: color 0.2s;
+	font-size: 24px; cursor: pointer; color: var(--muted);
 }
-.fl-publish-close:hover { color: var(--neutral-900); }
-.fl-publish-title { font-size: 1.8rem; margin-bottom: 24px; color: var(--text-main); font-weight: 700; }
+.fl-publish-title { font-size: 1.5rem; margin-bottom: 20px; color: var(--ink); font-weight: 600; }
 .fl-form-group { margin-bottom: 16px; }
-.fl-form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; }
+.fl-form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--muted); font-size: 0.9rem; }
 .fl-form-group input, .fl-form-group select, .fl-form-group textarea {
-	width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-color);
-	background: var(--bg-body); color: var(--text-main); font-family: inherit; font-size: 1rem;
-	transition: border-color 0.2s, background 0.2s; box-sizing: border-box;
+	width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--line);
+	background: var(--soft); color: var(--ink); font-family: inherit; font-size: 1rem;
 }
 .fl-form-group input:focus, .fl-form-group select:focus, .fl-form-group textarea:focus {
-	outline: none; border-color: var(--primary); background: var(--bg-card); box-shadow: 0 0 0 3px var(--primary-soft);
+	outline: 2px solid var(--field);
 }
 .fl-submit-btn {
-	width: 100%; padding: 14px; background: var(--primary); color: white;
-	border: none; border-radius: 40px; font-weight: 600; font-size: 1.1rem;
-	cursor: pointer; transition: background 0.2s; margin-top: 10px;
+	width: 100%; padding: 12px; background: var(--fl-brand-solid); color: #fff;
+	border: none; border-radius: 6px; font-weight: 600; font-size: 1rem;
+	cursor: pointer; transition: background 0.2s;
 }
-.fl-submit-btn:hover { background: var(--primary-dark); }
+.fl-submit-btn:hover { background: var(--fl-brand-solid-hover); }
 .fl-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-.fl-error { color: #d32f2f; font-size: 0.95rem; margin-bottom: 16px; display: none; padding: 10px; background: #ffebee; border-radius: 6px; }
-.fl-success { color: var(--primary); font-size: 0.95rem; margin-bottom: 16px; display: none; padding: 10px; background: var(--primary-soft); border-radius: 6px; }
+.fl-error { color: var(--fl-down); font-size: 0.9rem; margin-bottom: 12px; display: none; }
+.fl-success { color: var(--fl-up); font-size: 0.9rem; margin-bottom: 12px; display: none; }
 </style>
 
 <div class="fl-publish-backdrop" id="fl-publish-backdrop">
@@ -51,50 +49,46 @@ const publishModalHTML = `
 		<button class="fl-publish-close" id="fl-publish-close">&times;</button>
 		<h2 class="fl-publish-title">Публикувай обява</h2>
 		
-		<div id="fl-publish-error" class="fl-error"></div>
-		<div id="fl-publish-success" class="fl-success"></div>
+		<p id="fl-publish-error" class="fl-error"></p>
+		<p id="fl-publish-success" class="fl-success"></p>
 		
 		<form id="fl-publish-form">
 			<div class="fl-form-group">
 				<label>Заглавие (напр. Розови домати)</label>
-				<input type="text" id="pub-title" required placeholder="Какво продавате?" />
+				<input type="text" id="pub-title" required />
 			</div>
-			<div style="display: flex; gap: 16px;">
-				<div class="fl-form-group" style="flex: 1;">
-					<label>Категория</label>
-					<select id="pub-category" required>
-						<option value="veg">Зеленчуци</option>
-						<option value="fruit">Плодове</option>
-						<option value="grain">Зърно</option>
-						<option value="oil">Маслодайни</option>
-						<option value="canned">Консерви</option>
-						<option value="fertilizer">Торове</option>
-						<option value="machines">Машини</option>
-						<option value="feed">Фураж</option>
-					</select>
-				</div>
-				<div class="fl-form-group" style="flex: 1;">
-					<label>Цена (лв.)</label>
-					<input type="number" step="0.01" id="pub-price" required placeholder="0.00" />
-				</div>
+			<div class="fl-form-group">
+				<label>Категория</label>
+				<select id="pub-category" required>
+					<option value="veg">Зеленчуци</option>
+					<option value="fruit">Плодове</option>
+					<option value="grain">Зърно</option>
+					<option value="oil">Олио</option>
+					<option value="canned">Консерви</option>
+					<option value="fertilizer">Торове</option>
+					<option value="machines">Машини</option>
+					<option value="feed">Фураж</option>
+				</select>
 			</div>
-			<div style="display: flex; gap: 16px;">
-				<div class="fl-form-group" style="flex: 1;">
-					<label>Количество</label>
-					<input type="text" id="pub-quantity" required placeholder="напр. 1000 кг" />
-				</div>
-				<div class="fl-form-group" style="flex: 1;">
-					<label>Локация</label>
-					<input type="text" id="pub-location" required placeholder="напр. Пловдив" />
-				</div>
+			<div class="fl-form-group">
+				<label>Цена (лв.)</label>
+				<input type="number" step="0.01" id="pub-price" required />
+			</div>
+			<div class="fl-form-group">
+				<label>Количество (напр. 1000 кг)</label>
+				<input type="text" id="pub-quantity" required />
+			</div>
+			<div class="fl-form-group">
+				<label>Локация (напр. Пловдив)</label>
+				<input type="text" id="pub-location" required />
 			</div>
 			<div class="fl-form-group">
 				<label>Снимка</label>
-				<input type="file" id="pub-image" accept="image/*" />
+				<input type="file" id="pub-image" accept="image/*" required />
 			</div>
 			<div class="fl-form-group">
 				<label>Допълнително описание (опционално)</label>
-				<textarea id="pub-desc" rows="3" placeholder="Сорт, сертификати, качество..."></textarea>
+				<textarea id="pub-desc" rows="3"></textarea>
 			</div>
 			<button type="submit" class="fl-submit-btn" id="pub-submit-btn">Публикувай</button>
 		</form>
@@ -169,12 +163,12 @@ function injectPublishModal() {
 				title,
 				category,
 				price,
-				qty: quantity,
+				quantity,
 				location,
 				desc,
 				imageUrl,
-				userId: auth.currentUser.uid,
-				userEmail: auth.currentUser.email,
+				sellerId: auth.currentUser.uid,
+				sellerEmail: auth.currentUser.email,
 				createdAt: serverTimestamp(),
 				status: "active"
 			});

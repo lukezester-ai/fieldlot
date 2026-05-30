@@ -90,7 +90,10 @@
 			'nav.earlyAccess': 'Ранен достъп',
 			'nav.join': 'Включи се',
 			'hero.badge': 'Дигитална агро екосистема · България',
-			'hero.title': 'Свързваме фермерите директно с пазара.',
+			'hero.title': 'Свързваме фермерите директно с пазара',
+			'hero.subtitle':
+				'Без посредници, без излишни разходи. Fieldlot ви дава достъп до актуални цени, AI съвети и хиляди купувачи.',
+			'hero.earlyAccess': 'Получи ранен достъп',
 			'hero.buy': 'Купи продукция',
 			'hero.sell': 'Продай продукция',
 			'hero.ai': 'AI асистент',
@@ -116,6 +119,7 @@
 			'cat.machinesHint': 'техника',
 			'cat.feed': 'Фураж',
 			'cat.feedHint': 'сено, фуражи',
+			'cat.offers': 'оферти',
 			'listings.eyebrow': 'Пазар',
 			'listings.title': 'Активни обяви',
 			'listings.lead':
@@ -198,8 +202,12 @@
 			'ai.navDesc': 'Помощ с обява, филтри, логистика и ранен достъп.',
 			'ai.navEx': '„Как да публикувам партида домати?“',
 			'ai.open': 'Отвори AI чата',
+			'ai.suggestionsLabel': 'Примерни въпроси',
+			'ai.exBarley': 'Кога е най-добре да продам ечемик?',
+			'ai.exCorn': 'Прогноза за царевица след 2 седмици',
+			'ai.exSunflower': 'Купувач за слънчоглед – съвет',
 			'cta.eyebrow': 'Ранен достъп',
-			'cta.title': 'Влез в първата вълна на платформата',
+			'cta.title': 'Ранен достъп',
 			'cta.lead':
 				'Фермери, купувачи и логистика — изграждаме дигиталната агро екосистема за България и региона.',
 			'form.name': 'Име и фамилия *',
@@ -378,6 +386,7 @@
 			'cat.machinesHint': 'equipment',
 			'cat.feed': 'Futtermittel',
 			'cat.feedHint': 'hay, feed',
+			'cat.offers': 'Angebote',
 			'listings.eyebrow': 'Marktplatz',
 			'listings.title': 'Active listings',
 			'listings.lead':
@@ -474,6 +483,10 @@
 			'ai.navDesc': 'Help with listings, filters, logistics and early access.',
 			'ai.navEx': '"How do I post a batch of tomatoes?"',
 			'ai.open': 'Open AI chat',
+			'ai.suggestionsLabel': 'Example questions',
+			'ai.exBarley': '📈 When is the best time to sell barley?',
+			'ai.exCorn': '🌾 What is the corn price outlook in 2 weeks?',
+			'ai.exSunflower': '🚜 Looking for a sunflower buyer — advice',
 			'cta.eyebrow': 'Frühzugang',
 			'cta.title': 'Join the first wave of the platform',
 			'cta.lead':
@@ -628,7 +641,10 @@
 			'nav.earlyAccess': 'Early access',
 			'nav.join': 'Join',
 			'hero.badge': 'Digital agro ecosystem · Bulgaria',
-			'hero.title': 'Connecting farmers directly to the market.',
+			'hero.title': 'Connecting farmers directly to the market',
+			'hero.subtitle':
+				'No middlemen, no extra costs. Fieldlot gives you live prices, AI advice and thousands of buyers.',
+			'hero.earlyAccess': 'Get early access',
 			'hero.buy': 'Buy produce',
 			'hero.sell': 'Sell produce',
 			'hero.ai': 'AI assistant',
@@ -654,6 +670,7 @@
 			'cat.machinesHint': 'equipment',
 			'cat.feed': 'Feed',
 			'cat.feedHint': 'hay, feed',
+			'cat.offers': 'listings',
 			'listings.eyebrow': 'Marketplace',
 			'listings.title': 'Active listings',
 			'listings.lead':
@@ -726,6 +743,10 @@
 			'ai.navDesc': 'Help with listings, filters, logistics and early access.',
 			'ai.navEx': '"How do I post a batch of tomatoes?"',
 			'ai.open': 'Open AI chat',
+			'ai.suggestionsLabel': 'Example questions',
+			'ai.exBarley': '📈 When is the best time to sell barley?',
+			'ai.exCorn': '🌾 What is the corn price outlook in 2 weeks?',
+			'ai.exSunflower': '🚜 Looking for a sunflower buyer — advice',
 			'cta.eyebrow': 'Early access',
 			'cta.title': 'Join the first wave of the platform',
 			'cta.lead':

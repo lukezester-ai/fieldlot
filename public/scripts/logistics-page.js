@@ -77,11 +77,14 @@
 		// Demo data if empty
 		if (fbData.length === 0) {
 			fbData = [
-				{ id: 'mock1', title: 'Транспорт със Зърновоз 24т', subtitle: 'Варна', category: 'transport', price: 'По договаряне', priceUnit: '', qty: '24 тона', role: 'offer', publishedAt: new Date().toISOString(), isFirebase: false },
-				{ id: 'mock2', title: 'Търся комбайн за жътва на пшеница', subtitle: 'Добрич', category: 'machinery', price: 'По договаряне', priceUnit: '', qty: '500 дка', role: 'seek', publishedAt: new Date(Date.now() - 86400000).toISOString(), isFirebase: false },
-				{ id: 'mock3', title: 'Услуги с трактор и пръскачка', subtitle: 'Пловдив', category: 'machinery', price: '12', priceUnit: 'лв/дка', qty: 'До 1000 дка', role: 'offer', publishedAt: new Date(Date.now() - 172800000).toISOString(), isFirebase: false },
-				{ id: 'mock4', title: 'Хладилен транспорт за плодове', subtitle: 'Сливен', category: 'transport', price: 'По договаряне', priceUnit: '', qty: '3.5 тона', role: 'offer', publishedAt: new Date(Date.now() - 259200000).toISOString(), isFirebase: false },
-				{ id: 'mock5', title: 'Търся транспорт за 100т царевица', subtitle: 'Русе -> Бургас', category: 'transport', price: 'Търси оферти', priceUnit: '', qty: '100 тона', role: 'seek', publishedAt: new Date(Date.now() - 345600000).toISOString(), isFirebase: false }
+				{ id: 'mock1', title: 'Транспорт със Зърновоз 24т', subtitle: '🇧🇬 Варна', category: 'transport', price: 'По договаряне', priceUnit: '', qty: '24 тона', role: 'offer', publishedAt: new Date().toISOString(), isFirebase: false },
+				{ id: 'mock2', title: 'Търся комбайн за жътва на пшеница', subtitle: '🇧🇬 Добрич', category: 'machinery', price: 'По договаряне', priceUnit: '', qty: '500 дка', role: 'seek', publishedAt: new Date(Date.now() - 86400000).toISOString(), isFirebase: false },
+				{ id: 'mock3', title: 'Услуги с трактор и пръскачка', subtitle: '🇧🇬 Пловдив', category: 'machinery', price: '12', priceUnit: 'лв/дка', qty: 'До 1000 дка', role: 'offer', publishedAt: new Date(Date.now() - 172800000).toISOString(), isFirebase: false },
+				{ id: 'mock4', title: 'Хладилен транспорт за плодове', subtitle: '🇧🇬 Сливен', category: 'transport', price: 'По договаряне', priceUnit: '', qty: '3.5 тона', role: 'offer', publishedAt: new Date(Date.now() - 259200000).toISOString(), isFirebase: false },
+				{ id: 'mock5', title: 'Търся транспорт за 100т царевица', subtitle: '🇧🇬 Русе -> Бургас', category: 'transport', price: 'Търси оферти', priceUnit: '', qty: '100 тона', role: 'seek', publishedAt: new Date(Date.now() - 345600000).toISOString(), isFirebase: false },
+				{ id: 'mock6', title: 'Международен транспорт на зърно', subtitle: '🇧🇬 България -> 🇬🇷 Гърция', category: 'transport', price: 'По договаряне', priceUnit: '', qty: 'Над 100т', role: 'offer', publishedAt: new Date(Date.now() - 5000000).toISOString(), isFirebase: false },
+				{ id: 'mock7', title: 'Търся камиони за износ на слънчоглед', subtitle: '🇧🇬 Силистра -> 🇷🇴 Румъния', category: 'transport', price: 'Отворено', priceUnit: '', qty: '500 тона', role: 'seek', publishedAt: new Date(Date.now() - 12000000).toISOString(), isFirebase: false },
+				{ id: 'mock8', title: 'Хладилни групажи до Германия', subtitle: '🇧🇬 София -> 🇩🇪 Мюнхен', category: 'transport', price: 'По договаряне', priceUnit: '', qty: 'От 1 до 10 палета', role: 'offer', publishedAt: new Date(Date.now() - 40000000).toISOString(), isFirebase: false }
 			];
 		}
 
@@ -121,17 +124,20 @@
 		article.href = '#';
 		article.dataset.id = item.id;
 		article.innerHTML = `
-			<div class="badge">${escapeHtml(roleLabel)}</div>
-			<h3 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 8px;">${escapeHtml(item.title)}</h3>
-			<div class="price">${escapeHtml(item.price)} <span style="font-size: 1rem;">${escapeHtml(item.priceUnit)}</span></div>
-			<div class="location">
-				<span aria-hidden="true">📍</span> ${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)}
+			<div class="yp-entry-main">
+				<div class="yp-entry-head">
+					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
+					${cat ? `<span class="tag yp-cat">${escapeHtml(cat)}</span>` : ''}
+				</div>
+				<h2 class="yp-entry-title">${escapeHtml(item.title)}</h2>
+				<p class="yp-entry-line">${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)} · ${escapeHtml(item.qty)}</p>
+				<p class="yp-entry-line yp-entry-muted">${escapeHtml(item.incoterm)}${item.quality ? ` · ${escapeHtml(item.quality)}` : ''}</p>
+				${contactLine}
 			</div>
-			<p style="color: var(--neutral-600); font-size: 0.85rem; margin-bottom: 1rem; flex-grow: 1;">
-				${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)} ${item.quality ? `· ${escapeHtml(item.quality)}` : ''}
-			</p>
-			${cat ? `<div style="margin-bottom: 1rem;"><span class="badge" style="background: var(--neutral-100); color: var(--neutral-700);">${escapeHtml(cat)}</span></div>` : ''}
-			<button class="btn-contact">${escapeHtml(t('catalog.detailCta') || 'Виж детайли')}</button>
+			<div class="yp-entry-aside">
+				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
+				${sourceTag}
+			</div>
 		`;
 		article.addEventListener('click', () => openDetail(raw));
 		article.addEventListener('keydown', (e) => {
