@@ -294,13 +294,25 @@
 			.slice(0, 2)
 			.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
 			.join('');
-		return `<article class="listing-card" data-id="${row.id}">
-			<div class="badge">${escapeHtml(cat || roleLabel)}</div>
-			<h3 style="margin: 0; font-size: 1.1rem;">${escapeHtml(row.title)}</h3>
-			<p style="color: var(--neutral-600); font-size: 0.85rem; margin-top: 4px;">${escapeHtml(row.qty || '')} · ${escapeHtml(row.incoterm || '')}</p>
-			<div class="price">${price}</div>
-			<div class="location">📍 ${escapeHtml(row.subtitle || 'България')}</div>
-			<a class="btn-contact" href="${catUrl}" style="text-align: center; text-decoration: none; display: block;">📞 ${escapeHtml(cta)}</a>
+		return `<article class="yp-entry listing-card">
+			<div class="yp-entry-main">
+				<div class="yp-entry-head">
+					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
+					${cat ? `<span class="tag yp-cat">${escapeHtml(cat)}</span>` : ''}
+					${tags}
+				</div>
+				<h3 class="yp-entry-title">${escapeHtml(row.title)}</h3>
+				<p class="yp-entry-line">${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(row.subtitle || '')) : escapeHtml(row.subtitle || '')} · ${escapeHtml(row.qty || '—')}</p>
+				<p class="yp-entry-line yp-entry-muted">${escapeHtml(row.incoterm || '')}${row.quality ? ` · ${escapeHtml(row.quality)}` : ''}</p>
+				${contact}
+			</div>
+			<div class="yp-entry-aside">
+				<div class="price">${price}</div>
+				<div class="product-card-actions">
+					<a class="btn btn-secondary" href="${catUrl}">${escapeHtml(t('listing.connect'))}</a>
+					<a class="btn btn-primary" href="${catUrl}">${escapeHtml(cta)}</a>
+				</div>
+			</div>
 		</article>`;
 	}
 

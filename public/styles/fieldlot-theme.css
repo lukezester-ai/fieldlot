@@ -3,38 +3,7 @@
  * Тъмно зелено · земни тонове · злато · бяло
  */
 :root {
-	/* Нови променливи от дизайна */
-	--primary-dark: #1a4d2a;
-	--primary: #2c6e2f;
-	--primary-light: #4caf50;
-	--primary-soft: #e8f5e9;
-	--secondary: #f5a623;
-	--secondary-soft: #fff4e6;
-	--neutral-50: #fafafa;
-	--neutral-100: #f5f5f5;
-	--neutral-200: #eeeeee;
-	--neutral-300: #e0e0e0;
-	--neutral-600: #757575;
-	--neutral-700: #616161;
-	--neutral-800: #424242;
-	--neutral-900: #212121;
-	--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
-	--shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
-	--shadow-lg: 0 20px 35px -8px rgba(0, 0, 0, 0.1);
-	--radius-sm: 8px;
-	--radius-md: 14px;
-	--radius-lg: 24px;
-	--radius-xl: 32px;
-
-	--bg-body: #f9fbf9;
-	--bg-card: #ffffff;
-	--bg-card-hover: #f1f8f3;
-	--text-main: var(--neutral-900);
-	--text-muted: var(--neutral-600);
-	--border-color: var(--neutral-200);
-
-	--fl-font: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-	--fl-font-head: "Space Grotesk", sans-serif;
+	--fl-font: "DM Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 	--fl-navy-strong: var(--fl-brand-hover);
 	--yp-yellow-dark: #d4a84a;
 	--yp-glow: rgba(201, 162, 39, 0.22);
@@ -140,23 +109,4 @@
 	--yp-muted: #a39f99;
 	--yp-border: rgba(255, 255, 255, 0.1);
 	--yp-shelf: #12100a;
-
-	/* Нови променливи (Dark mode overrides) */
-	--bg-body: #0a0e0c;
-	--bg-card: #131a16;
-	--bg-card-hover: #1a251f;
-	--text-main: #f5f5f5;
-	--text-muted: #a3a3a3;
-	--border-color: #243029;
-
-	--primary-soft: #102619;
-	--secondary-soft: #2a220a;
-	--neutral-50: #101613;
-	--neutral-100: #18221d;
-	--neutral-200: #243029;
-	--neutral-300: #35453b;
-	--neutral-600: #a3a3a3;
-	--neutral-700: #d4d4d4;
-	--neutral-800: #f5f5f5;
-	--neutral-900: #ffffff;
 }

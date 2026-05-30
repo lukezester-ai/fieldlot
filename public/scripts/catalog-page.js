@@ -139,22 +139,26 @@
 			? `<p class="yp-entry-line yp-entry-contact">${escapeHtml(item.contact)}</p>`
 			: '';
 
-		const article = document.createElement('a');
+		const article = document.createElement('article');
 		article.className = 'listing-card yp-entry';
-		article.href = '#';
+		article.tabIndex = 0;
 		article.dataset.id = item.id;
 		article.innerHTML = `
-			<div class="badge">${escapeHtml(roleLabel)}</div>
-			<h3 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 8px;">${escapeHtml(item.title)}</h3>
-			<div class="price">${escapeHtml(item.price)} <span style="font-size: 1rem;">${escapeHtml(item.priceUnit)}</span></div>
-			<div class="location">
-				<span aria-hidden="true">📍</span> ${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)}
+			<div class="yp-entry-main">
+				<div class="yp-entry-head">
+					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
+					${cat ? `<span class="tag yp-cat">${escapeHtml(cat)}</span>` : ''}
+					${(item.tags || []).filter(t => t.toLowerCase() !== (cat || '').toLowerCase()).slice(0, 2).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+				</div>
+				<h2 class="yp-entry-title">${escapeHtml(item.title)}</h2>
+				<p class="yp-entry-line">${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)} · ${escapeHtml(item.qty)}</p>
+				<p class="yp-entry-line yp-entry-muted">${escapeHtml(item.incoterm)}${item.quality ? ` · ${escapeHtml(item.quality)}` : ''}</p>
+				${contactLine}
 			</div>
-			<p style="color: var(--neutral-600); font-size: 0.85rem; margin-bottom: 1rem; flex-grow: 1;">
-				${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)} ${item.quality ? `· ${escapeHtml(item.quality)}` : ''}
-			</p>
-			${cat ? `<div style="margin-bottom: 1rem;"><span class="badge" style="background: var(--neutral-100); color: var(--neutral-700);">${escapeHtml(cat)}</span></div>` : ''}
-			<button class="btn-contact">${escapeHtml(t('catalog.detailCta') || 'Виж детайли')}</button>
+			<div class="yp-entry-aside">
+				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
+				${sourceTag}
+			</div>
 		`;
 		article.addEventListener('click', () => openDetail(raw));
 		article.addEventListener('keydown', (e) => {
@@ -179,7 +183,7 @@
 		countEl.innerHTML = `<strong>${n}</strong> ${word}`;
 	}
 
-	async function openDetail(raw) {
+	function openDetail(raw) {
 		detailItemRaw = raw;
 		const item = loc(raw);
 		detailTitle.textContent = item.title;
@@ -187,47 +191,12 @@
 			? `<p class="detail-note"><a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(t('catalog.sourceLink'))}</a></p>`
 			: '';
 		const cat = categoryLabel(item);
-		
-		let farmerProfileHtml = '';
-		if (raw.isFirebase && raw.userId && window.fetchUserProfile) {
-			try {
-				const profile = await window.fetchUserProfile(raw.userId);
-				if (profile && profile.publicConsent) {
-					const certsHtml = (profile.certs || []).map(c => `<span class="badge" style="background: var(--neutral-100); color: var(--neutral-700); font-size: 0.75rem;">${escapeHtml(c.toUpperCase())}</span>`).join(' ');
-					
-					farmerProfileHtml = `
-						<div style="margin-top: 1.5rem; padding: 1.5rem; border-radius: var(--radius-lg); background: var(--primary-soft); border: 1px solid var(--primary-dark);">
-							<h4 style="margin: 0 0 1rem; color: var(--primary-dark); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-								Профил на фермер с доверие
-							</h4>
-							<div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-								${profile.profileImageUrl ? `<img src="${escapeHtml(profile.profileImageUrl)}" alt="Лого" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-sm);" />` : ''}
-								<div style="flex: 1; min-width: 200px;">
-									<h5 style="margin: 0 0 0.25rem; font-size: 1.2rem; color: var(--text-main);">${escapeHtml(profile.companyName || 'Стопанство')}</h5>
-									<p style="margin: 0 0 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
-										${profile.profileType ? `<strong>${escapeHtml(profile.profileType)}</strong>` : ''}
-									</p>
-									${profile.profileDesc ? `<p style="margin: 0 0 0.5rem; color: var(--neutral-800); font-size: 0.9rem;">${escapeHtml(profile.profileDesc)}</p>` : ''}
-									${certsHtml ? `<div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 0.5rem;">${certsHtml}</div>` : ''}
-									${profile.profileVideo ? `<a href="${escapeHtml(profile.profileVideo)}" target="_blank" rel="noopener" style="color: #d32f2f; font-weight: 600; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 4px;">▶ Видео презентация</a>` : ''}
-								</div>
-							</div>
-						</div>
-					`;
-				}
-			} catch (e) {
-				console.error('Failed to load farmer profile', e);
-			}
-		}
-
 		detailBody.innerHTML = `
 			<div class="detail-highlight yp-detail-lead">
 				${cat ? `<p class="yp-detail-cat">${escapeHtml(cat)}</p>` : ''}
 				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
 				<p class="meta">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
 			</div>
-			${farmerProfileHtml}
 			<dl class="detail-dl">
 				<div><dt>${escapeHtml(t('catalog.loc'))}</dt><dd>${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)}</dd></div>
 				<div><dt>${escapeHtml(t('catalog.qty'))}</dt><dd>${escapeHtml(item.qty)}</dd></div>

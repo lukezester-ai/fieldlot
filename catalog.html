@@ -57,7 +57,6 @@
 			<div class="nav-links">
 				<a href="/" data-i18n="nav.home">Начало</a>
 				<a href="/catalog.html" aria-current="page" data-i18n="nav.catalog">Каталог</a>
-				<a href="/logistics.html" data-i18n="nav.logistics">Логистика</a>
 				<a href="/#cta" data-i18n="nav.earlyAccess">Ранен достъп</a>
 			</div>
 			<a class="nav-cta" href="/#cta" data-i18n="nav.join">Включи се</a>
@@ -65,38 +64,42 @@
 	</header>
 
 	<main class="container">
-		<section class="catalog-hero" style="padding: 4rem 0 3rem; text-align: center; background: linear-gradient(135deg, #f9fef9 0%, #ffffff 100%); margin-bottom: -2rem;">
+		<section class="catalog-hero">
+			<div class="catalog-hero-bg" aria-hidden="true"></div>
 			<div class="catalog-hero-panel">
-				<h1 data-i18n="catalog.title" style="margin-bottom: 1rem; font-size: 2.8rem; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">Каталог на оферти</h1>
-				<p data-i18n="catalog.lead" style="max-width: 600px; margin: 0 auto 2rem; color: var(--neutral-600);">
+				<div class="demo-banner" role="status">
+					<span data-i18n="catalog.banner"><strong>Жив каталог</strong> — обяви от borsaagro.com, сортирани по дата. Снимките са по култура; оригиналът е на източника.</span>
+					<a class="btn btn-secondary" href="/#cta" data-i18n="catalog.access">Искам достъп</a>
+				</div>
+				<h1 data-i18n="catalog.title">Каталог на оферти</h1>
+				<p data-i18n="catalog.lead">
 					Прегледай реални обяви по култура, регион и тип (продажба или търсене). Филтрирай, отвори детайли и виж линк към оригинала.
 				</p>
-
 			</div>
 		</section>
 
-		<form class="toolbar" id="filters" role="search" data-i18n-aria="catalog.filterSearch" aria-label="Филтри на каталога" style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; position: relative; z-index: 10; margin-bottom: 2rem;">
-			<label style="flex: 1; min-width: 200px;">
-				<span data-i18n="catalog.filterSearch" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Търсене</span>
-				<input type="search" id="q" data-i18n-placeholder="catalog.searchPh" placeholder="пшеница, Добруджа…" autocomplete="off" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);" />
+		<form class="toolbar" id="filters" role="search" data-i18n-aria="catalog.filterSearch" aria-label="Филтри на каталога">
+			<label>
+				<span data-i18n="catalog.filterSearch">Търсене</span>
+				<input type="search" id="q" data-i18n-placeholder="catalog.searchPh" placeholder="пшеница, Добруджа, слънчоглед…" autocomplete="off" />
 			</label>
-			<label style="flex: 1; min-width: 150px;">
-				<span data-i18n="catalog.filterCat" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Категория</span>
-				<select id="category" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
+			<label>
+				<span data-i18n="catalog.filterCat">Категория</span>
+				<select id="category">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="veg" data-i18n="catalog.cat.veg">Зеленчуци</option>
 					<option value="fruit" data-i18n="catalog.cat.fruit">Плодове</option>
 					<option value="grain" data-i18n="catalog.cat.grain">Зърно</option>
-					<option value="oil" data-i18n="catalog.cat.oil">Маслодайни</option>
+					<option value="oil" data-i18n="catalog.cat.oil">Олио / маслодайни</option>
 					<option value="canned" data-i18n="catalog.cat.canned">Консерви</option>
 					<option value="fertilizer" data-i18n="catalog.cat.fertilizer">Торове</option>
 					<option value="machines" data-i18n="catalog.cat.machines">Машини</option>
 					<option value="feed" data-i18n="catalog.cat.feed">Фураж</option>
 				</select>
 			</label>
-			<label style="flex: 1; min-width: 150px;">
-				<span data-i18n="catalog.filterCrop" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Култура</span>
-				<select id="crop" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
+			<label>
+				<span data-i18n="catalog.filterCrop">Култура</span>
+				<select id="crop">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="wheat" data-i18n="catalog.crop.wheat">Пшеница</option>
 					<option value="barley" data-i18n="catalog.crop.barley">Ечемик</option>
@@ -105,11 +108,14 @@
 					<option value="rapeseed" data-i18n="catalog.crop.rapeseed">Рапица</option>
 					<option value="tomato" data-i18n="catalog.crop.tomato">Домати</option>
 					<option value="pepper" data-i18n="catalog.crop.pepper">Чушки</option>
+					<option value="preserves" data-i18n="catalog.crop.preserves">Консерви</option>
+					<option value="herbs" data-i18n="catalog.crop.herbs">Билки</option>
+					<option value="tractor" data-i18n="catalog.crop.tractor">Техника</option>
 				</select>
 			</label>
-			<label style="flex: 1; min-width: 150px;">
-				<span data-i18n="catalog.filterRegion" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Регион</span>
-				<select id="region" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
+			<label>
+				<span data-i18n="catalog.filterRegion">Регион</span>
+				<select id="region">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="national" data-i18n="catalog.region.national">Цяла България</option>
 					<option value="dobrudzha" data-i18n="catalog.region.dobrudzha">Добруджа</option>
@@ -118,23 +124,23 @@
 					<option value="west" data-i18n="catalog.region.west">Запад</option>
 				</select>
 			</label>
-			<label style="flex: 1; min-width: 150px;">
-				<span data-i18n="catalog.filterRole" style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-600); margin-bottom: 4px; display: block;">Тип</span>
-				<select id="role" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); padding: 0.6rem 1rem; background: var(--bg-body); color: var(--text-main);">
+			<label>
+				<span data-i18n="catalog.filterRole">Тип</span>
+				<select id="role">
 					<option value="" data-i18n="catalog.all">Всички</option>
 					<option value="sell" data-i18n="catalog.role.sell">Продажба</option>
 					<option value="buy" data-i18n="catalog.role.buy">Търсене</option>
 				</select>
 			</label>
-			<button type="button" class="btn btn-outline" id="reset-filters" data-i18n="catalog.reset" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main);">Изчисти</button>
+			<button type="button" class="btn btn-secondary" id="reset-filters" data-i18n="catalog.reset">Изчисти</button>
 		</form>
 
-		<div class="results-meta" style="margin-bottom: 1rem; color: var(--neutral-600);">
+		<div class="results-meta">
 			<span id="results-count"><strong>0</strong> <span data-i18n="catalog.offers">оферти</span></span>
-			<span data-i18n="catalog.sort" style="float: right;">Сортиране: най-нови</span>
+			<span data-i18n="catalog.sort">Сортиране: най-нови</span>
 		</div>
 
-		<div class="listings-grid" id="catalog-grid" aria-live="polite"></div>
+		<div class="catalog-grid yp-board" id="catalog-grid" aria-live="polite"></div>
 	</main>
 
 	<div class="detail-backdrop" id="detail-backdrop" hidden></div>
@@ -161,27 +167,6 @@
 		</div>
 	</footer>
 
-	<button type="button" class="llm-launch" id="llm-fab" aria-expanded="false" aria-controls="llm-panel">AI Guide</button>
-	<div class="llm-panel" id="llm-panel" role="dialog" aria-label="Fieldlot Guide" aria-modal="false">
-		<div class="llm-head">
-			<div><strong>Fieldlot Guide</strong><span class="llm-status" id="llm-status">…</span></div>
-			<button type="button" class="llm-close" id="llm-close" data-i18n-aria="nav.close" aria-label="Затвори">×</button>
-		</div>
-		<div class="llm-msgs" id="llm-msgs" aria-live="polite"></div>
-		<p class="llm-hint" data-i18n="chat.hint">RAG · категории, култури · качи снимка</p>
-		<div class="llm-quick" id="llm-quick" role="group" aria-label="Бързи въпроси">
-			<button type="button" class="llm-quick-btn" data-prompt="Напиши обява за продажба на пшеница: 80 т, Добруджа, FCA, хлебен индекс ~58" data-i18n="chat.quickDraft">Нова обява</button>
-			<button type="button" class="llm-quick-btn" data-prompt="Редактирай последната обява — направи текста по-кратък и по-професионален" data-i18n="chat.quickEdit">Редакция</button>
-			<button type="button" class="llm-quick-btn" data-prompt="Покажи обяви за ечемик в каталога" data-i18n="chat.quickBarley">Ечемик</button>
-		</div>
-		<div class="llm-foot">
-			<input type="file" id="llm-photo" accept="image/jpeg,image/png,image/webp" hidden />
-			<button type="button" class="llm-photo" id="llm-photo-btn" title="Качи снимка" aria-label="Снимка" data-i18n-aria="chat.photoBtn">+</button>
-			<textarea id="llm-input" rows="2" maxlength="2000" data-i18n-placeholder="chat.placeholder" placeholder="Напр. Каква е цената на пшеницата?"></textarea>
-			<button type="button" class="llm-send" id="llm-send" data-i18n-aria="chat.send" aria-label="Изпрати">→</button>
-		</div>
-	</div>
-
 	<script src="/scripts/fieldlot-i18n-messages.js"></script>
 	<script src="/scripts/fieldlot-i18n.js"></script>
 	<script src="/scripts/fieldlot-api-status.js"></script>
@@ -189,17 +174,7 @@
 	<script src="/scripts/fieldlot-pdf.js" type="module"></script>
 	<script src="/scripts/fieldlot-categories.js"></script>
 	<script type="module" src="/scripts/catalog-page.js"></script>
-	<script src="/scripts/fieldlot-chat.js"></script>
 	<script type="module" src="/firebase-init.js"></script>
-	<script>
-		FieldlotChat.mount({
-			page: 'catalog',
-			openTriggers: ['llm-fab'],
-			getContext: () => ({
-				filters: window.FieldlotCatalog?.getFilters?.() || {},
-			})
-		});
-	</script>
-	<script src="/scripts/fieldlot-mobile.js"></script>
+		<script src="/scripts/fieldlot-mobile.js"></script>
 </body>
 </html>
