@@ -35,7 +35,7 @@ window.fetchFirebaseListings = async function(limitCount = 20) {
         priceUnit: "лв",
         qty: d.qty ? String(d.qty) : "",
         role: "sell",
-        publishedAt: d.createdAt ? new Date(d.createdAt).toISOString() : new Date().toISOString(),
+        publishedAt: d.createdAt && typeof d.createdAt.toDate === 'function' ? d.createdAt.toDate().toISOString() : (d.createdAt ? new Date(d.createdAt).toISOString() : new Date().toISOString()),
         contact: d.userEmail || "Фермер",
         tags: d.category ? [d.category] : [],
         isFirebase: true,
