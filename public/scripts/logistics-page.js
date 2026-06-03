@@ -1,61 +1,18 @@
 // logistics-page.js
 const DUMMY_LOGISTICS = [
-	{
-		id: 'log-1',
-		title: 'Транспорт със зърновоз (Гондола 24т)',
-		category: 'transport',
-		qty: '24',
-		unit: 'тона',
-		price: 'По договаряне',
-		region: 'Варна',
-		role: 'sell',
-		sourceName: 'Fieldlot Logistics',
-		publishedAt: new Date().toISOString(),
-		img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=400&q=80',
-		desc: 'Свободен зърновоз за курсове от Добруджа към Пристанище Варна. Възможност за дългосрочен договор.'
-	},
-	{
-		id: 'log-2',
-		title: 'Хладилен транспорт до Европа',
-		category: 'transport',
-		qty: '20',
-		unit: 'палета',
-		price: 'По договаряне',
-		region: 'Пловдив',
-		role: 'sell',
-		sourceName: 'Fieldlot Logistics',
-		publishedAt: new Date(Date.now() - 86400000).toISOString(),
-		img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=400&q=80',
-		desc: 'Транспорт на пресни плодове и зеленчуци (режим) за Германия, Австрия и Румъния.'
-	},
-	{
-		id: 'log-3',
-		title: 'Складова база - Силози',
-		category: 'warehouse',
-		qty: '5000',
-		unit: 'тона',
-		price: '6 лв/тон на месец',
-		region: 'Плевен',
-		role: 'sell',
-		sourceName: 'Fieldlot Logistics',
-		publishedAt: new Date(Date.now() - 172800000).toISOString(),
-		img: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=400&q=80',
-		desc: 'Свободен капацитет в стоманобетонни силози за съхранение на пшеница или царевица. Активна вентилация.'
-	},
-	{
-		id: 'log-4',
-		title: 'Търся зърновоз за Слънчоглед',
-		category: 'transport',
-		qty: '120',
-		unit: 'тона',
-		price: 'По договаряне',
-		region: 'Ямбол',
-		role: 'buy',
-		sourceName: 'Fieldlot Logistics',
-		publishedAt: new Date(Date.now() - 3600000).toISOString(),
-		img: null,
-		desc: 'Нужни са 5 камиона за извозване на слънчоглед от база в Ямбол до фабрика в Бургас.'
-	}
+	{ id: 'log-1', title: 'Транспорт със зърновоз (Гондола 24т)', category: 'transport', qty: '24', unit: 'тона', price: 'По договаряне', region: 'Варна', role: 'sell', sourceName: 'AgroTrans BG', publishedAt: new Date().toISOString(), img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=400&q=80', desc: 'Свободен зърновоз за курсове от Добруджа към Пристанище Варна. Възможност за дългосрочен договор.' },
+	{ id: 'log-2', title: 'Хладилен транспорт до Европа', category: 'transport', qty: '20', unit: 'палета', price: 'По договаряне', region: 'Пловдив', role: 'sell', sourceName: 'CoolLogistics', publishedAt: new Date(Date.now() - 86400000).toISOString(), img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=400&q=80', desc: 'Транспорт на пресни плодове и зеленчуци (режим) за Германия, Австрия и Румъния.' },
+	{ id: 'log-3', title: 'Складова база - Силози', category: 'warehouse', qty: '5000', unit: 'тона', price: '6 лв/тон на месец', region: 'Плевен', role: 'sell', sourceName: 'Pleven Agro', publishedAt: new Date(Date.now() - 172800000).toISOString(), img: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=400&q=80', desc: 'Свободен капацитет в стоманобетонни силози за съхранение на пшеница или царевица. Активна вентилация.' },
+	{ id: 'log-4', title: 'Търся зърновоз за Слънчоглед', category: 'transport', qty: '120', unit: 'тона', price: 'По договаряне', region: 'Ямбол', role: 'buy', sourceName: 'FarmTrade Ltd.', publishedAt: new Date(Date.now() - 3600000).toISOString(), img: null, desc: 'Нужни са 5 камиона за извозване на слънчоглед от база в Ямбол до фабрика в Бургас.' },
+	{ id: 'log-5', title: 'Бордово ремарке 13.6м (Ченгели)', category: 'transport', qty: '22', unit: 'тона', price: '1.80 лв/км', region: 'Русе', role: 'sell', sourceName: 'TransExpress', publishedAt: new Date(Date.now() - 4200000).toISOString(), img: 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=400&q=80', desc: 'Свободен камион за транспорт на палетизирани торове или семена от Русе до вътрешността на страната.' },
+	{ id: 'log-6', title: 'Търся плосък склад под наем', category: 'warehouse', qty: '2000', unit: 'кв.м', price: 'По договаряне', region: 'Силистра', role: 'buy', sourceName: 'AgroSilistra', publishedAt: new Date(Date.now() - 7200000).toISOString(), img: null, desc: 'Търсим плосък склад за временно съхранение на рапица по време на жътвената кампания. Задължително асфалтиран.' },
+	{ id: 'log-7', title: 'Хладилна база / Камера за плодове', category: 'warehouse', qty: '300', unit: 'палета', price: 'От 2 лв/палет на ден', region: 'Сливен', role: 'sell', sourceName: 'Sliven ColdStore', publishedAt: new Date(Date.now() - 86400000 * 2).toISOString(), img: 'https://images.unsplash.com/photo-1555529902-5261145633bf?auto=format&fit=crop&w=400&q=80', desc: 'Модерна хладилна камера поддържаща до 2 градуса. Идеална за съхранение на праскови и череши.' },
+	{ id: 'log-8', title: 'Пристанищна логистика (Спедиция)', category: 'tracking', qty: '1', unit: 'услуга', price: 'Оферта при запитване', region: 'Бургас', role: 'sell', sourceName: 'Port Forwarding', publishedAt: new Date(Date.now() - 86400000 * 3).toISOString(), img: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=400&q=80', desc: 'Пълно логистично обслужване на Пристанище Бургас - митническо оформяне, сюрвей, товаро-разтоварни операции.' },
+	{ id: 'log-9', title: 'Търся транспорт на животни (Прасета)', category: 'transport', qty: '100', unit: 'глави', price: 'Спешно', region: 'Стара Загора', role: 'buy', sourceName: 'Svinekompleks BG', publishedAt: new Date(Date.now() - 1000000).toISOString(), img: null, desc: 'Нужда от специализиран транспорт за живи животни от Стара Загора до кланица в Пловдив.' },
+	{ id: 'log-10', title: 'Самодъмпер / Зърновоз 26т', category: 'transport', qty: '26', unit: 'тона', price: '2.50 лв/км', region: 'Монтана', role: 'sell', sourceName: 'Монтана Агро', publishedAt: new Date(Date.now() - 2500000).toISOString(), img: 'https://images.unsplash.com/photo-1519003300449-424ad0405076?auto=format&fit=crop&w=400&q=80', desc: 'Нов зърновоз с алуминиево корито. Наличен за курсове в Северозападна България и Румъния.' },
+	{ id: 'log-11', title: 'Склад наземен тип', category: 'warehouse', qty: '1500', unit: 'тона', price: 'По договаряне', region: 'Добрич', role: 'sell', sourceName: 'Dobrich Invest', publishedAt: new Date(Date.now() - 86400000 * 5).toISOString(), img: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=400&q=80', desc: 'Давам под наем плосък склад с автокантар и охрана.' },
+	{ id: 'log-12', title: 'Експортна логистика (Tracking & Survey)', category: 'tracking', qty: '1', unit: 'проект', price: 'Според обема', region: 'Варна', role: 'sell', sourceName: 'SGS Bulgaria', publishedAt: new Date(Date.now() - 86400000 * 7).toISOString(), img: null, desc: 'Контрол на качеството, проследяване на партиди и издаване на сертификати за износ.' },
+	{ id: 'log-13', title: 'Търся хладилни бусове за Малини', category: 'transport', qty: '3', unit: 'тона', price: 'По договаряне', region: 'Ловеч', role: 'buy', sourceName: 'Berry Farm', publishedAt: new Date(Date.now() - 1800000).toISOString(), img: null, desc: 'Регулярен курс: всяка сряда от Ловеч до София (борса Слатина). Търсим надежден превозвач.' }
 ];
 
 const ADS = [

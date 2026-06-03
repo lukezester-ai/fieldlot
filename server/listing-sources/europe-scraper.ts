@@ -6,6 +6,9 @@ const EU_COUNTRIES = [
 	{ code: 'FR', region: 'Франция', flag: '🇫🇷', cities: ['Париж', 'Лион', 'Марсилия', 'Тулуза'] },
 	{ code: 'PL', region: 'Полша', flag: '🇵🇱', cities: ['Варшава', 'Краков', 'Гданск', 'Вроцлав'] },
 	{ code: 'IT', region: 'Италия', flag: '🇮🇹', cities: ['Милано', 'Рим', 'Неапол', 'Торино'] },
+	{ code: 'RO', region: 'Румъния', flag: '🇷🇴', cities: ['Констанца', 'Букурещ', 'Крайова', 'Тимишоара'] },
+	{ code: 'GR', region: 'Гърция', flag: '🇬🇷', cities: ['Солун', 'Атина', 'Лариса', 'Кавала'] },
+	{ code: 'ES', region: 'Испания', flag: '🇪🇸', cities: ['Барселона', 'Валенсия', 'Мадрид', 'Севиля'] },
 ];
 
 const EU_TEMPLATES = [
@@ -68,7 +71,7 @@ function generateId(): string {
  * За целите на демонстрацията генерираме висококачествени обяви за 
  * избраните пазари: Германия, Франция, Полша, Италия.
  */
-export async function fetchEuropeListings(count = 30): Promise<FieldlotListing[]> {
+export async function fetchEuropeListings(count = 150): Promise<FieldlotListing[]> {
 	const listings: FieldlotListing[] = [];
 	const now = new Date();
 
