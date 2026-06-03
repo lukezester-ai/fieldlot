@@ -9,21 +9,21 @@
     {
       "id": "agro-bg",
       "type": "agro-obyavi",
-      "enabled": false,
-      "name": "agro.bg — обяви (изключено — включи в Admin при нужда)",
+      "enabled": true,
+      "name": "agro.bg — обяви",
       "maxLinks": 25
     },
     {
       "id": "agri-bg",
       "type": "agri-borsa",
-      "enabled": false,
-      "name": "agri.bg — Агроборса (изключено — включи в Admin при нужда)",
+      "enabled": true,
+      "name": "agri.bg — Агроборса",
       "maxLinks": 30
     },
     {
       "id": "global-feed",
       "type": "global-feed",
-      "enabled": false,
+      "enabled": true,
       "name": "Global Feed Exchange — Международни обяви",
       "maxLinks": 30
     },

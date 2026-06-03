@@ -1,6 +1,11 @@
 import {
 	executeAgentTool,
 	FIELDLOT_AGENT_TOOLS,
+	MARKET_TOOLS,
+	VISION_TOOLS,
+	COPYWRITER_TOOLS,
+	ADMIN_TOOLS,
+	GENERAL_TOOLS,
 	type AgentActionRecord,
 } from './fieldlot-agent-tools.js';
 import {
@@ -136,7 +141,7 @@ function isTurn(v: unknown): v is FieldlotChatTurn {
 async function callChatCompletions(
 	upstream: TextChatUpstream,
 	messages: ChatCompletionMessage[],
-	opts: { tools?: boolean; maxTokens?: number },
+	opts: { tools?: boolean; maxTokens?: number; activeTools?: any[] },
 ): Promise<{ message: ChatCompletionMessage; raw: unknown }> {
 	const temperature = Number(process.env.OPENAI_TEMPERATURE ?? 0.45);
 	const safeTemp = Number.isFinite(temperature) ? Math.min(1.1, Math.max(0, temperature)) : 0.45;
@@ -149,7 +154,7 @@ async function callChatCompletions(
 	};
 
 	if (opts.tools && upstream.supportsTools) {
-		payload.tools = FIELDLOT_AGENT_TOOLS;
+		payload.tools = opts.activeTools || FIELDLOT_AGENT_TOOLS;
 		payload.tool_choice = 'auto';
 	}
 
@@ -291,8 +296,60 @@ export async function handleFieldlotChatPost(
 	}
 
 	const systemPromptBase = getDynamicSystemPrompt(sessionContext?.filters?.category, lang);
-	const systemContent = `${systemPromptBase}\n\n${formatCategoriesForRag(lang)}\n\n${rag.systemContext}${semanticBlock ? `\n\n${semanticBlock}` : ''}${visionBlock}${exchangeBlock}`;
 	const agentEnabled = upstream.supportsTools && process.env.FIELDLOT_AGENT_DISABLED !== '1';
+
+	let route = 'general';
+	if (agentEnabled && last.content) {
+		if (imageClassification && !last.content.includes('/admin')) {
+			route = 'vision';
+		} else if (last.content.trim().startsWith('/admin')) {
+			route = 'admin';
+		} else {
+			const routerMessages: ChatCompletionMessage[] = [
+				{ role: 'system', content: `You are the Fieldlot Master Coordinator (Router). Based on the user's latest request, choose the best expert to handle it. Reply strictly with JSON: {"routeTo": "market" | "vision" | "copywriter" | "admin" | "general"}.
+- market: the user wants to search listings, check exchange prices, or calculate transport.
+- vision: the user provided a photo or asks about crop diseases/quality.
+- copywriter: the user wants to draft, write, edit, or negotiate an ad/listing.
+- admin: the user wants to clear stale listings or manage platform knowledge.
+- general: general questions, or if unsure.` },
+				{ role: 'user', content: last.content }
+			];
+			try {
+				const { message } = await callChatCompletions(upstream, routerMessages, { tools: false, maxTokens: 40 });
+				const content = message.content || '';
+				const match = content.match(/{[^}]+}/);
+				if (match) {
+					const parsed = JSON.parse(match[0]);
+					if (['market', 'vision', 'copywriter', 'admin', 'general'].includes(parsed.routeTo)) {
+						route = parsed.routeTo;
+					}
+				}
+			} catch {
+				// ignore
+			}
+		}
+	}
+
+	let activeTools = FIELDLOT_AGENT_TOOLS;
+	let specialistPrompt = '';
+	if (route === 'market') {
+		activeTools = MARKET_TOOLS;
+		specialistPrompt = lang === 'en' ? '[ROLE: MARKET AGENT] You are the Market Analyzer. Use search_listings, get_exchange_prices, etc.' : '[ROLE: MARKET AGENT] Ти си Пазарен Анализатор. Намираш обяви и борсови цени.';
+	} else if (route === 'vision') {
+		activeTools = VISION_TOOLS;
+		specialistPrompt = lang === 'en' ? '[ROLE: VISION AGENT] You are the Vision Agent. Analyze user images.' : '[ROLE: VISION AGENT] Ти си Агро Вижън агент. Анализираш снимки на култури.';
+	} else if (route === 'copywriter') {
+		activeTools = COPYWRITER_TOOLS;
+		specialistPrompt = lang === 'en' ? '[ROLE: COPYWRITER AGENT] You are the Copywriter Agent. You create and edit listing drafts.' : '[ROLE: COPYWRITER AGENT] Ти си Копирайтър. Пишеш и редактираш чернови за обяви.';
+	} else if (route === 'admin') {
+		activeTools = ADMIN_TOOLS;
+		specialistPrompt = lang === 'en' ? '[ROLE: ADMIN] You are the Admin Agent.' : '[ROLE: ADMIN] Ти си Админ. Изчистваш обяви и управляваш знанията.';
+	} else {
+		activeTools = GENERAL_TOOLS;
+		specialistPrompt = lang === 'en' ? '[ROLE: GENERAL] You are the General Agent. Route users or answer general questions.' : '[ROLE: GENERAL] Ти си Главен Координатор. Отговаряш общо.';
+	}
+
+	const systemContent = `${specialistPrompt}\n\n${systemPromptBase}\n\n${formatCategoriesForRag(lang)}\n\n${rag.systemContext}${semanticBlock ? `\n\n${semanticBlock}` : ''}${visionBlock}${exchangeBlock}`;
 
 	const chatMessages: ChatCompletionMessage[] = [
 		{ role: 'system', content: systemContent },
@@ -336,6 +393,7 @@ export async function handleFieldlotChatPost(
 			const { message } = await callChatCompletions(upstream, chatMessages, {
 				tools: true,
 				maxTokens: 1100,
+				activeTools
 			});
 
 			const toolCalls = message.tool_calls?.filter(

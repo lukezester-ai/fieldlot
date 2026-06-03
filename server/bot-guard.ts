@@ -26,6 +26,16 @@ export function assertLeadFormAntiBot(
 ): { ok: false; status: number; error: string; hint?: string } | { ok: true } {
 	const ip = (opts.clientIp && opts.clientIp.trim()) || 'unknown';
 	const now = Date.now();
+
+	// Вероятностно почистване (5% шанс при всяка заявка) на стари IP записи (memory leak protection)
+	if (Math.random() < 0.05) {
+		for (const [key, hits] of hitBuckets.entries()) {
+			if (!hits.some((t) => now - t < RATE_WINDOW_MS)) {
+				hitBuckets.delete(key);
+			}
+		}
+	}
+
 	const bucket = pruneHits(ip, now);
 	if (bucket.length >= RATE_MAX_PER_WINDOW) {
 		return {

@@ -156,7 +156,13 @@ const server = http.createServer(async (req, res) => {
 
 		const adminMatch = path.match(/^\/api\/admin\/([^/]+)$/);
 		if (adminMatch) {
-			const action = decodeURIComponent(adminMatch[1]);
+			let action: string;
+			try {
+				action = decodeURIComponent(adminMatch[1]);
+			} catch {
+				send(res, 400, { error: 'Invalid URI component' });
+				return;
+			}
 			const authH =
 				typeof req.headers.authorization === 'string' ? req.headers.authorization : undefined;
 			if (req.method === 'GET' && action === 'knowledge') {

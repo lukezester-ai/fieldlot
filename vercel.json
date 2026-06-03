@@ -19,7 +19,7 @@
 		},
 		{
 			"path": "/api/cron/sync-listings",
-			"schedule": "30 6 * * *"
+			"schedule": "0 */4 * * *"
 		}
 	]
 }

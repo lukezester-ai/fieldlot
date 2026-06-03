@@ -163,12 +163,12 @@ function injectPublishModal() {
 				title,
 				category,
 				price,
-				quantity,
+				qty: quantity,
 				location,
 				desc,
 				imageUrl,
-				sellerId: auth.currentUser.uid,
-				sellerEmail: auth.currentUser.email,
+				userId: auth.currentUser.uid,
+				userEmail: auth.currentUser.email,
 				createdAt: serverTimestamp(),
 				status: "active"
 			});

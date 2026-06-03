@@ -1,0 +1,75 @@
+/**
+ * Fieldlot — типография
+ * Body: Inter · Заглавия: Space Grotesk
+ */
+
+body {
+	font-family: var(--fl-font);
+	font-feature-settings: "kern" 1, "liga" 1;
+}
+
+h1,
+h2,
+h3,
+h4,
+.hero-title,
+.eco-section-head h2,
+.early-access-title,
+.active-listings .eco-section-head h2,
+.categories .eco-section-head h2,
+#exchange .eco-section-head h2,
+.brand-title,
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-contact,
+.header-nav a,
+.nav-links a,
+.llm-head strong,
+.cat-card strong,
+.listing-title {
+	font-family: var(--fl-font-display);
+	letter-spacing: -0.02em;
+}
+
+h1,
+.hero-title,
+.hero-eco-content h1 {
+	font-size: clamp(2.2rem, 5vw, 3.5rem);
+	font-weight: 700;
+	line-height: 1.15;
+	letter-spacing: -0.03em;
+}
+
+h2,
+.eco-section-head h2 {
+	font-size: clamp(1.6rem, 3vw, 2rem);
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+h3,
+.ai-card h3,
+.log-card h3,
+.how-card h3 {
+	font-size: 1.25rem;
+	font-weight: 600;
+	line-height: 1.3;
+	letter-spacing: -0.015em;
+}
+
+.hero-lead,
+.eco-section-head p,
+.section-lead {
+	font-family: var(--fl-font);
+	font-weight: 400;
+	letter-spacing: 0;
+}
+
+.brand-sub,
+.eco-eyebrow,
+.demo-strip,
+.fine-print {
+	font-family: var(--fl-font);
+}

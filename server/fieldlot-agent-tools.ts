@@ -878,3 +878,10 @@ export async function executeAgentTool(
 		};
 	}
 }
+
+// Tool groupings for Multi-Agent Architecture
+export const MARKET_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['get_exchange_prices', 'search_listings', 'get_listing', 'calculate_transport_cost', 'fetch_fieldlot_api'].includes(t.function.name));
+export const COPYWRITER_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['draft_listing', 'edit_listing', 'draft_negotiation'].includes(t.function.name));
+export const VISION_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['classify_crop_image'].includes(t.function.name));
+export const ADMIN_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['clean_stale_listings', 'parse_pdf_document', 'update_platform_knowledge'].includes(t.function.name));
+export const GENERAL_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['submit_early_access', 'send_team_email'].includes(t.function.name));
