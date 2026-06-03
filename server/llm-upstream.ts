@@ -51,6 +51,15 @@ export function resolveTextChatUpstream(): TextChatUpstream | null {
 	const mistralKey = readMistralApiKey();
 	const ollamaBase = readOllamaBaseUrl();
 	const openaiKey = readOpenAiApiKey();
+	if (openaiKey) {
+		return {
+			provider: 'openai',
+			completionUrl: 'https://api.openai.com/v1/chat/completions',
+			bearer: openaiKey,
+			model: process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini',
+			supportsTools: true,
+		};
+	}
 	if (mistralKey) {
 		return {
 			provider: 'mistral',
@@ -67,15 +76,6 @@ export function resolveTextChatUpstream(): TextChatUpstream | null {
 			bearer: undefined,
 			model: process.env.OLLAMA_MODEL?.trim() || 'llama3.2',
 			supportsTools: false,
-		};
-	}
-	if (openaiKey) {
-		return {
-			provider: 'openai',
-			completionUrl: 'https://api.openai.com/v1/chat/completions',
-			bearer: openaiKey,
-			model: process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini',
-			supportsTools: true,
 		};
 	}
 	return null;
