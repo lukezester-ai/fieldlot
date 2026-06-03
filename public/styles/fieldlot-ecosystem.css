@@ -946,6 +946,72 @@ body {
 	color: var(--fl-brand);
 }
 
+/* —— Article series (home) —— */
+.article-series-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 18px;
+}
+
+.article-series-card {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+	padding: 20px 18px;
+	border-radius: var(--fl-radius);
+	border: 1px solid var(--fl-line);
+	background: var(--fl-surface);
+	box-shadow: 0 8px 28px -18px rgba(0, 0, 0, 0.12);
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.25s ease,
+		transform 0.25s ease;
+	text-decoration: none;
+	color: inherit;
+}
+
+.article-series-card:hover {
+	border-color: var(--fl-accent);
+	box-shadow: 0 12px 36px -16px rgba(26, 77, 58, 0.22);
+	transform: translateY(-3px);
+}
+
+.article-series-part {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--fl-accent);
+	margin-bottom: 8px;
+}
+
+.article-series-card h3 {
+	margin: 0 0 10px;
+	font-size: 1.1rem;
+	line-height: 1.25;
+	color: var(--fl-ink);
+}
+
+.article-series-card p {
+	margin: 0 0 14px;
+	flex: 1;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--fl-muted);
+}
+
+.article-series-meta {
+	font-size: 12px;
+	color: var(--fl-muted);
+	margin-top: auto;
+}
+
+.article-series-read {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--fl-brand);
+}
+
 .demo-strip {
 	margin-top: 48px;
 	padding: 14px 18px;
@@ -973,6 +1039,9 @@ body {
 	.ai-grid {
 		grid-template-columns: 1fr;
 	}
+	.article-series-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
 	.farmer-spotlight {
 		grid-template-columns: 1fr;
 		text-align: center;
@@ -985,6 +1054,9 @@ body {
 @media (max-width: 640px) {
 	.cat-grid {
 		grid-template-columns: 1fr 1fr;
+	}
+	.article-series-grid {
+		grid-template-columns: 1fr;
 	}
 	.hero-eco {
 		min-height: auto;

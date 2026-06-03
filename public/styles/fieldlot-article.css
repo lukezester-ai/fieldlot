@@ -1,0 +1,133 @@
+/* Long-form articles (Furrow / investigations) */
+.article-page {
+	min-height: 100vh;
+	background: var(--fl-bg, #f6f7f4);
+	color: var(--fl-ink, #14221a);
+}
+
+.dark .article-page {
+	background: var(--fl-bg, #0f1712);
+	color: var(--fl-ink, #e8f0eb);
+}
+
+.article-wrap {
+	width: min(720px, calc(100% - 32px));
+	margin: 0 auto;
+	padding: 28px 0 80px;
+}
+
+.article-back {
+	display: inline-block;
+	margin-bottom: 24px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--fl-accent, #1a4d3a);
+	text-decoration: none;
+}
+
+.article-back:hover {
+	text-decoration: underline;
+}
+
+.article-kicker {
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--fl-muted, #5c6b62);
+	margin: 0 0 12px;
+}
+
+.article-wrap h1 {
+	margin: 0 0 20px;
+	font-size: clamp(1.65rem, 4vw, 2.25rem);
+	line-height: 1.15;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+
+.article-deck {
+	margin: 0 0 32px;
+	font-size: 1.15rem;
+	line-height: 1.55;
+	color: var(--fl-muted, #4a5a52);
+}
+
+.article-prose {
+	font-size: 1.05rem;
+	line-height: 1.65;
+}
+
+.article-prose p {
+	margin: 0 0 1.1em;
+}
+
+.article-prose h2 {
+	margin: 2em 0 0.65em;
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: var(--fl-ink, #14221a);
+}
+
+.dark .article-prose h2 {
+	color: var(--fl-ink, #e8f0eb);
+}
+
+.article-prose blockquote {
+	margin: 1.25em 0;
+	padding: 14px 18px;
+	border-left: 4px solid var(--fl-accent, #1a4d3a);
+	background: var(--fl-surface, rgba(255, 255, 255, 0.65));
+	border-radius: 0 8px 8px 0;
+	font-style: italic;
+	color: var(--fl-muted, #3d4d44);
+}
+
+.dark .article-prose blockquote {
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.article-sources {
+	margin-top: 3rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--fl-line, rgba(0, 0, 0, 0.08));
+	font-size: 13px;
+	color: var(--fl-muted, #5c6b62);
+}
+
+.article-sources h3 {
+	margin: 0 0 10px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.article-sources ul {
+	margin: 0;
+	padding-left: 1.2em;
+}
+
+.article-note {
+	margin-top: 2rem;
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--fl-muted, #5c6b62);
+}
+
+.article-series-nav {
+	margin-top: 1.75rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid var(--fl-line, rgba(0, 0, 0, 0.08));
+	font-size: 15px;
+}
+
+.article-series-nav a {
+	font-weight: 600;
+	color: var(--fl-accent, #1a4d3a);
+	text-decoration: none;
+}
+
+.article-series-nav a:hover {
+	text-decoration: underline;
+}

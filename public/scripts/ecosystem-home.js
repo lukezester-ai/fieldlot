@@ -359,6 +359,53 @@
 		}
 	}
 
+	function safeArticleHref(h) {
+		const s = String(h || '').trim();
+		if (s.startsWith('/')) return s;
+		if (s.startsWith('#')) return s;
+		if (/^https?:\/\//i.test(s)) return s;
+		return '#article-series';
+	}
+
+	async function loadArticleSeries() {
+		const grid = document.getElementById('article-series-grid');
+		if (!grid) return;
+		const langRaw = window.FieldlotI18n?.getLang?.();
+		const lang = langRaw === 'en' ? 'en' : langRaw === 'de' ? 'de' : 'bg';
+		const partLabel = t('series.partLabel', 'Част');
+		const readLabel = t('series.read', 'Чети');
+		function pick(obj) {
+			if (obj == null) return '';
+			if (typeof obj === 'string') return obj;
+			return obj[lang] || obj.bg || obj.en || obj.de || '';
+		}
+		try {
+			const res = await fetch('/data/article-series.json', { cache: 'no-store' });
+			if (!res.ok) {
+				grid.innerHTML = '';
+				return;
+			}
+			const data = await res.json();
+			const items = Array.isArray(data.items) ? data.items.slice(0, 4) : [];
+			if (!items.length) {
+				grid.innerHTML = '';
+				return;
+			}
+			grid.innerHTML = items
+				.map((it) => {
+					const title = pick(it.title);
+					const excerpt = pick(it.excerpt);
+					const href = safeArticleHref(it.href);
+					const date = it.date ? escapeHtml(String(it.date)) : '';
+					const part = Number(it.part) || 0;
+					return `<a class="article-series-card" href="${href}"><span class="article-series-part">${escapeHtml(partLabel)} ${part}</span><h3>${escapeHtml(title)}</h3><p>${escapeHtml(excerpt)}</p><div class="article-series-meta">${date ? `<time datetime="${date}">${date}</time>` : ''}</div><span class="article-series-read">${escapeHtml(readLabel)} →</span></a>`;
+				})
+				.join('');
+		} catch {
+			grid.innerHTML = '';
+		}
+	}
+
 	function refreshDynamic() {
 		initHero();
 		initCategoryIcons();
@@ -367,6 +414,7 @@
 		loadHeaderTicker();
 		loadExchange();
 		loadListings();
+		loadArticleSeries();
 	}
 
 	initCategoryIcons();
@@ -377,6 +425,7 @@
 	loadHeaderTicker();
 	loadExchange();
 	loadListings();
+	loadArticleSeries();
 	setInterval(loadExchange, 24 * 60 * 60 * 1000);
 
 	document.addEventListener('fieldlot-lang-change', refreshDynamic);
