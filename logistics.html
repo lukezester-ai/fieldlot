@@ -74,7 +74,49 @@
 		</section>
 
 		<div class="logistics-main-content">
-			<form class="toolbar" id="filters" role="search">
+			
+			<!-- Calculator & Docs Row -->
+			<div class="logistics-tools-row">
+				<!-- Branded Calculator -->
+				<div class="logistics-calculator ad-sponsored" id="sponsored-calc">
+					<div class="calc-sponsor-badge">Спонсорирано от: <strong id="calc-sponsor-name">Speedy Freight Ltd.</strong></div>
+					<h3>Калкулатор за транспорт</h3>
+					<p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Ориентировъчна цена за превоз</p>
+					<div class="calc-form">
+						<label>Разстояние (км)<input type="number" id="calc-km" placeholder="напр. 150" min="1"></label>
+						<label>Товар (тонове)<input type="number" id="calc-tons" placeholder="напр. 24" min="1"></label>
+						<button type="button" class="btn btn-primary" id="calc-btn" style="align-self: flex-end;">Изчисли</button>
+					</div>
+					<div id="calc-result" class="calc-result hidden">
+						<span>Очаквана цена:</span>
+						<strong id="calc-price-value">0 лв.</strong>
+					</div>
+				</div>
+
+				<!-- Documents Center -->
+				<div class="logistics-docs">
+					<h3>Митници и Договори</h3>
+					<p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Типови бланки за изтегляне:</p>
+					<ul class="docs-list">
+						<li><a href="#" class="doc-link" onclick="alert('Демо: Сваляне на договор')"><span class="doc-icon">📄</span> Типов договор за превоз (DOCX)</a></li>
+						<li><a href="#" class="doc-link" onclick="alert('Демо: Сваляне на ЧМР')"><span class="doc-icon">📑</span> ЧМР / CMR бланка (PDF)</a></li>
+						<li><a href="#" class="doc-link" onclick="alert('Демо: Сваляне на декларация')"><span class="doc-icon">📋</span> Митническа декларация (PDF)</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- Big Horizontal Banner -->
+			<div class="logistics-horizontal-banner">
+				<a href="#" id="main-banner-link">
+					<span class="banner-badge">Реклама</span>
+					<div class="banner-content" id="main-banner-bg">
+						<h3 id="main-banner-title">Глобална спедиция и логистика</h3>
+						<p id="main-banner-desc">Цялостни решения за вашия агро бизнес.</p>
+					</div>
+				</a>
+			</div>
+
+			<form class="toolbar" id="filters" role="search" style="margin-top: 2rem;">
 				<label>
 					<span>Търсене</span>
 					<input type="search" id="q" placeholder="камион, хладилен, силоз..." autocomplete="off" />

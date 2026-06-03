@@ -153,4 +153,34 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.getElementById('service-type').value = '';
 		renderLogistics();
 	});
+
+	// Calculator Logic
+	const calcBtn = document.getElementById('calc-btn');
+	if (calcBtn) {
+		calcBtn.addEventListener('click', () => {
+			const kmInput = document.getElementById('calc-km');
+			const tonsInput = document.getElementById('calc-tons');
+			const resultBox = document.getElementById('calc-result');
+			const priceValue = document.getElementById('calc-price-value');
+
+			const km = parseFloat(kmInput.value) || 0;
+			const tons = parseFloat(tonsInput.value) || 0;
+
+			if (km <= 0 || tons <= 0) {
+				alert('Моля, въведете валидно разстояние и товар.');
+				return;
+			}
+
+			// Base formula: 2.50 BGN/km. Extra 0.50 BGN/km if tons > 20
+			let baseRate = 2.50;
+			if (tons > 20) {
+				baseRate += 0.50;
+			}
+			
+			const total = Math.round(km * baseRate);
+			
+			priceValue.textContent = `~${total} лв.`;
+			resultBox.classList.remove('hidden');
+		});
+	}
 });
