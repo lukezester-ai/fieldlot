@@ -19,9 +19,16 @@
 	<link rel="stylesheet" href="/styles/fieldlot-landing.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-auth.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-ticker.css" />
 	<meta name="theme-color" content="#1a4d3a" />
 </head>
 <body>
+	<div class="fieldlot-ticker" id="market-ticker" aria-hidden="true" style="display: none;">
+		<div class="ticker-inner">
+			<span class="ticker-label">МАРКЕТ ИНДЕКС (MATIF VS ЛОКАЛЕН)</span>
+			<div class="ticker-stream" id="ticker-stream"></div>
+		</div>
+	</div>
 	<header class="site-header site-header--market">
 		<div class="header-inner">
 			<div class="header-row">
@@ -350,6 +357,20 @@
 	<script type="module" src="/firebase-init.js"></script>
 	<script type="module" src="/auth-ui.js"></script>
 	<script type="module" src="/publish-ui.js"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+			const m = document.getElementById("header-menu-toggle");
+			const n = document.getElementById("site-header-nav");
+			if (m && n) {
+				m.addEventListener("click", () => {
+					const e = m.getAttribute("aria-expanded") === "true";
+					m.setAttribute("aria-expanded", String(!e));
+					n.hidden = e;
+				});
+			}
+		});
+	</script>
+	<script src="/scripts/market-basis.js" type="module"></script>
 	<script>
 		FieldlotChat.mount({
 			page: 'landing',

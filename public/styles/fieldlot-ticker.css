@@ -1,0 +1,163 @@
+/* Fieldlot Market Ticker */
+
+.fieldlot-ticker {
+	background: #111;
+	border-bottom: 1px solid #333;
+	color: #eee;
+	font-family: "IBM Plex Mono", "Courier New", monospace;
+	font-size: 0.75rem;
+	padding: 6px 0;
+	overflow: hidden;
+	position: relative;
+	z-index: 1000;
+}
+
+[data-theme="dark"] .fieldlot-ticker {
+	background: #000;
+	border-bottom: 1px solid #222;
+}
+
+.ticker-inner {
+	display: flex;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.ticker-label {
+	font-family: "DM Sans", sans-serif;
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: #888;
+	background: #111;
+	padding: 0 16px;
+	position: relative;
+	z-index: 2;
+}
+
+[data-theme="dark"] .ticker-label {
+	background: #000;
+}
+
+.ticker-stream {
+	display: flex;
+	gap: 40px;
+	flex: 1;
+	animation: ticker-scroll 40s linear infinite;
+}
+
+.ticker-stream:hover {
+	animation-play-state: paused;
+}
+
+.ticker-item {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 6px;
+}
+
+.ticker-symbol {
+	font-weight: 600;
+	color: #ccc;
+}
+
+.ticker-price {
+	font-weight: 700;
+}
+
+.ticker-price.up { color: #4ade80; }
+.ticker-price.down { color: #f87171; }
+.ticker-price.flat { color: #9ca3af; }
+
+.ticker-basis {
+	color: #888;
+	margin-left: 4px;
+}
+
+@keyframes ticker-scroll {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
+/* Terminal Mode for Catalog */
+.catalog-grid.terminal-mode {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.catalog-grid.terminal-mode .yp-entry {
+	display: grid;
+	grid-template-columns: 80px 1fr 120px 100px 100px 120px;
+	gap: 16px;
+	align-items: center;
+	padding: 8px 16px;
+	border: none;
+	border-bottom: 1px solid var(--border-color);
+	border-radius: 0;
+	background: transparent;
+	transition: background 0.15s;
+}
+
+.catalog-grid.terminal-mode .yp-entry:hover {
+	background: var(--bg-sub);
+}
+
+.catalog-grid.terminal-mode .yp-entry:last-child {
+	border-bottom: none;
+}
+
+.catalog-grid.terminal-mode .yp-entry-main {
+	display: contents;
+}
+
+.catalog-grid.terminal-mode .yp-entry-aside {
+	display: contents;
+}
+
+.catalog-grid.terminal-mode .yp-entry-head {
+	display: contents;
+}
+
+.catalog-grid.terminal-mode .yp-entry-title {
+	font-size: 0.9rem;
+	font-weight: 600;
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.catalog-grid.terminal-mode .yp-entry-line,
+.catalog-grid.terminal-mode .yp-entry-contact {
+	display: none; /* Hide prose */
+}
+
+.catalog-grid.terminal-mode .price {
+	font-size: 0.9rem;
+	margin: 0;
+	font-weight: 700;
+}
+
+.catalog-grid.terminal-mode .tag {
+	margin: 0;
+	padding: 2px 6px;
+	font-size: 0.7rem;
+	text-align: center;
+}
+
+.catalog-grid.terminal-mode .tag.source {
+	display: none;
+}
+
+@media (max-width: 900px) {
+	.catalog-grid.terminal-mode .yp-entry {
+		grid-template-columns: 60px 1fr 80px;
+	}
+	.catalog-grid.terminal-mode .tag { display: none; }
+	.catalog-grid.terminal-mode .tag.buy, .catalog-grid.terminal-mode .tag.sell { display: inline-block; }
+}

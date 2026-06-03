@@ -313,6 +313,36 @@
 
 	document.addEventListener('fieldlot-lang-change', render);
 
+	// Terminal Mode Toggle Logic
+	const viewCardsBtn = document.getElementById('view-cards');
+	const viewTerminalBtn = document.getElementById('view-terminal');
+	
+	function setViewMode(mode) {
+		if (!viewCardsBtn || !viewTerminalBtn) return;
+		if (mode === 'terminal') {
+			grid.classList.add('terminal-mode');
+			viewTerminalBtn.classList.add('active');
+			viewCardsBtn.classList.remove('active');
+			localStorage.setItem('fieldlot-catalog-view', 'terminal');
+		} else {
+			grid.classList.remove('terminal-mode');
+			viewCardsBtn.classList.add('active');
+			viewTerminalBtn.classList.remove('active');
+			localStorage.setItem('fieldlot-catalog-view', 'cards');
+		}
+	}
+
+	if (viewCardsBtn && viewTerminalBtn) {
+		viewCardsBtn.addEventListener('click', () => setViewMode('cards'));
+		viewTerminalBtn.addEventListener('click', () => setViewMode('terminal'));
+		
+		// Restore preference
+		const savedView = localStorage.getItem('fieldlot-catalog-view');
+		if (savedView === 'terminal') {
+			setViewMode('terminal');
+		}
+	}
+
 	loadListings()
 		.then(() => {
 			applyUrlFilters();

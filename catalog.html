@@ -19,8 +19,15 @@
 	<link rel="stylesheet" href="/styles/fieldlot-auth.css" />
 
 	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
+	<link rel="stylesheet" href="/styles/fieldlot-ticker.css" />
 </head>
 <body>
+	<div class="fieldlot-ticker" id="market-ticker" aria-hidden="true" style="display: none;">
+		<div class="ticker-inner">
+			<span class="ticker-label">МАРКЕТ ИНДЕКС (MATIF VS ЛОКАЛЕН)</span>
+			<div class="ticker-stream" id="ticker-stream"></div>
+		</div>
+	</div>
 	<header class="site-header">
 		<nav class="nav" data-i18n-aria="catalog.nav" aria-label="Основна навигация">
 			<a class="brand" href="/">
@@ -137,7 +144,13 @@
 
 		<div class="results-meta">
 			<span id="results-count"><strong>0</strong> <span data-i18n="catalog.offers">оферти</span></span>
-			<span data-i18n="catalog.sort">Сортиране: най-нови</span>
+			<div style="display: flex; gap: 16px; align-items: center;">
+				<div class="view-toggles" style="display: flex; gap: 4px;">
+					<button type="button" class="btn btn-secondary active" id="view-cards" style="padding: 4px 8px; font-size: 0.75rem;" title="Cards View">☷</button>
+					<button type="button" class="btn btn-secondary" id="view-terminal" style="padding: 4px 8px; font-size: 0.75rem;" title="Terminal Mode">≣</button>
+				</div>
+				<span data-i18n="catalog.sort">Сортиране: най-нови</span>
+			</div>
 		</div>
 
 		<div class="catalog-grid yp-board" id="catalog-grid" aria-live="polite"></div>
@@ -175,6 +188,7 @@
 	<script src="/scripts/fieldlot-categories.js"></script>
 	<script type="module" src="/scripts/catalog-page.js"></script>
 	<script type="module" src="/firebase-init.js"></script>
-		<script src="/scripts/fieldlot-mobile.js"></script>
+	<script src="/scripts/fieldlot-mobile.js"></script>
+	<script src="/scripts/market-basis.js" type="module"></script>
 </body>
 </html>
