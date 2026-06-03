@@ -33,6 +33,7 @@
 	"dependencies": {
 		"@capacitor/android": "^8.3.4",
 		"@capacitor/core": "^8.3.4",
+		"duck-duck-scrape": "^2.2.7",
 		"firebase": "^12.13.0",
 		"pdf-parse": "^2.4.5"
 	}

@@ -23,6 +23,7 @@ import { handleRegisterInterestPost, type LeadHandlerCtx } from './register-inte
 import fs from 'node:fs';
 import path from 'node:path';
 import { runListingsSyncPipeline } from './sync-listings-pipeline.js';
+import { search, SafeSearchType } from 'duck-duck-scrape';
 
 export type AgentActionRecord = {
 	tool: string;
@@ -165,6 +166,21 @@ function searchListings(args: {
 
 /** OpenAI / Mistral tool definitions */
 export const FIELDLOT_AGENT_TOOLS = [
+	{
+		type: 'function' as const,
+		function: {
+			name: 'search_web',
+			description: 'Perform a web search using DuckDuckGo to find real-time information, news, weather, or laws.',
+			parameters: {
+				type: 'object',
+				properties: {
+					query: { type: 'string', description: 'The search query.' },
+				},
+				required: ['query'],
+				additionalProperties: false,
+			},
+		},
+	},
 	{
 		type: 'function' as const,
 		function: {
@@ -459,6 +475,23 @@ export async function executeAgentTool(
 
 	try {
 		switch (name) {
+			case 'search_web': {
+				const query = typeof args.query === 'string' ? args.query : '';
+				if (!query) {
+					return { result: JSON.stringify({ ok: false, error: 'Missing query parameter' }), action: { tool: name, ok: false, summary: 'Failed web search' } };
+				}
+				try {
+					const results = await search(query, { safeSearch: SafeSearchType.MODERATE });
+					const limited = results.results.slice(0, 5).map(r => ({ title: r.title, description: r.description, url: r.url }));
+					const summary = ctx.lang === 'en' ? `Web search performed for: ${query}` : `Търсене в интернет за: ${query}`;
+					return {
+						result: JSON.stringify({ ok: true, data: limited }),
+						action: { tool: name, ok: true, summary }
+					};
+				} catch (err: any) {
+					return { result: JSON.stringify({ ok: false, error: err.message }), action: { tool: name, ok: false, summary: 'Search error' } };
+				}
+			}
 			case 'get_exchange_prices': {
 				const snap = await getExchangeSnapshotCached();
 				const summary =
@@ -880,9 +913,9 @@ export async function executeAgentTool(
 }
 
 // Tool groupings for Multi-Agent Architecture
-export const MARKET_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['get_exchange_prices', 'search_listings', 'get_listing', 'calculate_transport_cost', 'fetch_fieldlot_api'].includes(t.function.name));
-export const COPYWRITER_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['draft_listing', 'edit_listing', 'draft_negotiation'].includes(t.function.name));
-export const VISION_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['classify_crop_image'].includes(t.function.name));
-export const ADMIN_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['clean_stale_listings', 'parse_pdf_document', 'update_platform_knowledge'].includes(t.function.name));
-export const GENERAL_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['submit_early_access', 'send_team_email'].includes(t.function.name));
-export const HERMES_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_listings', 'get_listing', 'calculate_transport_cost'].includes(t.function.name));
+export const MARKET_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'get_exchange_prices', 'search_listings', 'get_listing', 'calculate_transport_cost', 'fetch_fieldlot_api'].includes(t.function.name));
+export const COPYWRITER_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'draft_listing', 'edit_listing', 'draft_negotiation'].includes(t.function.name));
+export const VISION_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'classify_crop_image'].includes(t.function.name));
+export const ADMIN_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'clean_stale_listings', 'parse_pdf_document', 'update_platform_knowledge'].includes(t.function.name));
+export const GENERAL_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'submit_early_access', 'send_team_email'].includes(t.function.name));
+export const HERMES_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'search_listings', 'get_listing', 'calculate_transport_cost'].includes(t.function.name));
