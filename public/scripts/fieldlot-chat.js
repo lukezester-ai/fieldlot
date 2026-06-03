@@ -216,26 +216,7 @@
 				messages.push({ role: 'assistant', content: fullReply });
 				waiting.replaceChildren();
 				waiting.appendChild(document.createTextNode(data.reply));
-				if (data.semanticHits?.length) {
-					const en = global.FieldlotI18n?.getLang?.() === 'en';
-					const box = document.createElement('div');
-					box.style.marginTop = '8px';
-					box.style.fontSize = '0.82rem';
-					box.style.color = '#9bb0a3';
-					box.textContent = en ? 'Doc Discovery:' : 'Doc Discovery:';
-					waiting.appendChild(box);
-					for (const h of data.semanticHits.slice(0, 5)) {
-						const a = document.createElement('a');
-						a.href = h.url || '#';
-						a.target = '_blank';
-						a.rel = 'noopener noreferrer';
-						a.style.display = 'block';
-						a.style.color = '#7ccd9c';
-						a.style.marginTop = '4px';
-						a.textContent = `${h.title} (${Math.round((h.similarity || 0) * 100)}%)`;
-						waiting.appendChild(a);
-					}
-				}
+				// RAG semanticHits sources display removed to clean up UI
 				if (data.listingDraft?.formattedText) {
 					appendDraftBox(waiting, data.listingDraft);
 				}
