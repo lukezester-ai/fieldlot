@@ -98,11 +98,22 @@
 					<h3>Митници и Договори</h3>
 					<p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Типови бланки за изтегляне:</p>
 					<ul class="docs-list">
-						<li><a href="#" class="doc-link" onclick="alert('Демо: Сваляне на договор')"><span class="doc-icon">📄</span> Типов договор за превоз (DOCX)</a></li>
-						<li><a href="#" class="doc-link" onclick="alert('Демо: Сваляне на ЧМР')"><span class="doc-icon">📑</span> ЧМР / CMR бланка (PDF)</a></li>
-						<li><a href="#" class="doc-link" onclick="alert('Демо: Сваляне на декларация')"><span class="doc-icon">📋</span> Митническа декларация (PDF)</a></li>
+						<li><a href="#" class="doc-link" onclick="event.preventDefault(); showDocAlert('Бланката ще бъде достъпна скоро.');"><span class="doc-icon">📄</span> Типов договор за превоз (DOCX)</a></li>
+						<li><a href="#" class="doc-link" onclick="event.preventDefault(); showDocAlert('Бланката ще бъде достъпна скоро.');"><span class="doc-icon">📑</span> ЧМР / CMR бланка (PDF)</a></li>
+						<li><a href="#" class="doc-link" onclick="event.preventDefault(); showDocAlert('Бланката ще бъде достъпна скоро.');"><span class="doc-icon">📋</span> Митническа декларация (PDF)</a></li>
 					</ul>
 				</div>
+				<div id="logistics-toast" style="display:none; position:fixed; bottom:20px; right:20px; background:var(--fl-brand-solid); color:#fff; padding:12px 24px; border-radius:8px; box-shadow:var(--fl-shadow-lg); z-index:9999; font-weight:600;"></div>
+				<script>
+					function showDocAlert(msg) {
+						const t = document.getElementById('logistics-toast');
+						if(t) {
+							t.textContent = msg;
+							t.style.display = 'block';
+							setTimeout(() => { t.style.display = 'none'; }, 3000);
+						}
+					}
+				</script>
 			</div>
 
 			<!-- Big Horizontal Banner -->
