@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="bg" data-i18n-title-key="catalog.meta.title">
+<html lang="bg" data-i18n-title-key="logistics.meta.title">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Логистика и Техника — Fieldlot</title>
-	<meta name="description" data-i18n="catalog.meta.description" content="Логистика, транспорт и земеделска техника в България." />
+	<title>Логистика и Транспорт — Fieldlot</title>
+	<meta name="description" data-i18n="logistics.meta.description" content="Транспорт, складове и логистични услуги в агро екосистемата на Fieldlot." />
 	<script>
 		(function(){try{var p=new URLSearchParams(location.search).get('lang');var s=localStorage.getItem('fieldlot-lang');var l=p||s;if(l==='en'||l==='bg')document.documentElement.lang=l;}catch(e){}})();
 	</script>
@@ -17,12 +17,12 @@
 	<link rel="stylesheet" href="/styles/fieldlot-catalog.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-yellow-pages.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-auth.css" />
-
+	<link rel="stylesheet" href="/styles/fieldlot-logistics.css" />
 	<link rel="stylesheet" href="/styles/fieldlot-mobile.css" />
 </head>
 <body>
 	<header class="site-header">
-		<nav class="nav" data-i18n-aria="catalog.nav" aria-label="Основна навигация">
+		<nav class="nav" aria-label="Основна навигация">
 			<a class="brand" href="/">
 				<span class="brand-mark" aria-hidden="true">
 					<svg width="23" height="23" viewBox="0 0 24 24" fill="none">
@@ -38,7 +38,7 @@
 				<button type="button" class="theme-toggle" onclick="window.FieldlotTheme.toggleTheme()" aria-label="Toggle Dark Mode">
 					<svg viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.758a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z"/></svg>
 				</button>
-				<div class="lang-switch" role="group" data-i18n-aria="lang.label" aria-label="Език">
+				<div class="lang-switch" role="group" aria-label="Език">
 						<button type="button" data-lang="en" aria-pressed="false">EN</button>
 						<button type="button" data-lang="de" aria-pressed="false">DE</button>
 						<button type="button" data-lang="bg" aria-pressed="true">BG</button>
@@ -49,112 +49,63 @@
 				class="nav-toggle"
 				id="catalog-menu-toggle"
 				aria-expanded="false"
-				data-i18n-aria="nav.openMenu"
 				aria-label="Отвори меню"
 			>
 				<span></span><span></span><span></span>
 			</button>
 			<div class="nav-links">
-				<a href="/" data-i18n="nav.home">Начало</a>
-				<a href="/catalog.html" data-i18n="nav.catalog">Каталог</a>
-				<a href="/logistics.html" aria-current="page" data-i18n="nav.logistics">Логистика</a>
-				<a href="/#cta" data-i18n="nav.earlyAccess">Ранен достъп</a>
+				<a href="/">Начало</a>
+				<a href="/catalog.html">Каталог</a>
+				<a href="/logistics.html" aria-current="page">Логистика</a>
 			</div>
-			<a class="nav-cta" href="/#cta" data-i18n="nav.join">Включи се</a>
+			<a class="nav-cta" href="/#cta">Включи се</a>
 		</nav>
 	</header>
 
-	<main class="container">
-		<!-- ТОП РЕКЛАМА -->
-		<div style="width: 100%; max-width: 900px; margin: 2rem auto; border-radius: var(--radius-md); overflow: hidden; position: relative; min-height: 160px; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; text-decoration: none;">
-			<img src="/images/hero/farm.jpg" alt="Реклама Транспорт" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.85;">
-			<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);"></div>
-			<div style="position: relative; z-index: 1; text-align: center; color: white; padding: 2rem;">
-				<span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: var(--fl-brand-solid-light); margin-bottom: 0.5rem; display: block;">Реклама</span>
-				<strong style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">Международен Агро Транспорт</strong>
-				<span style="font-size: 1rem; color: rgba(255,255,255,0.9);">Сигурни доставки за цяла Европа</span>
-			</div>
-		</div>
-
-		<section class="catalog-hero" style="padding: 2rem 0 3rem; text-align: center; margin-bottom: -2rem;">
+	<main class="container logistics-page-layout">
+		<section class="catalog-hero" style="grid-column: 1 / -1;">
+			<div class="catalog-hero-bg" aria-hidden="true"></div>
 			<div class="catalog-hero-panel">
-				<h1 style="margin-bottom: 1rem; font-size: 2.8rem; background: linear-gradient(135deg, var(--fl-brand-deep) 0%, var(--fl-brand-solid) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;">Логистика и Техника</h1>
-				<p style="max-width: 600px; margin: 0 auto 2rem; color: var(--muted);">
-					Намерете транспорт за вашата продукция или земеделска техника за обработка.
+				<h1 data-i18n="logistics.page.title">Транспорт и Складиране</h1>
+				<p data-i18n="logistics.page.lead">
+					Намери камион, складова база или предложи свои логистични услуги.
 				</p>
 			</div>
 		</section>
 
-		<form class="toolbar" id="filters" role="search" style="background: var(--paper); padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; position: relative; z-index: 10; margin-bottom: 2rem;">
-			<label style="flex: 1; min-width: 200px;">
-				<span style="font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block;">Търсене</span>
-				<input type="search" id="q" placeholder="зърновоз, трактор…" autocomplete="off" style="width: 100%; border-radius: 8px; border: 1px solid var(--line); padding: 0.6rem 1rem; background: var(--soft); color: var(--ink);" />
-			</label>
-			<label style="flex: 1; min-width: 150px;">
-				<span style="font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block;">Категория</span>
-				<select id="category" style="width: 100%; border-radius: 8px; border: 1px solid var(--line); padding: 0.6rem 1rem; background: var(--soft); color: var(--ink);">
-					<option value="">Всички услуги</option>
-					<option value="transport">Транспорт (Камиони)</option>
-					<option value="machinery">Земеделска техника</option>
-				</select>
-			</label>
-			<label style="flex: 1; min-width: 150px;">
-				<span style="font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block;">Тип</span>
-				<select id="role" style="width: 100%; border-radius: 8px; border: 1px solid var(--line); padding: 0.6rem 1rem; background: var(--soft); color: var(--ink);">
-					<option value="">Всички</option>
-					<option value="offer">Предлагам (Собственик)</option>
-					<option value="seek">Търся (Фермер)</option>
-				</select>
-			</label>
-			<button type="button" class="btn btn-outline" id="reset-filters" style="padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--ink);">Изчисти</button>
-		</form>
+		<div class="logistics-main-content">
+			<form class="toolbar" id="filters" role="search">
+				<label>
+					<span>Търсене</span>
+					<input type="search" id="q" placeholder="камион, хладилен, силоз..." autocomplete="off" />
+				</label>
+				<label>
+					<span>Тип услуга</span>
+					<select id="service-type">
+						<option value="">Всички</option>
+						<option value="transport">Транспорт</option>
+						<option value="warehouse">Складиране</option>
+						<option value="tracking">Проследяване / Спедиция</option>
+					</select>
+				</label>
+				<button type="button" class="btn btn-secondary" id="reset-filters">Изчисти</button>
+			</form>
 
-		<div class="results-meta" style="margin-bottom: 1rem; color: var(--muted);">
-			<span id="results-count"><strong>0</strong> <span>обяви</span></span>
-		</div>
-
-		<div style="display: flex; gap: 2rem;">
-			<div class="yp-board catalog-grid" id="catalog-grid" aria-live="polite" style="flex: 1;"></div>
-			
-			<!-- САЙДБАР РЕКЛАМА (видим само на голям екран) -->
-			<aside class="logistics-sidebar-ad" style="width: 300px; display: none;">
-				<div style="width: 100%; height: 600px; border-radius: var(--radius-md); overflow: hidden; position: sticky; top: 100px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-					<img src="/images/farmers/facility.jpg" alt="Реклама Склад" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
-					<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%);"></div>
-					<div style="position: relative; z-index: 1; color: white; padding: 2rem; margin-top: auto;">
-						<span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: var(--fl-brand-solid-light); margin-bottom: 1rem; display: block;">Реклама</span>
-						<strong style="font-size: 1.8rem; display: block; margin-bottom: 1rem; line-height: 1.2;">Модерни Зърнобази</strong>
-						<span style="font-size: 1rem; color: rgba(255,255,255,0.9); display: block; margin-bottom: 1.5rem;">Съхранение и сушене при най-добри условия</span>
-						<a class="btn btn-primary" href="/#cta" style="border-radius: 40px; padding: 0.6rem 1.5rem; width: 100%;">Свържете се</a>
-					</div>
-				</div>
-			</aside>
-		</div>
-	</main>
-
-	<style>
-		@media (min-width: 1024px) {
-			.logistics-sidebar-ad {
-				display: block !important;
-			}
-		}
-	</style>
-
-	<div class="detail-backdrop" id="detail-backdrop" hidden></div>
-	<aside class="detail-panel" id="detail-panel" aria-label="Детайли на оферта" aria-hidden="true">
-		<div class="detail-head">
-			<div>
-				<p class="board-eyebrow">Детайли</p>
-				<h2 id="detail-title">—</h2>
+			<div class="results-meta">
+				<span id="results-count"><strong>0</strong> <span>обяви</span></span>
+				<span>Сортиране: най-нови</span>
 			</div>
-			<button type="button" class="detail-close" id="detail-close" aria-label="Затвори">×</button>
+
+			<div class="catalog-grid yp-board" id="logistics-grid" aria-live="polite"></div>
 		</div>
-		<div class="detail-body" id="detail-body"></div>
-		<div class="detail-foot">
-			<a class="btn btn-primary" id="detail-cta" href="/#cta">Свържи се</a>
-			<button type="button" class="btn btn-secondary" id="detail-close-2">Затвори</button>
-		</div>
-	</aside>
+
+		<aside class="logistics-sidebar" aria-label="Спонсорирани реклами">
+			<div class="sidebar-header">
+				<h3>Партньори & Реклами</h3>
+			</div>
+			<div id="logistics-ads" class="ads-container"></div>
+		</aside>
+	</main>
 
 	<footer class="site-footer">
 		<div class="container">
@@ -165,12 +116,8 @@
 
 	<script src="/scripts/fieldlot-i18n-messages.js"></script>
 	<script src="/scripts/fieldlot-i18n.js"></script>
-	<script src="/scripts/fieldlot-api-status.js"></script>
-	<script src="/scripts/fieldlot-images.js"></script>
-	<script src="/scripts/fieldlot-pdf.js" type="module"></script>
-	<script src="/scripts/fieldlot-categories.js"></script>
+	<script src="/scripts/fieldlot-theme.js"></script>
 	<script type="module" src="/scripts/logistics-page.js"></script>
-	<script type="module" src="/firebase-init.js"></script>
 	<script src="/scripts/fieldlot-mobile.js"></script>
 </body>
 </html>

@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => {
 					main: path.resolve(process.cwd(), 'index.html'),
 					catalog: path.resolve(process.cwd(), 'catalog.html'),
 					admin: path.resolve(process.cwd(), 'admin.html'),
+					logistics: path.resolve(process.cwd(), 'logistics.html'),
 				},
 			},
 		},

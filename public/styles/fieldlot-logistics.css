@@ -1,0 +1,109 @@
+/* fieldlot-logistics.css */
+
+.logistics-page-layout {
+	display: grid;
+	grid-template-columns: 1fr 320px;
+	gap: 2rem;
+	margin-top: 2rem;
+	align-items: start;
+}
+
+@media (max-width: 991px) {
+	.logistics-page-layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+.logistics-sidebar {
+	position: sticky;
+	top: 80px;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.sidebar-header h3 {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--text-color);
+	margin-bottom: 1rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	opacity: 0.8;
+}
+
+.ads-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.logistics-ad-card {
+	background: var(--bg-card);
+	border: 1px solid var(--border-color);
+	border-radius: 12px;
+	overflow: hidden;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	text-decoration: none;
+	color: inherit;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+.logistics-ad-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+	border-color: var(--primary-color);
+}
+
+.ad-badge {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	background: rgba(0,0,0,0.6);
+	color: #fff;
+	font-size: 0.65rem;
+	text-transform: uppercase;
+	padding: 2px 6px;
+	border-radius: 4px;
+	z-index: 10;
+	backdrop-filter: blur(4px);
+}
+
+.ad-image {
+	width: 100%;
+	height: 160px;
+	background-color: var(--bg-sub);
+	background-size: cover;
+	background-position: center;
+}
+
+.ad-content {
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.ad-title {
+	font-weight: 600;
+	font-size: 1.05rem;
+	color: var(--text-color);
+	margin: 0;
+	line-height: 1.3;
+}
+
+.ad-desc {
+	font-size: 0.9rem;
+	color: var(--text-muted);
+	margin: 0;
+	line-height: 1.4;
+}
+
+.ad-cta {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--primary-color);
+	margin-top: 0.5rem;
+}

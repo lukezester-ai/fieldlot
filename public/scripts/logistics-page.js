@@ -1,324 +1,156 @@
-/**
- * Fieldlot logistics — transport & machinery listings
- */
-(function initLogisticsPage(global) {
-	const I18n = () => window.FieldlotI18n;
-	const t = (k, fb) => (I18n() ? I18n().t(k, fb) : fb || k);
+// logistics-page.js
+const DUMMY_LOGISTICS = [
+	{
+		id: 'log-1',
+		title: 'Транспорт със зърновоз (Гондола 24т)',
+		category: 'transport',
+		qty: '24',
+		unit: 'тона',
+		price: 'По договаряне',
+		region: 'Варна',
+		role: 'sell',
+		sourceName: 'Fieldlot Logistics',
+		publishedAt: new Date().toISOString(),
+		img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=400&q=80',
+		desc: 'Свободен зърновоз за курсове от Добруджа към Пристанище Варна. Възможност за дългосрочен договор.'
+	},
+	{
+		id: 'log-2',
+		title: 'Хладилен транспорт до Европа',
+		category: 'transport',
+		qty: '20',
+		unit: 'палета',
+		price: 'По договаряне',
+		region: 'Пловдив',
+		role: 'sell',
+		sourceName: 'Fieldlot Logistics',
+		publishedAt: new Date(Date.now() - 86400000).toISOString(),
+		img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=400&q=80',
+		desc: 'Транспорт на пресни плодове и зеленчуци (режим) за Германия, Австрия и Румъния.'
+	},
+	{
+		id: 'log-3',
+		title: 'Складова база - Силози',
+		category: 'warehouse',
+		qty: '5000',
+		unit: 'тона',
+		price: '6 лв/тон на месец',
+		region: 'Плевен',
+		role: 'sell',
+		sourceName: 'Fieldlot Logistics',
+		publishedAt: new Date(Date.now() - 172800000).toISOString(),
+		img: 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=400&q=80',
+		desc: 'Свободен капацитет в стоманобетонни силози за съхранение на пшеница или царевица. Активна вентилация.'
+	},
+	{
+		id: 'log-4',
+		title: 'Търся зърновоз за Слънчоглед',
+		category: 'transport',
+		qty: '120',
+		unit: 'тона',
+		price: 'По договаряне',
+		region: 'Ямбол',
+		role: 'buy',
+		sourceName: 'Fieldlot Logistics',
+		publishedAt: new Date(Date.now() - 3600000).toISOString(),
+		img: null,
+		desc: 'Нужни са 5 камиона за извозване на слънчоглед от база в Ямбол до фабрика в Бургас.'
+	}
+];
 
-	const grid = document.getElementById('catalog-grid');
-	const countEl = document.getElementById('results-count');
-	const qEl = document.getElementById('q');
-	const catEl = document.getElementById('category');
-	const roleEl = document.getElementById('role');
-	const FC = () => global.FieldlotCategories;
-	const backdrop = document.getElementById('detail-backdrop');
-	const panel = document.getElementById('detail-panel');
-	const detailTitle = document.getElementById('detail-title');
-	const detailBody = document.getElementById('detail-body');
-	const detailCta = document.getElementById('detail-cta');
-	const detailPdfBtn = document.getElementById('detail-pdf');
-	let detailItemRaw = null;
-	let allListings = [];
+const ADS = [
+	{
+		id: 'ad-1',
+		title: 'Специализиран агро транспорт',
+		desc: 'Фирма X Транс ООД. Сигурност и точност за вашата продукция. 10% отстъпка за нови клиенти.',
+		img: 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=400&q=80',
+		link: '#ad-1'
+	},
+	{
+		id: 'ad-2',
+		title: 'Резервни части за камиони',
+		desc: 'Оригинални и алтернативни части. Склад в София. Доставка до 24 часа в цялата страна.',
+		img: 'https://images.unsplash.com/photo-1620619864227-2c942db4d3fa?auto=format&fit=crop&w=400&q=80',
+		link: '#ad-2'
+	}
+];
 
-	if (!grid || !countEl) return;
+function renderLogistics() {
+	const grid = document.getElementById('logistics-grid');
+	if (!grid) return;
 
-	function loc(item) {
-		return I18n() ? I18n().localizeListing(item) : item;
+	grid.innerHTML = '';
+	
+	const q = document.getElementById('q')?.value.toLowerCase() || '';
+	const serviceType = document.getElementById('service-type')?.value || '';
+
+	const filtered = DUMMY_LOGISTICS.filter(item => {
+		if (q && !item.title.toLowerCase().includes(q) && !item.desc.toLowerCase().includes(q)) return false;
+		if (serviceType && item.category !== serviceType) return false;
+		return true;
+	});
+
+	document.getElementById('results-count').innerHTML = `<strong>${filtered.length}</strong> <span>обяви</span>`;
+
+	if (filtered.length === 0) {
+		grid.innerHTML = '<div class="empty-state">Няма намерени логистични обяви по тези критерии.</div>';
+		return;
 	}
 
-	function escapeHtml(s) {
-		return String(s)
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;');
-	}
-
-	const CAT_LABELS = {
-		transport: 'Транспорт',
-		machinery: 'Земеделска техника',
-	};
-
-	function categoryLabel(item) {
-		return CAT_LABELS[item.category] || item.category || 'Услуга';
-	}
-
-	function sortListings(items) {
-		return [...items].sort((a, b) => {
-			const ta = Date.parse(a.publishedAt || '') || 0;
-			const tb = Date.parse(b.publishedAt || '') || 0;
-			return tb - ta;
-		});
-	}
-
-	function stripMedia(listings) {
-		return listings.map((row) => {
-			const { imageUrl, image, ...rest } = row;
-			return rest;
-		});
-	}
-
-	async function loadListings() {
-		grid.innerHTML = `<p class="meta yp-loading">Зареждане на обяви…</p>`;
-		let fbData = [];
-		try {
-			let retries = 20;
-			while (!window.fetchFirebaseLogistics && retries > 0) {
-				await new Promise(r => setTimeout(r, 100));
-				retries--;
-			}
-			if (window.fetchFirebaseLogistics) {
-				fbData = await window.fetchFirebaseLogistics(100);
-			}
-		} catch (e) {
-			console.error("Firebase logistics fetch error:", e);
-		}
+	filtered.forEach(item => {
+		const card = document.createElement('div');
+		card.className = 'listing-card reveal';
+		card.style.opacity = 1;
+		card.style.transform = 'translateY(0)';
 		
-		// Demo data if empty
-		if (fbData.length === 0) {
-			fbData = [
-				{ id: 'mock1', title: 'Транспорт със Зърновоз 24т', subtitle: '🇧🇬 Варна', category: 'transport', price: 'По договаряне', priceUnit: '', qty: '24 тона', role: 'offer', publishedAt: new Date().toISOString(), isFirebase: false },
-				{ id: 'mock2', title: 'Търся комбайн за жътва на пшеница', subtitle: '🇧🇬 Добрич', category: 'machinery', price: 'По договаряне', priceUnit: '', qty: '500 дка', role: 'seek', publishedAt: new Date(Date.now() - 86400000).toISOString(), isFirebase: false },
-				{ id: 'mock3', title: 'Услуги с трактор и пръскачка', subtitle: '🇧🇬 Пловдив', category: 'machinery', price: '12', priceUnit: 'лв/дка', qty: 'До 1000 дка', role: 'offer', publishedAt: new Date(Date.now() - 172800000).toISOString(), isFirebase: false },
-				{ id: 'mock4', title: 'Хладилен транспорт за плодове', subtitle: '🇧🇬 Сливен', category: 'transport', price: 'По договаряне', priceUnit: '', qty: '3.5 тона', role: 'offer', publishedAt: new Date(Date.now() - 259200000).toISOString(), isFirebase: false },
-				{ id: 'mock5', title: 'Търся транспорт за 100т царевица', subtitle: '🇧🇬 Русе -> Бургас', category: 'transport', price: 'Търси оферти', priceUnit: '', qty: '100 тона', role: 'seek', publishedAt: new Date(Date.now() - 345600000).toISOString(), isFirebase: false },
-				{ id: 'mock6', title: 'Международен транспорт на зърно', subtitle: '🇧🇬 България -> 🇬🇷 Гърция', category: 'transport', price: 'По договаряне', priceUnit: '', qty: 'Над 100т', role: 'offer', publishedAt: new Date(Date.now() - 5000000).toISOString(), isFirebase: false },
-				{ id: 'mock7', title: 'Търся камиони за износ на слънчоглед', subtitle: '🇧🇬 Силистра -> 🇷🇴 Румъния', category: 'transport', price: 'Отворено', priceUnit: '', qty: '500 тона', role: 'seek', publishedAt: new Date(Date.now() - 12000000).toISOString(), isFirebase: false },
-				{ id: 'mock8', title: 'Хладилни групажи до Германия', subtitle: '🇧🇬 София -> 🇩🇪 Мюнхен', category: 'transport', price: 'По договаряне', priceUnit: '', qty: 'От 1 до 10 палета', role: 'offer', publishedAt: new Date(Date.now() - 40000000).toISOString(), isFirebase: false }
-			];
-		}
+		const roleBadge = item.role === 'buy' ? '<span class="listing-role buy">Търси транспорт</span>' : '<span class="listing-role sell">Предлага транспорт</span>';
+		
+		card.innerHTML = `
+			${item.img ? `<div class="listing-img" style="background-image:url(${item.img})"></div>` : `<div class="listing-img no-img"><span>Няма снимка</span></div>`}
+			<div class="listing-content">
+				${roleBadge}
+				<h3 class="listing-title">${item.title}</h3>
+				<p class="listing-meta">${item.region} • ${new Date(item.publishedAt).toLocaleDateString()}</p>
+				<p class="listing-price">${item.qty} ${item.unit} • <strong>${item.price}</strong></p>
+				<p style="font-size:0.9rem; color:var(--text-muted); margin-top:0.5rem; line-height:1.4;">${item.desc}</p>
+			</div>
+			<div class="listing-footer">
+				<a href="#cta" class="btn btn-primary" style="width:100%; text-align:center;">Свържи се</a>
+			</div>
+		`;
+		grid.appendChild(card);
+	});
+}
 
-		allListings = sortListings(stripMedia(fbData));
-	}
+function renderAds() {
+	const adsContainer = document.getElementById('logistics-ads');
+	if (!adsContainer) return;
 
-	function filterListings() {
-		const q = qEl.value.trim().toLowerCase();
-		const cat = catEl?.value || '';
-		const role = roleEl?.value || '';
-		return allListings.filter((raw) => {
-			const item = loc(raw);
-			if (cat && item.category !== cat) return false;
-			if (role && item.role !== role) return false;
-			if (!q) return true;
-			const hay = [item.title, item.subtitle, item.contact]
-				.join(' ')
-				.toLowerCase();
-			return hay.includes(q);
-		});
-	}
-
-	function renderCard(raw) {
-		const item = loc(raw);
-		const roleClass = item.role === 'buy' ? 'buy' : 'sell';
-		const roleLabel = item.role === 'buy' ? t('listing.buy') : t('listing.sell');
-		const cat = categoryLabel(item);
-		const sourceTag = item.source
-			? `<span class="tag source">${escapeHtml(item.source)}</span>`
-			: '';
-		const contactLine = item.contact
-			? `<p class="yp-entry-line yp-entry-contact">${escapeHtml(item.contact)}</p>`
-			: '';
-
-		const article = document.createElement('a');
-		article.className = 'listing-card yp-entry';
-		article.href = '#';
-		article.dataset.id = item.id;
-		article.innerHTML = `
-			<div class="yp-entry-main">
-				<div class="yp-entry-head">
-					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
-					${cat ? `<span class="tag yp-cat">${escapeHtml(cat)}</span>` : ''}
+	adsContainer.innerHTML = '';
+	ADS.forEach(ad => {
+		adsContainer.innerHTML += `
+			<a href="${ad.link}" class="logistics-ad-card">
+				<span class="ad-badge">Реклама</span>
+				<div class="ad-image" style="background-image:url(${ad.img})"></div>
+				<div class="ad-content">
+					<h4 class="ad-title">${ad.title}</h4>
+					<p class="ad-desc">${ad.desc}</p>
+					<span class="ad-cta">Научи повече &rarr;</span>
 				</div>
-				<h2 class="yp-entry-title">${escapeHtml(item.title)}</h2>
-				<p class="yp-entry-line">${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)} · ${escapeHtml(item.qty)}</p>
-				<p class="yp-entry-line yp-entry-muted">${escapeHtml(item.incoterm)}${item.quality ? ` · ${escapeHtml(item.quality)}` : ''}</p>
-				${contactLine}
-			</div>
-			<div class="yp-entry-aside">
-				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
-				${sourceTag}
-			</div>
+			</a>
 		`;
-		article.addEventListener('click', () => openDetail(raw));
-		article.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter' || e.key === ' ') {
-				e.preventDefault();
-				openDetail(raw);
-			}
-		});
-		return article;
-	}
-
-	function render() {
-		const items = filterListings();
-		grid.innerHTML = '';
-		if (items.length === 0) {
-			grid.innerHTML = `<div class="empty-state"><p>Няма намерени обяви</p></div>`;
-		} else {
-			items.forEach((raw, index) => {
-				grid.appendChild(renderCard(raw));
-				// Вградена реклама след всяка 3-та обява (само ако има повече обяви след нея)
-				if ((index + 1) % 3 === 0 && index < items.length - 1) {
-					const ad = document.createElement('div');
-					ad.className = 'in-feed-ad';
-					ad.style = 'grid-column: 1 / -1; background: var(--primary-soft); border: 2px dashed var(--primary-light); padding: 1.5rem; text-align: center; border-radius: var(--radius-md); margin-bottom: 1rem;';
-					ad.innerHTML = `
-						<span style="font-size: 0.75rem; text-transform: uppercase; font-weight: bold; color: var(--primary);">Реклама</span>
-						<h4 style="margin: 0.5rem 0; color: var(--primary-dark);">Търсите сигурни резервни части?</h4>
-						<p style="margin: 0 0 1rem; color: var(--text-muted); font-size: 0.9rem;">Вземете 10% отстъпка за всички филтри и масла този месец.</p>
-						<button class="btn btn-primary" style="font-size: 0.85rem; padding: 0.4rem 1rem;">Научи повече</button>
-					`;
-					grid.appendChild(ad);
-				}
-			});
-		}
-		countEl.innerHTML = `<strong>${items.length}</strong> обяви`;
-	}
-
-	async function openDetail(raw) {
-		detailItemRaw = raw;
-		const item = loc(raw);
-		detailTitle.textContent = item.title;
-		const sourceLink = item.sourceUrl
-			? `<p class="detail-note"><a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(t('catalog.sourceLink'))}</a></p>`
-			: '';
-		const cat = categoryLabel(item);
-		
-		let farmerProfileHtml = '';
-		if (raw.isFirebase && raw.userId && window.fetchUserProfile) {
-			try {
-				const profile = await window.fetchUserProfile(raw.userId);
-				if (profile && profile.publicConsent) {
-					const certsHtml = (profile.certs || []).map(c => `<span class="badge" style="background: var(--neutral-100); color: var(--neutral-700); font-size: 0.75rem;">${escapeHtml(c.toUpperCase())}</span>`).join(' ');
-					
-					farmerProfileHtml = `
-						<div style="margin-top: 1.5rem; padding: 1.5rem; border-radius: var(--radius-lg); background: var(--primary-soft); border: 1px solid var(--primary-dark);">
-							<h4 style="margin: 0 0 1rem; color: var(--primary-dark); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-								Профил на фермер с доверие
-							</h4>
-							<div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-								${profile.profileImageUrl ? `<img src="${escapeHtml(profile.profileImageUrl)}" alt="Лого" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-sm);" />` : ''}
-								<div style="flex: 1; min-width: 200px;">
-									<h5 style="margin: 0 0 0.25rem; font-size: 1.2rem; color: var(--text-main);">${escapeHtml(profile.companyName || 'Стопанство')}</h5>
-									<p style="margin: 0 0 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
-										${profile.profileType ? `<strong>${escapeHtml(profile.profileType)}</strong>` : ''}
-									</p>
-									${profile.profileDesc ? `<p style="margin: 0 0 0.5rem; color: var(--neutral-800); font-size: 0.9rem;">${escapeHtml(profile.profileDesc)}</p>` : ''}
-									${certsHtml ? `<div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 0.5rem;">${certsHtml}</div>` : ''}
-									${profile.profileVideo ? `<a href="${escapeHtml(profile.profileVideo)}" target="_blank" rel="noopener" style="color: #d32f2f; font-weight: 600; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 4px;">▶ Видео презентация</a>` : ''}
-								</div>
-							</div>
-						</div>
-					`;
-				}
-			} catch (e) {
-				console.error('Failed to load farmer profile', e);
-			}
-		}
-
-		detailBody.innerHTML = `
-			<div class="detail-highlight yp-detail-lead">
-				${cat ? `<p class="yp-detail-cat">${escapeHtml(cat)}</p>` : ''}
-				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
-				<p class="meta">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
-			</div>
-			${farmerProfileHtml}
-			<dl class="detail-dl">
-				<div><dt>${escapeHtml(t('catalog.loc'))}</dt><dd>${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)}</dd></div>
-				<div><dt>${escapeHtml(t('catalog.qty'))}</dt><dd>${escapeHtml(item.qty)}</dd></div>
-				<div><dt>${escapeHtml(t('catalog.price'))}</dt><dd>${escapeHtml(item.price)} ${escapeHtml(item.priceUnit)}</dd></div>
-				<div><dt>${escapeHtml(t('catalog.term'))}</dt><dd>${escapeHtml(item.incoterm)}</dd></div>
-				<div><dt>${escapeHtml(t('catalog.harvest'))}</dt><dd>${escapeHtml(item.harvest)}</dd></div>
-				<div><dt>${escapeHtml(t('catalog.quality'))}</dt><dd>${escapeHtml(item.quality)}</dd></div>
-				<div><dt>${escapeHtml(t('catalog.contact'))}</dt><dd>${escapeHtml(item.contact)}</dd></div>
-			</dl>
-			<p class="detail-note">${escapeHtml(t('catalog.detailNote'))}</p>
-			${sourceLink}
-		`;
-		const ctaBase = I18n() ? I18n().withLangUrl('/#cta') : '/#cta';
-		detailCta.href = `${ctaBase}?listing=${encodeURIComponent(item.id)}`;
-		detailCta.textContent = t('catalog.detailCta');
-		backdrop.hidden = false;
-		panel.setAttribute('aria-hidden', 'false');
-		requestAnimationFrame(() => {
-			backdrop.classList.add('open');
-			panel.classList.add('open');
-		});
-		document.body.style.overflow = 'hidden';
-	}
-
-	function closeDetail() {
-		detailItemRaw = null;
-		backdrop.classList.remove('open');
-		panel.classList.remove('open');
-		panel.setAttribute('aria-hidden', 'true');
-		document.body.style.overflow = '';
-		setTimeout(() => {
-			backdrop.hidden = true;
-		}, 280);
-	}
-
-	document.getElementById('detail-close')?.addEventListener('click', closeDetail);
-	document.getElementById('detail-close-2')?.addEventListener('click', closeDetail);
-
-	detailPdfBtn?.addEventListener('click', async () => {
-		if (!detailItemRaw || !global.FieldlotPdf?.downloadListing) {
-			alert(t('catalog.pdfUnavailable'));
-			return;
-		}
-		const prev = detailPdfBtn.textContent;
-		detailPdfBtn.disabled = true;
-		detailPdfBtn.textContent = t('catalog.pdfLoading');
-		try {
-			const item = loc(detailItemRaw);
-			await global.FieldlotPdf.downloadListing(item);
-		} catch {
-			alert(t('catalog.pdfErr'));
-		} finally {
-			detailPdfBtn.disabled = false;
-			detailPdfBtn.textContent = prev;
-		}
 	});
-	backdrop?.addEventListener('click', closeDetail);
-	document.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape') closeDetail();
-	});
+}
 
-	function applyUrlFilters() {
-		const params = new URLSearchParams(window.location.search);
-		const cat = params.get('category');
-		const crop = params.get('crop');
-		const q = params.get('q');
-		if (cat && catEl) catEl.value = cat;
-		if (crop && cropEl) cropEl.value = crop;
-		if (q && qEl) qEl.value = q;
-	}
+document.addEventListener('DOMContentLoaded', () => {
+	renderLogistics();
+	renderAds();
 
-	[qEl, catEl, roleEl].forEach((el) => {
-		el?.addEventListener('input', render);
-		el?.addEventListener('change', render);
-	});
+	document.getElementById('q')?.addEventListener('input', renderLogistics);
+	document.getElementById('service-type')?.addEventListener('change', renderLogistics);
 	document.getElementById('reset-filters')?.addEventListener('click', () => {
-		qEl.value = '';
-		if (catEl) catEl.value = '';
-		if (roleEl) roleEl.value = '';
-		render();
+		document.getElementById('q').value = '';
+		document.getElementById('service-type').value = '';
+		renderLogistics();
 	});
-
-	document.addEventListener('fieldlot-lang-change', render);
-
-	loadListings()
-		.then(() => {
-			applyUrlFilters();
-			render();
-			const openId = new URLSearchParams(window.location.search).get('id');
-			if (openId) {
-				const found = allListings.find((x) => x.id === openId);
-				if (found) openDetail(found);
-			}
-		})
-		.catch(() => {
-			grid.innerHTML = `<div class="empty-state"><p>${escapeHtml(t('listing.loadFail'))}</p></div>`;
-		});
-})(window);
+});

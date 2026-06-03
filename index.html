@@ -73,7 +73,6 @@
 				<a href="#exchange" data-i18n="nav.exchange">Борса</a>
 				<a href="#logistics" data-i18n="nav.logistics">Логистика</a>
 				<a href="#top-producers" data-i18n="nav.farmers">Производители</a>
-				<a href="#article-series" data-i18n="nav.series">Поредица</a>
 				<a href="/catalog.html" data-i18n="nav.demoCatalog">Каталог</a>
 			</nav>
 		</div>
@@ -86,16 +85,6 @@
 	</div>
 
 	<main id="top">
-		<section class="eco-section eco-section--alt eco-section--series" id="article-series">
-			<div class="container">
-				<div class="eco-section-head reveal">
-					<p class="eco-eyebrow" data-i18n="series.eyebrow">Блог / анализи</p>
-					<h2 data-i18n="series.title">Поредица от статии</h2>
-					<p data-i18n="series.lead">Четири последователни части — редактирай /public/data/article-series.json.</p>
-				</div>
-				<div class="article-series-grid reveal" id="article-series-grid" aria-live="polite"></div>
-			</div>
-		</section>
 
 		<section class="hero-eco">
 			<div class="hero-eco-bg" aria-hidden="true"></div>
@@ -210,30 +199,30 @@
 					<p data-i18n="logistics.lead">Камиони, складове, хладилни бази и проследяване — интегрирани в екосистемата.</p>
 				</div>
 				<div class="logistics-grid reveal">
-					<div class="log-card log-card-photo" data-log="transport">
+					<a class="log-card log-card-photo" href="/logistics" data-log="transport">
 						<div class="log-card-img" aria-hidden="true"></div>
 						<div class="log-card-body">
 							<h3 data-i18n="logistics.transport">Транспорт</h3>
 							<p data-i18n="logistics.transportDesc">Намери камион до София, Варна или експортен пункт. Договаряне директно с превозвач.</p>
 						</div>
-					</div>
-					<div class="log-card log-card-photo" data-log="warehouse">
+					</a>
+					<a class="log-card log-card-photo" href="/logistics" data-log="warehouse">
 						<div class="log-card-img" aria-hidden="true"></div>
 						<div class="log-card-body">
 							<h3 data-i18n="logistics.warehouse">Складове</h3>
 							<p data-i18n="logistics.warehouseDesc">Силози, хладилни бази и логистични хъбове — видимост за наличности и капацитет.</p>
 						</div>
-					</div>
-					<div class="log-card log-card-photo" data-log="tracking">
+					</a>
+					<a class="log-card log-card-photo" href="/logistics" data-log="tracking">
 						<div class="log-card-img" aria-hidden="true"></div>
 						<div class="log-card-body">
 							<h3 data-i18n="logistics.tracking">Проследяване</h3>
 							<p data-i18n="logistics.trackingDesc">Статус на партида от натоварване до предаване — по-малко изненади в сделката.</p>
 						</div>
-					</div>
+					</a>
 				</div>
-				<p style="margin-top:20px;text-align:center;display:none;">
-					<a class="btn btn-primary" href="#cta" data-i18n="logistics.cta">Намери транспорт (ранен достъп)</a>
+				<p style="margin-top:20px;text-align:center;">
+					<a class="btn btn-primary" href="/logistics" data-i18n="logistics.cta">Виж всички логистични обяви</a>
 				</p>
 			</div>
 		</section>
