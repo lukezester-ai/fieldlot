@@ -110,3 +110,50 @@
 	--yp-border: rgba(255, 255, 255, 0.1);
 	--yp-shelf: #12100a;
 }
+
+/* --- Print & PDF Export Styles --- */
+@media print {
+	.site-header, .site-footer, .toolbar, .detail-foot, .detail-close, #detail-close-2, #detail-pdf, #detail-cta, .arbitrage-calc {
+		display: none !important;
+	}
+	body {
+		background: #fff !important;
+		color: #000 !important;
+		font-family: Georgia, "Times New Roman", serif;
+	}
+	.detail-panel {
+		position: static !important;
+		width: 100% !important;
+		max-width: none !important;
+		height: auto !important;
+		box-shadow: none !important;
+		border: none !important;
+		transform: none !important;
+		overflow: visible !important;
+		padding: 0 !important;
+	}
+	.detail-head, .detail-body {
+		padding: 20px 0 !important;
+	}
+	.detail-head h2 {
+		font-size: 28px !important;
+		color: #000 !important;
+		margin-bottom: 10px !important;
+	}
+	.detail-dl dt { color: #333 !important; }
+	.detail-dl dd { color: #000 !important; font-weight: bold !important; }
+	.price { font-size: 24px !important; color: #000 !important; }
+	.detail-dl, .detail-highlight { page-break-inside: avoid; }
+	body::before {
+		content: "Fieldlot Market Intelligence — ????????? ?????";
+		display: block;
+		font-family: sans-serif;
+		font-size: 12px;
+		font-weight: bold;
+		text-transform: uppercase;
+		color: #666;
+		border-bottom: 2px solid #000;
+		padding-bottom: 8px;
+		margin-bottom: 24px;
+	}
+}

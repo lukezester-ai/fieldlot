@@ -206,9 +206,39 @@
 				<div><dt>${escapeHtml(t('catalog.quality'))}</dt><dd>${escapeHtml(item.quality)}</dd></div>
 				<div><dt>${escapeHtml(t('catalog.contact'))}</dt><dd>${escapeHtml(item.contact)}</dd></div>
 			</dl>
+			<div class="arbitrage-calc" style="margin: 20px 0; padding: 15px; background: var(--bg-sub); border-radius: 8px; border: 1px solid var(--border-color);">
+				<h4 style="margin-bottom: 8px; font-size: 0.95rem;">Калкулатор за доставка (Арбитраж)</h4>
+				<div style="display: flex; gap: 8px; align-items: center;">
+					<input type="number" id="detail-km-input" placeholder="Разстояние до вас (км)" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color);" min="1">
+					<button type="button" class="btn btn-secondary" id="detail-calc-btn" style="padding: 8px 14px; font-size: 0.85rem;">Пресметни</button>
+				</div>
+				<p id="detail-calc-result" style="margin-top: 10px; font-size: 0.9rem; display: none; color: var(--text-color);"></p>
+			</div>
 			<p class="detail-note">${escapeHtml(t('catalog.detailNote'))}</p>
 			${sourceLink}
 		`;
+
+		// Bind Calculator Logic
+		const calcBtn = document.getElementById('detail-calc-btn');
+		const kmInput = document.getElementById('detail-km-input');
+		const calcResult = document.getElementById('detail-calc-result');
+		if (calcBtn && kmInput && calcResult) {
+			calcBtn.addEventListener('click', () => {
+				const km = parseFloat(kmInput.value) || 0;
+				if (km <= 0) return;
+				const basePriceMatch = item.price.toString().match(/[\d.]+/);
+				const basePrice = basePriceMatch ? parseFloat(basePriceMatch[0]) : 0;
+				
+				// Same formula: 2.5 BGN/km. Assume 24 tons per truck.
+				// Cost per ton = (2.5 * km) / 24
+				const transportPerTon = (2.5 * km) / 24;
+				const deliveredPrice = basePrice + transportPerTon;
+
+				calcResult.innerHTML = `Транспорт: <strong>~${transportPerTon.toFixed(2)} лв/тон</strong><br>Доставена цена при вас: <strong style="color:var(--primary-color); font-size: 1.1rem;">~${deliveredPrice.toFixed(2)} ${item.priceUnit}</strong>`;
+				calcResult.style.display = 'block';
+			});
+		}
+
 		const ctaBase = I18n() ? I18n().withLangUrl('/#cta') : '/#cta';
 		detailCta.href = `${ctaBase}?listing=${encodeURIComponent(item.id)}`;
 		detailCta.textContent = t('catalog.detailCta');
