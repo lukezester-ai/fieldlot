@@ -6,6 +6,7 @@ import {
 	COPYWRITER_TOOLS,
 	ADMIN_TOOLS,
 	GENERAL_TOOLS,
+	HERMES_TOOLS,
 	type AgentActionRecord,
 } from './fieldlot-agent-tools.js';
 import {
@@ -306,11 +307,12 @@ export async function handleFieldlotChatPost(
 			route = 'admin';
 		} else {
 			const routerMessages: ChatCompletionMessage[] = [
-				{ role: 'system', content: `You are the Fieldlot Master Coordinator (Router). Based on the user's latest request, choose the best expert to handle it. Reply strictly with JSON: {"routeTo": "market" | "vision" | "copywriter" | "admin" | "general"}.
-- market: the user wants to search listings, check exchange prices, or calculate transport.
+				{ role: 'system', content: `You are the Fieldlot Master Coordinator (Router). Based on the user's latest request, choose the best expert to handle it. Reply strictly with JSON: {"routeTo": "market" | "vision" | "copywriter" | "admin" | "hermes" | "general"}.
+- market: the user wants to search crop listings or check exchange prices.
 - vision: the user provided a photo or asks about crop diseases/quality.
 - copywriter: the user wants to draft, write, edit, or negotiate an ad/listing.
 - admin: the user wants to clear stale listings or manage platform knowledge.
+- hermes: the user asks about transport, logistics, shipping, trucks, warehouses, or transport costs.
 - general: general questions, or if unsure.` },
 				{ role: 'user', content: last.content }
 			];
@@ -320,7 +322,7 @@ export async function handleFieldlotChatPost(
 				const match = content.match(/{[^}]+}/);
 				if (match) {
 					const parsed = JSON.parse(match[0]);
-					if (['market', 'vision', 'copywriter', 'admin', 'general'].includes(parsed.routeTo)) {
+					if (['market', 'vision', 'copywriter', 'admin', 'hermes', 'general'].includes(parsed.routeTo)) {
 						route = parsed.routeTo;
 					}
 				}
@@ -344,6 +346,9 @@ export async function handleFieldlotChatPost(
 	} else if (route === 'admin') {
 		activeTools = ADMIN_TOOLS;
 		specialistPrompt = lang === 'en' ? 'You are the Fieldlot Admin Agent. Your job is to clean stale listings and update platform knowledge.' : 'Ти си Админ на Fieldlot. Изчистваш стари обяви и управляваш знанията.';
+	} else if (route === 'hermes') {
+		activeTools = HERMES_TOOLS;
+		specialistPrompt = lang === 'en' ? 'You are Hermes, the Fieldlot Logistics and Transport Agent. Your job is to find trucks, calculate transport costs, and search for warehouses.' : 'Ти си Hermes (Хермес) — Логистичният Агент на Fieldlot. Твоята задача е да намираш камиони, да калкулираш цени за транспорт и да търсиш складове.';
 	} else {
 		activeTools = GENERAL_TOOLS;
 		specialistPrompt = systemPromptBase; // Fallback to the original general router prompt
