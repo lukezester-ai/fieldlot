@@ -38,6 +38,7 @@
 
 [data-theme="dark"] .ticker-label {
 	background: #000;
+	color: #eee;
 }
 
 .ticker-stream {
@@ -59,7 +60,7 @@
 
 .ticker-symbol {
 	font-weight: 600;
-	color: #ccc;
+	color: #fff;
 }
 
 .ticker-price {
@@ -71,7 +72,7 @@
 .ticker-price.flat { color: #9ca3af; }
 
 .ticker-basis {
-	color: #888;
+	color: #999;
 	margin-left: 4px;
 }
 
@@ -130,6 +131,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	color: var(--text-color);
 }
 
 .catalog-grid.terminal-mode .yp-entry-line,
@@ -141,6 +143,7 @@
 	font-size: 0.9rem;
 	margin: 0;
 	font-weight: 700;
+	color: var(--text-color);
 }
 
 .catalog-grid.terminal-mode .tag {
