@@ -334,22 +334,22 @@ export async function handleFieldlotChatPost(
 	let specialistPrompt = '';
 	if (route === 'market') {
 		activeTools = MARKET_TOOLS;
-		specialistPrompt = lang === 'en' ? '[ROLE: MARKET AGENT] You are the Market Analyzer. Use search_listings, get_exchange_prices, etc.' : '[ROLE: MARKET AGENT] Ти си Пазарен Анализатор. Намираш обяви и борсови цени.';
+		specialistPrompt = lang === 'en' ? 'You are the Fieldlot Market Agent. Your job is to search listings, check exchange prices, and calculate transport costs. Be concise and professional.' : 'Ти си Пазарен Анализатор на Fieldlot. Твоята задача е да намираш обяви, да проверяваш борсови цени и да калкулираш транспорт. Бъди кратък и професионален.';
 	} else if (route === 'vision') {
 		activeTools = VISION_TOOLS;
-		specialistPrompt = lang === 'en' ? '[ROLE: VISION AGENT] You are the Vision Agent. Analyze user images.' : '[ROLE: VISION AGENT] Ти си Агро Вижън агент. Анализираш снимки на култури.';
+		specialistPrompt = lang === 'en' ? 'You are the Fieldlot Vision Agent. Your job is to analyze user images of crops and explain diseases or quality.' : 'Ти си Агро Вижън агент на Fieldlot. Твоята задача е да анализираш снимки на култури и да обясняваш за болести или качество.';
 	} else if (route === 'copywriter') {
 		activeTools = COPYWRITER_TOOLS;
-		specialistPrompt = lang === 'en' ? '[ROLE: COPYWRITER AGENT] You are the Copywriter Agent. You create and edit listing drafts.' : '[ROLE: COPYWRITER AGENT] Ти си Копирайтър. Пишеш и редактираш чернови за обяви.';
+		specialistPrompt = lang === 'en' ? 'You are the Fieldlot Copywriter Agent. Your job is to create, edit, and negotiate B2B listing drafts.' : 'Ти си Копирайтър на Fieldlot. Твоята задача е да пишеш, редактираш и преговаряш за B2B обяви.';
 	} else if (route === 'admin') {
 		activeTools = ADMIN_TOOLS;
-		specialistPrompt = lang === 'en' ? '[ROLE: ADMIN] You are the Admin Agent.' : '[ROLE: ADMIN] Ти си Админ. Изчистваш обяви и управляваш знанията.';
+		specialistPrompt = lang === 'en' ? 'You are the Fieldlot Admin Agent. Your job is to clean stale listings and update platform knowledge.' : 'Ти си Админ на Fieldlot. Изчистваш стари обяви и управляваш знанията.';
 	} else {
 		activeTools = GENERAL_TOOLS;
-		specialistPrompt = lang === 'en' ? '[ROLE: GENERAL] You are the General Agent. Route users or answer general questions.' : '[ROLE: GENERAL] Ти си Главен Координатор. Отговаряш общо.';
+		specialistPrompt = systemPromptBase; // Fallback to the original general router prompt
 	}
 
-	const systemContent = `${specialistPrompt}\n\n${systemPromptBase}\n\n${formatCategoriesForRag(lang)}\n\n${rag.systemContext}${semanticBlock ? `\n\n${semanticBlock}` : ''}${visionBlock}${exchangeBlock}`;
+	const systemContent = `${specialistPrompt}\n\n${formatCategoriesForRag(lang)}\n\n${rag.systemContext}${semanticBlock ? `\n\n${semanticBlock}` : ''}${visionBlock}${exchangeBlock}`;
 
 	const chatMessages: ChatCompletionMessage[] = [
 		{ role: 'system', content: systemContent },

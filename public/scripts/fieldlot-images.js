@@ -5,7 +5,7 @@
 (function initFieldlotImages(global) {
 	const M = {
 	"version": 3,
-	"source": "borsaagro.com + Fieldlot Europe",
+	"source": "borsaagro.com + agro.bg + Global Feed Exchange + Fieldlot Europe",
 	"hero": {
 		"background": {
 			"path": "/images/hero/background.jpg",
