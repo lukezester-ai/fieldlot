@@ -45,6 +45,28 @@
 				`;
 			});
 
+			// Update ticker label with New York time
+			const labels = document.querySelectorAll('.ticker-label');
+			labels.forEach(label => {
+				if (!label.querySelector('.ny-clock')) {
+					const span = document.createElement('span');
+					span.className = 'ny-clock';
+					span.style.marginLeft = '12px';
+					span.style.color = 'var(--fl-brand)';
+					span.style.opacity = '0.9';
+					label.appendChild(span);
+				}
+			});
+
+			function updateClock() {
+				const clocks = document.querySelectorAll('.ny-clock');
+				const now = new Date();
+				const timeStr = now.toLocaleTimeString('bg-BG', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+				clocks.forEach(c => c.textContent = 'Ню Йорк: ' + timeStr);
+			}
+			updateClock();
+			setInterval(updateClock, 1000);
+
 			// Duplicate for seamless scroll
 			streamEl.innerHTML = html + html;
 			tickerEl.style.display = 'block';

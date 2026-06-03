@@ -21,7 +21,14 @@ export async function runListingsSyncPipeline(opts?: {
 	const snapRaw = await fetchAllListingsSnapshot(opts?.detailLimit ?? 40);
 	const snap = {
 		...snapRaw,
-		listings: snapRaw.listings.map((l) => stripListingMedia(enrichListing(l))),
+		listings: snapRaw.listings.map((l: any) => {
+			const mapped = {
+				...l,
+				subtitle: l.subtitle || l.location || 'Международен пазар',
+				priceUnit: l.priceUnit || l.currency || '',
+			};
+			return stripListingMedia(enrichListing(mapped));
+		}),
 	};
 	const rag = await rebuildFieldlotRagIndex(snap.listings);
 

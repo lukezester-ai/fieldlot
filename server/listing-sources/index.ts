@@ -11,8 +11,11 @@ import { fetchAgroListings } from './agro-listings-fetcher.js';
 import { fetchAgriListings } from './agri-listings-fetcher.js';
 import { fetchGovHtmlListings, type GovHtmlSourceConfig } from './gov-html-fetcher.js';
 import { fetchGlobalFeedListings } from './global-feed-generator.js';
-import { fetchEuropeListings } from './europe-scraper.js';
-import { fetchMockListings } from '../mock-listings-generator.js';
+import { fetchRomaniaBursaListings } from './romania-bursa-fetcher.js';
+import { fetchGreeceAgrolisiListings } from './greece-agrolisi-fetcher.js';
+import { fetchGermanyLandwirtListings } from './germany-landwirt-fetcher.js';
+import { fetchPolandIgritListings } from './poland-igrit-fetcher.js';
+import { fetchItalyAgriaffairesListings } from './italy-agriaffaires-fetcher.js';
 
 type SourceRow = {
 	id: string;
@@ -48,62 +51,88 @@ function dedupeListings(items: FieldlotListing[]): FieldlotListing[] {
 	return [...byKey.values()];
 }
 
+/** Всички активни източници → един snapshot. */
 export async function fetchAllListingsSnapshot(detailLimit = 40): Promise<ListingsSnapshot> {
 	const sources = loadSourcesConfig();
 	const all: FieldlotListing[] = [];
 	const sourceNames: string[] = [];
 
-	const fetchTasks = sources.map(async (src) => {
-		if (src.enabled === false) return null;
-		
-		let rows: FieldlotListing[] = [];
-		let name = '';
-		
-		if (src.type === 'borsa') {
-			const snap = await fetchBorsaListingsSnapshot(detailLimit);
-			rows = snap.listings;
-			name = 'borsaagro.com';
-		} else if (src.type === 'agri-borsa' || src.id === 'agri-bg') {
-			rows = await fetchAgriListings(src.maxLinks ?? 30);
-			name = 'agri.bg';
-		} else if (src.type === 'agro-obyavi' || src.id === 'agro-bg') {
-			rows = await fetchAgroListings(src.maxLinks ?? 25);
-			name = 'agro.bg';
-		} else if (src.type === 'gov-html' && src.listUrl) {
-			const cfg: GovHtmlSourceConfig = {
-				id: src.id,
-				name: src.name || src.id,
-				listUrl: src.listUrl,
-				baseUrl: src.baseUrl,
-				linkInclude: src.linkInclude,
-				linkExclude: src.linkExclude,
-				maxLinks: src.maxLinks,
-			};
-			rows = await fetchGovHtmlListings(cfg);
-			name = cfg.name;
-		} else if (src.type === 'global-feed') {
-			rows = await fetchGlobalFeedListings(src.maxLinks ?? 20);
-			name = 'Global Feed Exchange';
-		} else if (src.type === 'europe') {
-			rows = await fetchEuropeListings(src.maxLinks ?? 30);
-			name = 'Fieldlot Europe';
-		}
-		
-		return { srcId: src.id, rows, name };
-	});
-
-	const results = await Promise.allSettled(fetchTasks);
-
-	for (const res of results) {
-		if (res.status === 'fulfilled' && res.value) {
-			all.push(...res.value.rows);
-			if (res.value.name) sourceNames.push(res.value.name);
-		} else if (res.status === 'rejected') {
-			console.warn(`[listing-sources] fetch task failed:`, res.reason instanceof Error ? res.reason.message : res.reason);
+	for (const src of sources) {
+		if (src.enabled === false) continue;
+		try {
+			if (src.type === 'borsa') {
+				const snap = await fetchBorsaListingsSnapshot(detailLimit);
+				all.push(...snap.listings);
+				sourceNames.push('borsaagro.com');
+				continue;
+			}
+			if (src.type === 'agri-borsa' || src.id === 'agri-bg') {
+				const rows = await fetchAgriListings(src.maxLinks ?? 30);
+				all.push(...rows);
+				sourceNames.push('agri.bg');
+				continue;
+			}
+			if (src.type === 'agro-obyavi' || src.id === 'agro-bg') {
+				const rows = await fetchAgroListings(src.maxLinks ?? 25);
+				all.push(...rows);
+				sourceNames.push('agro.bg');
+				continue;
+			}
+			if (src.type === 'gov-html' && src.listUrl) {
+				const cfg: GovHtmlSourceConfig = {
+					id: src.id,
+					name: src.name || src.id,
+					listUrl: src.listUrl,
+					baseUrl: src.baseUrl,
+					linkInclude: src.linkInclude,
+					linkExclude: src.linkExclude,
+					maxLinks: src.maxLinks,
+				};
+				const rows = await fetchGovHtmlListings(cfg);
+				all.push(...rows);
+				sourceNames.push(cfg.name);
+				continue;
+			}
+			if (src.type === 'global-feed') {
+				const rows = await fetchGlobalFeedListings(src.maxLinks ?? 20);
+				all.push(...rows);
+				sourceNames.push('Global Feed Exchange');
+				continue;
+			}
+			if (src.type === 'romania-bursa') {
+				const rows = await fetchRomaniaBursaListings(src.maxLinks ?? 20);
+				all.push(...rows);
+				sourceNames.push(src.name || 'BursaCereale.com');
+				continue;
+			}
+			if (src.type === 'greece-agrolisi') {
+				const rows = await fetchGreeceAgrolisiListings(src.maxLinks ?? 10);
+				all.push(...rows);
+				sourceNames.push(src.name || 'Agrolisi.gr');
+				continue;
+			}
+			if (src.type === 'germany-landwirt') {
+				const rows = await fetchGermanyLandwirtListings(src.maxLinks ?? 10);
+				all.push(...rows);
+				sourceNames.push(src.name || 'Landwirt.com');
+				continue;
+			}
+			if (src.type === 'poland-igrit') {
+				const rows = await fetchPolandIgritListings(src.maxLinks ?? 10);
+				all.push(...rows);
+				sourceNames.push(src.name || 'Igrit.pl');
+				continue;
+			}
+			if (src.type === 'italy-agriaffaires') {
+				const rows = await fetchItalyAgriaffairesListings(src.maxLinks ?? 10);
+				all.push(...rows);
+				sourceNames.push(src.name || 'Agriaffaires.it');
+				continue;
+			}
+		} catch (e) {
+			console.warn(`[listing-sources] ${src.id} failed:`, e instanceof Error ? e.message : e);
 		}
 	}
-
-
 
 	let merged = dedupeListings(all);
 	if (salesOnlyEnabled()) {
