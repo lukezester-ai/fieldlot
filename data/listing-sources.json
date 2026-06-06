@@ -14,25 +14,46 @@
       "maxLinks": 25
     },
     {
-      "id": "agri-bg",
-      "type": "agri-borsa",
-      "enabled": true,
-      "name": "agri.bg — Агроборса",
-      "maxLinks": 30
-    },
-    {
       "id": "global-feed",
       "type": "global-feed",
       "enabled": true,
-      "name": "Global Feed Exchange — Международни обяви",
+      "name": "Global Feed Exchange",
       "maxLinks": 30
     },
     {
-      "id": "europe-feed",
-      "type": "europe",
+      "id": "romania-bursa",
+      "type": "romania-bursa",
       "enabled": true,
-      "name": "Fieldlot Europe — Обяви от Европа",
-      "maxLinks": 50
+      "name": "BursaCereale.com (Румъния)",
+      "maxLinks": 20
+    },
+    {
+      "id": "greece-agrolisi",
+      "type": "greece-agrolisi",
+      "enabled": true,
+      "name": "Agrolisi.gr (Гърция)",
+      "maxLinks": 15
+    },
+    {
+      "id": "germany-landwirt",
+      "type": "germany-landwirt",
+      "enabled": true,
+      "name": "Landwirt.com (Германия/Австрия)",
+      "maxLinks": 15
+    },
+    {
+      "id": "poland-igrit",
+      "type": "poland-igrit",
+      "enabled": true,
+      "name": "Igrit.pl (Полша)",
+      "maxLinks": 20
+    },
+    {
+      "id": "italy-agriaffaires",
+      "type": "italy-agriaffaires",
+      "enabled": true,
+      "name": "Agriaffaires.it (Италия)",
+      "maxLinks": 15
     }
   ]
 }
