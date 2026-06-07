@@ -79,7 +79,7 @@
 				<a href="#listings" data-i18n="nav.market">Пазар</a>
 				<a href="#exchange" data-i18n="nav.exchange">Борса</a>
 				<a href="#logistics" data-i18n="nav.logistics">Логистика</a>
-				<a href="#top-producers" data-i18n="nav.farmers">Производители</a>
+				<a href="#market-trends" data-i18n="nav.trends">Анализи</a>
 				<a href="/catalog.html" data-i18n="nav.demoCatalog">Каталог</a>
 			</nav>
 		</div>
@@ -234,28 +234,19 @@
 			</div>
 		</section>
 
-		<section class="eco-section" id="farmers">
+		<section class="eco-section" id="market-trends">
 			<div class="container">
-				<div class="farmer-spotlight reveal">
-					<div class="farmer-avatar">
-						<img id="farmer-avatar-img" src="" data-i18n-aria="listing.farmerAlt" alt="Производител" width="140" height="140" loading="lazy" />
-					</div>
-					<div>
-						<p class="eco-eyebrow" style="color:rgba(255,255,255,0.7)" data-i18n="spotlight.eyebrow">Производители</p>
-						<h2 data-i18n="spotlight.title">Профил на фермер с доверие</h2>
-						<p data-i18n="spotlight.lead">Снимки, сертификати, история, рейтинг и видео от стопанството — купувачът вижда с кого работи.</p>
-						<div class="farmer-tags">
-							<span data-i18n="spotlight.cert">✓ Сертификати</span>
-							<span data-i18n="spotlight.gallery">Галерия</span>
-							<span data-i18n="spotlight.rating">Рейтинг</span>
-							<span data-i18n="spotlight.video">Видео</span>
-						</div>
-						<p style="margin-top:20px">
-							<a class="btn btn-secondary" href="#cta" style="margin-right:8px" data-i18n="spotlight.profile">Създай профил</a>
-							<a class="btn btn-primary" href="/catalog.html" data-i18n="spotlight.offers">Виж демо оферти</a>
-						</p>
-					</div>
+				<div class="eco-section-head reveal">
+					<p class="eco-eyebrow" data-i18n="trends.eyebrow">Анализи</p>
+					<h2 data-i18n="trends.title">Пазарни тенденции и анализи</h2>
+					<p data-i18n="trends.lead">Следете динамиката на пазара чрез актуални новини, графики и кратки анализи за основните култури.</p>
 				</div>
+				<div class="article-series-grid reveal" id="article-series-grid">
+					<!-- JS ще зареди картите тук от article-series.json -->
+				</div>
+				<p style="margin-top:20px;text-align:center;">
+					<a class="btn btn-primary" href="#cta" data-i18n="trends.cta">Абонирай се за бюлетин</a>
+				</p>
 			</div>
 		</section>
 

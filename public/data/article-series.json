@@ -1,0 +1,49 @@
+{
+  "items": [
+    {
+      "part": "1",
+      "title": {
+        "bg": "Очаквания за реколтата от пшеница",
+        "en": "Wheat Harvest Expectations",
+        "de": "Ernteerwartungen für Weizen"
+      },
+      "excerpt": {
+        "bg": "Добивите се очертават добри, но климатичните аномалии държат цените нестабилни...",
+        "en": "Yields look promising, but climate anomalies keep prices volatile...",
+        "de": "Die Erträge sehen vielversprechend aus, aber Klima-Anomalien halten die Preise volatil..."
+      },
+      "date": "07 Юни 2026",
+      "href": "#cta"
+    },
+    {
+      "part": "2",
+      "title": {
+        "bg": "Спад в цената на слънчогледа",
+        "en": "Drop in Sunflower Prices",
+        "de": "Rückgang der Sonnenblumenpreise"
+      },
+      "excerpt": {
+        "bg": "Увеличеният внос от съседни държави притиска локалния пазар...",
+        "en": "Increased imports from neighboring countries are pressuring the local market...",
+        "de": "Gesteigerte Importe aus Nachbarländern setzen den lokalen Markt unter Druck..."
+      },
+      "date": "05 Юни 2026",
+      "href": "#cta"
+    },
+    {
+      "part": "3",
+      "title": {
+        "bg": "Експортни пазари за царевица",
+        "en": "Export Markets for Corn",
+        "de": "Exportmärkte für Mais"
+      },
+      "excerpt": {
+        "bg": "Как логистиката и пристанищните такси влияят на крайната печалба на производителя...",
+        "en": "How logistics and port fees affect the final profit of the producer...",
+        "de": "Wie Logistik und Hafengebühren den Endgewinn des Produzenten beeinflussen..."
+      },
+      "date": "01 Юни 2026",
+      "href": "#cta"
+    }
+  ]
+}
