@@ -23,7 +23,7 @@ export async function fetchGreeceAgrolisiListings(limit = 20): Promise<FieldlotL
 		const allLinks = $('a')
 			.map((_, el) => $(el).attr('href'))
 			.get()
-			.filter(h => h && (h.includes('/ad/') || h.includes('/listing/')));
+			.filter(h => h && (h.includes('/ad/') || h.includes('/listing/') || h.includes('/products-trofima/') || h.includes('/aggelies/?type=')));
 
 		const uniqueLinks = [...new Set(allLinks)];
 		console.log(`[greece-agrolisi] Found ${uniqueLinks.length} ad links.`);

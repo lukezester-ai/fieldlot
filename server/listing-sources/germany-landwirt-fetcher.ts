@@ -5,7 +5,7 @@ export async function fetchGermanyLandwirtListings(limit = 20): Promise<Fieldlot
 	const listings: FieldlotListing[] = [];
 	try {
 		// Searching for grain on landwirt.com (Getreide)
-		const targetUrl = 'https://www.landwirt.com/ez/index.php/kleinanzeigen/suchergebnis?kat=220'; // category 220 is usually Getreide/Futtermittel, but we use a generic URL.
+		const targetUrl = 'https://www.landwirt.com/kleinanzeigen/'; 
 		const apiKey = process.env.SCRAPER_API_KEY || 'bdbf0d33e9bccd8556d4be294f54e026';
 		const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${encodeURIComponent(targetUrl)}&ultra_premium=true`;
 

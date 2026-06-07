@@ -22,9 +22,17 @@ export async function runListingsSyncPipeline(opts?: {
 	const snap = {
 		...snapRaw,
 		listings: snapRaw.listings.map((l: any) => {
+			const FLAGS: Record<string, string> = {
+				'Полша': 'Полша 🇵🇱',
+				'Германия': 'Германия 🇩🇪',
+				'Гърция': 'Гърция 🇬🇷',
+				'Италия': 'Италия 🇮🇹',
+				'Румъния': 'Румъния 🇷🇴',
+			};
+			const locWithFlag = l.location && FLAGS[l.location] ? FLAGS[l.location] : l.location;
 			const mapped = {
 				...l,
-				subtitle: l.subtitle || l.location || 'Международен пазар',
+				subtitle: l.subtitle || locWithFlag || 'Международен пазар',
 				priceUnit: l.priceUnit || l.currency || '',
 			};
 			return stripListingMedia(enrichListing(mapped));
