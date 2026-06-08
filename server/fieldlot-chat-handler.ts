@@ -71,6 +71,7 @@ const COMMON_RULES_BG = `
 • clean_stale_listings — изчисти остарели обяви (само за admin)
 • parse_pdf_document — прочети текст от PDF (само за admin)
 • update_platform_knowledge — добави знание в базата (само за admin)
+• search_agrinexuslaw — търсене на закони, субсидии и бланки в братския сайт AgrinexusLaw.com (използвай винаги при правни въпроси)
 
 Правила:
 - Отговаряй на български, професионално.
@@ -313,7 +314,7 @@ export async function handleFieldlotChatPost(
 - copywriter: the user wants to draft, write, edit, or negotiate an ad/listing.
 - admin: the user wants to clear stale listings or manage platform knowledge.
 - hermes: the user asks about transport, logistics, shipping, trucks, warehouses, or transport costs.
-- general: general questions, or if unsure.` },
+- general: general questions, legal advice, laws, subsidies, templates, or if unsure.` },
 				{ role: 'user', content: last.content }
 			];
 			try {

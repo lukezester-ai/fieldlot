@@ -184,6 +184,21 @@ export const FIELDLOT_AGENT_TOOLS = [
 	{
 		type: 'function' as const,
 		function: {
+			name: 'search_agrinexuslaw',
+			description: 'Search the agrinexuslaw.com platform (brother site) for agricultural laws, regulations, legal templates, or legal advice in Bulgaria.',
+			parameters: {
+				type: 'object',
+				properties: {
+					query: { type: 'string', description: 'Search query for legal documents' },
+				},
+				required: ['query'],
+				additionalProperties: false,
+			},
+		},
+	},
+	{
+		type: 'function' as const,
+		function: {
 			name: 'get_exchange_prices',
 			description:
 				'Fetch live indicative MATIF exchange prices (wheat, sunflower, corn, rapeseed) in BGN/ton from borsaagro.com cache.',
@@ -486,6 +501,34 @@ export async function executeAgentTool(
 					const summary = ctx.lang === 'en' ? `Web search performed for: ${query}` : `Търсене в интернет за: ${query}`;
 					return {
 						result: JSON.stringify({ ok: true, data: limited }),
+						action: { tool: name, ok: true, summary }
+					};
+				} catch (err: any) {
+					return { result: JSON.stringify({ ok: false, error: err.message }), action: { tool: name, ok: false, summary: 'Search error' } };
+				}
+			}
+			case 'search_agrinexuslaw': {
+				const query = typeof args.query === 'string' ? args.query : '';
+				if (!query) {
+					return { result: JSON.stringify({ ok: false, error: 'Missing query parameter' }), action: { tool: name, ok: false, summary: 'Failed agrinexuslaw search' } };
+				}
+				try {
+					const apiKey = process.env.GOOGLE_CSE_API_KEY;
+					const cx = process.env.GOOGLE_CSE_CX;
+					if (!apiKey || !cx) {
+						return { result: JSON.stringify({ ok: false, error: 'API credentials missing' }), action: { tool: name, ok: false, summary: 'Missing credentials' } };
+					}
+					const searchUrl = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query + ' site:agrinexuslaw.com')}`;
+					const res = await fetch(searchUrl);
+					const data = await res.json();
+					const items = (data.items || []).slice(0, 5).map((r: any) => ({
+						title: r.title,
+						snippet: r.snippet,
+						link: r.link
+					}));
+					const summary = ctx.lang === 'en' ? `Searched AgrinexusLaw for: ${query}` : `Търсене в AgrinexusLaw: ${query}`;
+					return {
+						result: JSON.stringify({ ok: true, data: items }),
 						action: { tool: name, ok: true, summary }
 					};
 				} catch (err: any) {
@@ -917,5 +960,5 @@ export const MARKET_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'get
 export const COPYWRITER_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'draft_listing', 'edit_listing', 'draft_negotiation'].includes(t.function.name));
 export const VISION_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'classify_crop_image'].includes(t.function.name));
 export const ADMIN_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'clean_stale_listings', 'parse_pdf_document', 'update_platform_knowledge'].includes(t.function.name));
-export const GENERAL_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'submit_early_access', 'send_team_email'].includes(t.function.name));
+export const GENERAL_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'submit_early_access', 'send_team_email', 'search_agrinexuslaw'].includes(t.function.name));
 export const HERMES_TOOLS = FIELDLOT_AGENT_TOOLS.filter(t => ['search_web', 'search_listings', 'get_listing', 'calculate_transport_cost'].includes(t.function.name));
