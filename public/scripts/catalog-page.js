@@ -71,7 +71,7 @@
 		grid.innerHTML = `<p class="meta yp-loading">${escapeHtml(t('catalog.loading'))}</p>`;
 		let staticData = [];
 		try {
-			const res = await fetch('/data/live-listings.json');
+			const res = await fetch('/api/listings');
 			if (res.ok) {
 				const data = await res.json();
 				staticData = Array.isArray(data.listings) ? data.listings : [];

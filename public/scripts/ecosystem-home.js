@@ -321,7 +321,7 @@
 		if (!grid) return;
 		let staticData = [];
 		try {
-			const res = await fetch('/data/live-listings.json');
+			const res = await fetch('/api/listings');
 			if (res.ok) {
 				const data = await res.json();
 				staticData = Array.isArray(data) ? data : data.listings || [];
