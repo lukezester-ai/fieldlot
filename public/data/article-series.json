@@ -13,7 +13,7 @@
         "de": "Die Erträge sehen vielversprechend aus, aber Klima-Anomalien halten die Preise volatil..."
       },
       "date": "07 Юни 2026",
-      "href": "#cta"
+      "href": "javascript:document.getElementById('llm-fab') ? document.getElementById('llm-fab').click() : void(0)"
     },
     {
       "part": "2",
@@ -28,7 +28,7 @@
         "de": "Gesteigerte Importe aus Nachbarländern setzen den lokalen Markt unter Druck..."
       },
       "date": "05 Юни 2026",
-      "href": "#cta"
+      "href": "javascript:document.getElementById('llm-fab') ? document.getElementById('llm-fab').click() : void(0)"
     },
     {
       "part": "3",

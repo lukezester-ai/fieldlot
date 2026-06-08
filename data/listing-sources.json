@@ -14,6 +14,13 @@
       "maxLinks": 25
     },
     {
+      "id": "agri-bg",
+      "type": "agri-borsa",
+      "enabled": true,
+      "name": "agri.bg — Агроборса",
+      "maxLinks": 100
+    },
+    {
       "id": "global-feed",
       "type": "global-feed",
       "enabled": true,

@@ -14,9 +14,11 @@ const UA =
 const HOME = 'https://agri.bg/';
 
 export async function fetchAgriListings(maxItems = 30): Promise<FieldlotListing[]> {
-	const res = await fetch(HOME, {
-		headers: { 'User-Agent': UA, 'Accept-Language': 'bg-BG,bg;q=0.9' },
-		signal: AbortSignal.timeout(25_000),
+	const apiKey = process.env.SCRAPER_API_KEY || 'bdbf0d33e9bccd8556d4be294f54e026';
+	const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${encodeURIComponent(HOME)}`;
+	
+	const res = await fetch(scraperUrl, {
+		signal: AbortSignal.timeout(60_000),
 	});
 	if (!res.ok) throw new Error(`agri.bg HTTP ${res.status}`);
 	const html = await res.text();

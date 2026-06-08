@@ -5,7 +5,7 @@
 (function initFieldlotImages(global) {
 	const M = {
 	"version": 3,
-	"source": "borsaagro.com + agro.bg + Global Feed Exchange + BursaCereale.com (Румъния) + Agrolisi.gr (Гърция) + Landwirt.com (Германия/Австрия) + Igrit.pl (Полша) + Agriaffaires.it (Италия)",
+	"source": "borsaagro.com + agro.bg + agri.bg + Global Feed Exchange + BursaCereale.com (Румъния) + Agrolisi.gr (Гърция) + Landwirt.com (Германия/Австрия) + Igrit.pl (Полша) + Agriaffaires.it (Италия)",
 	"hero": {
 		"background": {
 			"path": "/images/hero/background.jpg",

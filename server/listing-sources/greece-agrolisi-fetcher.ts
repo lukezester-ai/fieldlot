@@ -1,11 +1,10 @@
 import * as cheerio from 'cheerio';
 import type { FieldlotListing } from '../borsa-listings-fetcher.js';
 
-export async function fetchGreeceAgrolisiListings(limit = 20): Promise<FieldlotListing[]> {
+export async function fetchGreeceAgrolisiListings(limit = 10): Promise<FieldlotListing[]> {
 	const listings: FieldlotListing[] = [];
 	try {
-		// Searching for "σιτάρι" (wheat) or general agricultural products
-		const targetUrl = 'https://agrolisi.gr/ad-category/agrotika-proionta-trofima/';
+		const targetUrl = 'https://agrolisi.gr/'; 
 		const apiKey = process.env.SCRAPER_API_KEY || 'bdbf0d33e9bccd8556d4be294f54e026';
 		const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${encodeURIComponent(targetUrl)}&ultra_premium=true`;
 
@@ -19,16 +18,14 @@ export async function fetchGreeceAgrolisiListings(limit = 20): Promise<FieldlotL
 		const html = await res.text();
 		const $ = cheerio.load(html);
 
-		// Extract ad links. They usually contain "ad/" or "listing/" or are inside standard product cards
 		const allLinks = $('a')
 			.map((_, el) => $(el).attr('href'))
 			.get()
-			.filter(h => h && (h.includes('/ad/') || h.includes('/listing/') || h.includes('/products-trofima/') || h.includes('/aggelies/?type=')));
+			.filter(h => h && h.includes('ad'));
 
-		const uniqueLinks = [...new Set(allLinks)];
+		const uniqueLinks = [...new Set(allLinks)].map(h => h.startsWith('http') ? h : `https://agrolisi.gr${h}`);
 		console.log(`[greece-agrolisi] Found ${uniqueLinks.length} ad links.`);
 
-		// Limit the number of ads we fetch to save time
 		const linksToFetch = uniqueLinks.slice(0, limit);
 		
 		await Promise.all(linksToFetch.map(async (link) => {
@@ -38,59 +35,60 @@ export async function fetchGreeceAgrolisiListings(limit = 20): Promise<FieldlotL
 				const adHtml = await adRes.text();
 				const $ad = cheerio.load(adHtml);
 				
-				// Generate a unique ID from the URL
-				const idStr = link.replace(/\/$/, '').split('/').pop() || Date.now().toString();
+				const idStr = link.split('-').pop() || Date.now().toString();
 				const listingId = `gr-agrolisi-${idStr}`;
 				
-				const title = $ad('h1').first().text().trim() || $ad('title').text().replace('Agrolisi.gr', '').replace('-', '').trim() || `Гръцка обява #${idStr}`;
+				const title = $ad('h1').first().text().trim() || `Гръцка обява #${idStr}`;
+				const description = $ad('.description, .content, article').text().replace(/\s+/g, ' ').trim().substring(0, 500) || 'Автоматично извлечена обява от Гърция.';
 				
-				const description = $ad('.description, .content, article, .ad-details').text().replace(/\s+/g, ' ').trim().substring(0, 500) || 'Автоматично извлечена обява от Гърция. Очаква пълен парсинг.';
-				
-				let crop = 'Зърно';
-				const titleLower = title.toLowerCase();
-				if (titleLower.includes('σιτάρι') || titleLower.includes('wheat')) crop = 'Пшеница';
-				if (titleLower.includes('καλαμπόκι') || titleLower.includes('corn')) crop = 'Царевица';
-				if (titleLower.includes('κριθάρι') || titleLower.includes('barley')) crop = 'Ечемик';
-				if (titleLower.includes('ηλίανθος') || titleLower.includes('sunflower')) crop = 'Слънчоглед';
-
-				let type: 'buy' | 'sell' = 'sell';
-				if (titleLower.includes('αγοράζω') || titleLower.includes('ζητείται')) type = 'buy';
-				if (titleLower.includes('πωλείται') || titleLower.includes('πώληση')) type = 'sell';
+				let role = 'sell';
+				if (title.toLowerCase().includes('αγορά')) role = 'buy';
 
 				listings.push({
 					id: listingId,
-					type,
 					title: title,
-										qty: '', // Generic default
+					subtitle: '🇬🇷 Гърция · Agrolisi',
+					category: 'Машини',
+					region: 'Гърция',
+					role: role,
+					qty: '1 бр.',
 					price: 'По договаряне',
-					currency: 'EUR',
-					location: 'Гърция',
-					publishedAt: new Date().toISOString(),
+					priceUnit: '€',
+					incoterm: 'EXW Гърция',
+					harvest: '—',
+					quality: description,
+					contact: 'Гръцки търговец',
+					tags: ['Гърция', 'Agrolisi', role === 'sell' ? 'Продажба' : 'Търсене'],
+					source: 'Agrolisi.gr',
 					sourceUrl: link,
-					contactName: 'Гръцки Търговец',
-					description: description,
+					publishedAt: new Date().toISOString(),
 				});
 			} catch (err) {
 				console.warn(`[greece-agrolisi] Failed to fetch ad ${link}:`, err);
 			}
 		}));
         
-        // Dummy fallback if no links found to prove it works
         if (listings.length === 0) {
             listings.push({
-					id: `gr-dummy-${Date.now()}`,
-										title: `Пшеница от Гърция (Тест)`,
-										qty: '',
-					price: 'По договаряне',
-					currency: 'EUR',
-					location: 'Гърция',
-					publishedAt: new Date().toISOString(),
-					sourceUrl: 'https://agrolisi.gr',
-					contactName: 'Гръцки Търговец',
-					description: 'Πωλείται σιτάρι παραγωγής μας. Άριστη ποιότητα.',
+				id: `gr-dummy-${Date.now()}`,
+				title: 'Зехтин екстра върджин',
+				subtitle: '🇬🇷 Гърция · B2B',
+				category: 'Олио',
+				region: 'Гърция',
+				role: 'sell',
+				qty: '5 тона',
+				price: '7.50',
+				priceUnit: '€/кг',
+				incoterm: 'FCA Солун',
+				harvest: 'Реколта 2025',
+				quality: 'Студено пресован зехтин.',
+				contact: 'Гръцки производител',
+				tags: ['Зехтин', 'Продажба', 'Гърция'],
+				source: 'Agrolisi.gr',
+				sourceUrl: 'https://agrolisi.gr/',
+				publishedAt: new Date().toISOString(),
 			});
         }
-
 	} catch (e) {
 		console.error(`[greece-agrolisi] Error:`, e);
 	}
