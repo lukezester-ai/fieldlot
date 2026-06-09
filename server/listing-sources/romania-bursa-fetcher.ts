@@ -5,7 +5,11 @@ export async function fetchRomaniaBursaListings(limit = 10): Promise<FieldlotLis
 	const listings: FieldlotListing[] = [];
 	try {
 		const targetUrl = 'https://www.bursacereale.com/'; 
-		const apiKey = process.env.SCRAPER_API_KEY || 'bdbf0d33e9bccd8556d4be294f54e026';
+		const apiKey = process.env.SCRAPER_API_KEY || process.env.SCRAPERAPI_KEY || '';
+		if (!apiKey) {
+			console.info('[listing-sources] ScraperAPI key is not configured; skipping source.');
+			return listings;
+		}
 		const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${encodeURIComponent(targetUrl)}&ultra_premium=true`;
 
 		console.log(`[romania-bursa] Fetching page via ScraperAPI...`);

@@ -17,6 +17,22 @@ import { fetchGermanyLandwirtListings } from './germany-landwirt-fetcher.js';
 import { fetchPolandIgritListings } from './poland-igrit-fetcher.js';
 import { fetchItalyAgriaffairesListings } from './italy-agriaffaires-fetcher.js';
 
+const SCRAPER_API_SOURCE_TYPES = new Set([
+	'agri-borsa',
+	'romania-bursa',
+	'greece-agrolisi',
+	'germany-landwirt',
+	'poland-igrit',
+	'italy-agriaffaires',
+]);
+
+function isScraperApiSyncEnabled(): boolean {
+	return (
+		process.env.FIELDLOT_ENABLE_SCRAPERAPI_SYNC === '1' &&
+		Boolean(process.env.SCRAPER_API_KEY?.trim() || process.env.SCRAPERAPI_KEY?.trim())
+	);
+}
+
 type SourceRow = {
 	id: string;
 	type: string;
@@ -59,6 +75,10 @@ export async function fetchAllListingsSnapshot(detailLimit = 40): Promise<Listin
 
 	for (const src of sources) {
 		if (src.enabled === false) continue;
+		if (SCRAPER_API_SOURCE_TYPES.has(src.type) && !isScraperApiSyncEnabled()) {
+			console.info(`[listing-sources] skipping ${src.id}: ScraperAPI sync disabled`);
+			continue;
+		}
 		try {
 			if (src.type === 'borsa') {
 				const snap = await fetchBorsaListingsSnapshot(detailLimit);

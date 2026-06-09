@@ -14,7 +14,11 @@ const UA =
 const HOME = 'https://agri.bg/';
 
 export async function fetchAgriListings(maxItems = 30): Promise<FieldlotListing[]> {
-	const apiKey = process.env.SCRAPER_API_KEY || 'bdbf0d33e9bccd8556d4be294f54e026';
+	const apiKey = process.env.SCRAPER_API_KEY || process.env.SCRAPERAPI_KEY || '';
+		if (!apiKey) {
+			console.info('[listing-sources] ScraperAPI key is not configured; skipping source.');
+			return [];
+		}
 	const scraperUrl = `http://api.scraperapi.com?api_key=${apiKey}&url=${encodeURIComponent(HOME)}`;
 	
 	const res = await fetch(scraperUrl, {

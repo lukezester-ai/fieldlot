@@ -10,7 +10,7 @@
 		"dev": "concurrently -k \"vite\" \"tsx watch server/dev-api.ts\" \"npm run backend:dev\"",
 		"backend:dev": "node scripts/run-backend.mjs",
 		"backend:seed": "node scripts/run-backend.mjs --seed-only",
-		"build": "node scripts/sync-gov-listings.mjs && node scripts/sync-images-from-manifest.mjs && vite build",
+		"build": "node scripts/sync-images-from-manifest.mjs && vite build",
 		"sync:listings": "node scripts/sync-gov-listings.mjs",
 		"sync:images": "node scripts/fix-crop-images.mjs && node scripts/sync-images-from-manifest.mjs",
 		"fetch:exchange": "node scripts/fetch-exchange-prices.mjs",
@@ -18,7 +18,8 @@
 		"typecheck": "tsc --noEmit",
 		"verify": "node scripts/verify-fieldlot.mjs",
 		"test": "npm run typecheck && node scripts/smoke-api.mjs",
-		"test:backend": "node scripts/smoke-backend.mjs"
+		"test:backend": "node scripts/smoke-backend.mjs",
+		"build:with-listings": "npm run sync:listings && node scripts/sync-images-from-manifest.mjs && vite build"
 	},
 	"devDependencies": {
 		"@capacitor/cli": "^8.3.4",
