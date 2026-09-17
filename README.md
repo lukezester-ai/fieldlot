@@ -72,8 +72,7 @@ Backend API-тата (**`/api/register-interest`**, **`/api/fieldlot-chat`**) **
 
 ```bash
 npm run typecheck
-npm run dev   # друг терминал
-npm test      # smoke към API 8789
+npm test      # стартира изолиран Node API и изпълнява smoke проверките
 ```
 
 ## Deploy на Vercel
