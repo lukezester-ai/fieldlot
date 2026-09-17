@@ -8,7 +8,11 @@ import {
 	normalizeCategory,
 } from './fieldlot-categories.js';
 import { listingImageRagLine, resolveListingImage } from './listing-image-resolve.js';
-import { getAllListingsSync, type FieldlotListing } from './listings-data.js';
+import {
+	getAllListings as loadAllListings,
+	getAllListingsSync,
+	type FieldlotListing,
+} from './listings-data.js';
 
 export type { FieldlotListing };
 
@@ -34,7 +38,7 @@ export type FieldlotRagResult = {
 	knowledgeIds: string[];
 };
 
-const LISTINGS = getAllListingsSync();
+let LISTINGS = getAllListingsSync();
 const KNOWLEDGE = platformKnowledge.chunks;
 
 const BG_STOP = new Set([
@@ -178,6 +182,13 @@ function sessionContextBlock(ctx: FieldlotChatContext | undefined): string {
 }
 
 export function getAllListings(): FieldlotListing[] {
+	return LISTINGS;
+}
+
+/** Refresh the shared RAG/tool catalog while retaining the safe local fallback. */
+export async function refreshFieldlotRagListings(): Promise<FieldlotListing[]> {
+	const latest = await loadAllListings();
+	if (latest.length > 0) LISTINGS = latest;
 	return LISTINGS;
 }
 

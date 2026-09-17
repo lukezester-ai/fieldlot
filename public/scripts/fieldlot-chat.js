@@ -84,21 +84,31 @@
 		}
 
 		function applyOnlineUi(data) {
+			const en = global.FieldlotI18n?.getLang?.() === 'en';
+			if (!data?.llmConfigured) {
+				apiOnline = false;
+				statusEl.textContent = en ? 'AI not configured' : 'AI не е конфигуриран';
+				statusEl.classList.add('is-offline');
+				panel.classList.add('llm-panel--offline');
+				input.disabled = true;
+				sendBtn.disabled = true;
+				input.placeholder = en
+					? 'An AI provider must be configured by the administrator.'
+					: 'Администраторът трябва да конфигурира AI доставчик.';
+				return;
+			}
 			apiOnline = true;
 			statusEl.classList.remove('is-offline');
 			panel.classList.remove('llm-panel--offline');
 			input.disabled = false;
 			sendBtn.disabled = false;
 			input.placeholder = t('chat.placeholder');
-			const en = global.FieldlotI18n?.getLang?.() === 'en';
 			if (data?.agentEnabled) {
 				statusEl.textContent = en ? 'Agent · actions on' : 'Агент · действия';
 			} else if (data?.ragEnabled) {
-				statusEl.textContent = data.llmConfigured
-					? `RAG · ${data.listingCount ?? 0} ${en ? 'listings' : 'обяви'}`
-					: en ? 'RAG · no LLM' : 'RAG · без LLM';
+				statusEl.textContent = `RAG · ${data.listingCount ?? 0} ${en ? 'listings' : 'обяви'}`;
 			} else {
-				statusEl.textContent = data?.llmConfigured ? (en ? 'online' : 'онлайн') : en ? 'no LLM' : 'без LLM';
+				statusEl.textContent = en ? 'online' : 'онлайн';
 			}
 		}
 

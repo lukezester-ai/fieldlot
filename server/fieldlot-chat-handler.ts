@@ -15,6 +15,7 @@ import {
 } from './exchange-prices.js';
 import {
 	buildFieldlotRagContext,
+	refreshFieldlotRagListings,
 	parseFieldlotChatContext,
 } from './fieldlot-rag.js';
 import { formatCategoriesForRag } from './fieldlot-categories.js';
@@ -280,6 +281,7 @@ export async function handleFieldlotChatPost(
 		}
 	}
 
+	await refreshFieldlotRagListings();
 	const rag = buildFieldlotRagContext(last.content, sessionContext);
 	const semanticHits = await searchFieldlotSemanticRag(
 		[last.content, imageClassification?.summaryBg, imageClassification?.labels?.join(' ')]

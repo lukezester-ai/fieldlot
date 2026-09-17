@@ -40,14 +40,23 @@ function applyFreshnessFilter(listings: FieldlotListing[]): ListingsSnapshot {
 
 function staticListings(): FieldlotListing[] {
 	if (STATIC?.listings?.length) {
-		return applyFreshnessFilter(STATIC.listings as FieldlotListing[]).listings;
+		const filtered = applyFreshnessFilter(STATIC.listings as FieldlotListing[]).listings;
+		return filtered.length > 0 ? filtered : DEMO;
 	}
 	return DEMO;
 }
 
 export function getStaticListingsSnapshot(): ListingsSnapshot {
 	if (STATIC?.listings?.length) {
-		return applyFreshnessFilter(STATIC.listings as FieldlotListing[]);
+		const filtered = applyFreshnessFilter(STATIC.listings as FieldlotListing[]);
+		if (filtered.listings.length > 0) return filtered;
+		return {
+			...filtered,
+			source: 'fieldlot.demo',
+			sourceUrl: '/data/demo-listings.json',
+			count: DEMO.length,
+			listings: DEMO,
+		};
 	}
 	return {
 		source: 'fieldlot.demo',
