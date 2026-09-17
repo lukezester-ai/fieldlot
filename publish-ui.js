@@ -153,7 +153,7 @@ function injectPublishModal() {
 			if (fileInput.files.length > 0) {
 				const file = fileInput.files[0];
 				// Upload to Firebase Storage
-				const storageRef = ref(storage, `listings/${Date.now()}_${file.name}`);
+				const storageRef = ref(storage, `listings/${auth.currentUser.uid}/${Date.now()}_${file.name}`);
 				const snapshot = await uploadBytes(storageRef, file);
 				imageUrl = await getDownloadURL(snapshot.ref);
 			}

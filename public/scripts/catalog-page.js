@@ -239,9 +239,9 @@
 			});
 		}
 
-		const ctaBase = I18n() ? I18n().withLangUrl('/#cta') : '/#cta';
-		detailCta.href = `${ctaBase}?listing=${encodeURIComponent(item.id)}`;
-		detailCta.textContent = t('catalog.detailCta');
+		const canInquire = Boolean(raw.isFirebase && raw.userId);
+		detailCta.dataset.inquiryEnabled = canInquire ? 'true' : 'false';
+		detailCta.textContent = canInquire ? 'Изпрати запитване' : 'Виж оригиналната обява';
 		backdrop.hidden = false;
 		panel.setAttribute('aria-hidden', 'false');
 		requestAnimationFrame(() => {
@@ -264,6 +264,16 @@
 
 	document.getElementById('detail-close')?.addEventListener('click', closeDetail);
 	document.getElementById('detail-close-2')?.addEventListener('click', closeDetail);
+	detailCta?.addEventListener('click', () => {
+		if (!detailItemRaw) return;
+		if (detailItemRaw.isFirebase && detailItemRaw.userId) {
+			global.FieldlotInquiries?.open(detailItemRaw);
+			return;
+		}
+		const item = loc(detailItemRaw);
+		if (item.sourceUrl) window.open(item.sourceUrl, '_blank', 'noopener');
+		else window.location.href = I18n() ? I18n().withLangUrl('/#cta') : '/#cta';
+	});
 
 	detailPdfBtn?.addEventListener('click', async () => {
 		if (!detailItemRaw || !global.FieldlotPdf?.downloadListing) {

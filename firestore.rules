@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if signedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if signedIn() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    match /inquiries/{inquiryId} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'listingId', 'listingTitle', 'listingOwnerId', 'buyerId',
+          'buyerEmail', 'buyerName', 'message', 'status', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.buyerId == request.auth.uid
+        && request.resource.data.buyerEmail == request.auth.token.email
+        && request.resource.data.status == 'new'
+        && request.resource.data.buyerName is string
+        && request.resource.data.buyerName.size() > 0
+        && request.resource.data.buyerName.size() <= 100
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 10
+        && request.resource.data.message.size() <= 1500
+        && request.resource.data.listingOwnerId != request.auth.uid
+        && exists(/databases/$(database)/documents/listings/$(request.resource.data.listingId))
+        && get(/databases/$(database)/documents/listings/$(request.resource.data.listingId)).data.userId == request.resource.data.listingOwnerId;
+      allow read: if signedIn()
+        && (resource.data.buyerId == request.auth.uid || resource.data.listingOwnerId == request.auth.uid);
+      allow update: if signedIn()
+        && resource.data.listingOwnerId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && request.resource.data.status in ['new', 'contacted', 'closed'];
+      allow delete: if false;
+    }
+  }
+}

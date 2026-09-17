@@ -72,6 +72,14 @@
 			font-size: 2rem;
 			color: var(--ink);
 		}
+		.inquiry-list { display: grid; gap: 1rem; }
+		.inquiry-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm); }
+		.inquiry-card-head { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
+		.inquiry-card h3 { margin: 0 0 .35rem; color: var(--ink); }
+		.inquiry-message { white-space: pre-wrap; color: var(--ink); margin: 1rem 0; }
+		.inquiry-meta { color: var(--muted); font-size: .9rem; }
+		.inquiry-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+		.inquiry-status { border-radius: 999px; padding: .3rem .65rem; font-size: .8rem; font-weight: 700; background: var(--fl-brand-soft); color: var(--fl-brand-deep); }
 		
 		@media (max-width: 768px) {
 			.dashboard-layout {
@@ -128,6 +136,7 @@
 			<aside class="dashboard-sidebar">
 				<nav class="dashboard-nav">
 					<a href="#listings" class="active" id="tab-listings">Моите обяви</a>
+					<a href="#inquiries" id="tab-inquiries">Запитвания <span id="inquiry-count"></span></a>
 					<a href="#profile" id="tab-profile">Настройки на профила</a>
 				</nav>
 			</aside>
@@ -139,8 +148,17 @@
 						<button class="btn btn-primary" id="btn-new-listing" style="border-radius: 40px;">+ Нова обява</button>
 					</div>
 					
-					<div id="dashboard-yp-board catalog-grid" class="yp-board catalog-grid" aria-live="polite">
+					<div id="dashboard-listings-grid" class="yp-board catalog-grid" aria-live="polite">
 						<p class="meta" style="grid-column: 1 / -1;">Зареждане на обявите ви...</p>
+					</div>
+				</div>
+
+				<div id="view-inquiries" style="display: none;">
+					<div class="dashboard-header">
+						<div><h1>Получени запитвания</h1><p class="meta">Контакти от купувачи по вашите обяви.</p></div>
+					</div>
+					<div id="dashboard-inquiries" class="inquiry-list" aria-live="polite">
+						<p class="meta">Зареждане на запитванията...</p>
 					</div>
 				</div>
 
@@ -257,7 +275,7 @@
 	<script type="module" src="/firebase-init.js"></script>
 	<script type="module" src="/auth-ui.js"></script>
 	<script type="module" src="/publish-ui.js"></script>
-	<script type="module" src="/scripts/dashboard-page.js"></script>
+	<script type="module" src="/dashboard-page.js"></script>
 	<script src="/scripts/fieldlot-chat.js"></script>
 	<script>
 		FieldlotChat.mount({

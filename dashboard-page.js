@@ -1,6 +1,6 @@
-import { auth, db, storage } from "../firebase-init.js";
+import { auth, db, storage } from "./firebase-init.js";
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
-import { collection, query, where, getDocs, doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc, getDoc, deleteDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const grid = document.getElementById("dashboard-listings-grid");
@@ -32,28 +32,27 @@ imageInput.addEventListener('change', () => {
 });
 
 const tabListings = document.getElementById("tab-listings");
+const tabInquiries = document.getElementById("tab-inquiries");
 const tabProfile = document.getElementById("tab-profile");
 const viewListings = document.getElementById("view-listings");
+const viewInquiries = document.getElementById("view-inquiries");
 const viewProfile = document.getElementById("view-profile");
+const inquiriesEl = document.getElementById("dashboard-inquiries");
+const inquiryCountEl = document.getElementById("inquiry-count");
 
 const btnNewListing = document.getElementById("btn-new-listing");
 
-// Tabs Logic
-tabListings.addEventListener("click", (e) => {
-	e.preventDefault();
-	tabListings.classList.add("active");
-	tabProfile.classList.remove("active");
-	viewListings.style.display = "block";
-	viewProfile.style.display = "none";
-});
+function showView(name) {
+	const tabs = { listings: tabListings, inquiries: tabInquiries, profile: tabProfile };
+	const views = { listings: viewListings, inquiries: viewInquiries, profile: viewProfile };
+	Object.entries(tabs).forEach(([key, tab]) => tab?.classList.toggle("active", key === name));
+	Object.entries(views).forEach(([key, view]) => { if (view) view.style.display = key === name ? "block" : "none"; });
+	if (name === "inquiries") loadInquiries();
+}
 
-tabProfile.addEventListener("click", (e) => {
-	e.preventDefault();
-	tabProfile.classList.add("active");
-	tabListings.classList.remove("active");
-	viewProfile.style.display = "block";
-	viewListings.style.display = "none";
-});
+tabListings.addEventListener("click", (e) => { e.preventDefault(); showView("listings"); });
+tabInquiries.addEventListener("click", (e) => { e.preventDefault(); showView("inquiries"); });
+tabProfile.addEventListener("click", (e) => { e.preventDefault(); showView("profile"); });
 
 // New Listing Button hooks into existing publish-ui.js logic
 btnNewListing.addEventListener("click", () => {
@@ -101,7 +100,65 @@ onAuthStateChanged(auth, async (user) => {
 	}
 	
 	loadMyListings();
+	loadInquiries();
 });
+
+function formatDate(value) {
+	const date = value?.toDate ? value.toDate() : value ? new Date(value) : null;
+	return date && !Number.isNaN(date.getTime()) ? date.toLocaleString("bg-BG") : "току-що";
+}
+
+const STATUS_LABELS = { new: "Ново", contacted: "Свързах се", closed: "Приключено" };
+
+async function loadInquiries() {
+	if (!currentUser || !inquiriesEl) return;
+	inquiriesEl.innerHTML = '<p class="meta">Зареждане...</p>';
+	try {
+		const q = query(collection(db, "inquiries"), where("listingOwnerId", "==", currentUser.uid));
+		const snapshot = await getDocs(q);
+		const rows = snapshot.docs.map((snap) => ({ id: snap.id, ...snap.data() }))
+			.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+		const newCount = rows.filter((row) => row.status === "new").length;
+		inquiryCountEl.textContent = newCount ? `(${newCount})` : "";
+		if (!rows.length) {
+			inquiriesEl.innerHTML = '<p class="meta">Все още няма запитвания по вашите обяви.</p>';
+			return;
+		}
+		inquiriesEl.innerHTML = "";
+		rows.forEach((row) => inquiriesEl.appendChild(createInquiryCard(row)));
+	} catch (error) {
+		console.error("Error loading inquiries:", error);
+		inquiriesEl.innerHTML = '<p class="meta" style="color:var(--fl-down);">Запитванията не могат да се заредят. Проверете правилата на Firestore.</p>';
+	}
+}
+
+function createInquiryCard(item) {
+	const card = document.createElement("article");
+	card.className = "inquiry-card";
+	card.innerHTML = `
+		<div class="inquiry-card-head">
+			<div><h3>${escapeHtml(item.listingTitle || "Обява")}</h3><div class="inquiry-meta">От: <a href="mailto:${escapeHtml(item.buyerEmail)}">${escapeHtml(item.buyerName || item.buyerEmail)}</a> · ${escapeHtml(formatDate(item.createdAt))}</div></div>
+			<span class="inquiry-status">${escapeHtml(STATUS_LABELS[item.status] || item.status)}</span>
+		</div>
+		<p class="inquiry-message">${escapeHtml(item.message)}</p>
+		<div class="inquiry-actions">
+			<a class="btn btn-primary" href="mailto:${escapeHtml(item.buyerEmail)}?subject=${encodeURIComponent(`Fieldlot: ${item.listingTitle || "запитване"}`)}">Отговор по имейл</a>
+			<button type="button" class="btn btn-secondary" data-status="contacted">Маркирай „Свързах се“</button>
+			<button type="button" class="btn btn-secondary" data-status="closed">Приключи</button>
+		</div>`;
+	card.querySelectorAll("button[data-status]").forEach((button) => button.addEventListener("click", async () => {
+		button.disabled = true;
+		try {
+			await updateDoc(doc(db, "inquiries", item.id), { status: button.dataset.status, updatedAt: serverTimestamp() });
+			await loadInquiries();
+		} catch (error) {
+			console.error("Error updating inquiry:", error);
+			alert("Статусът не беше обновен.");
+			button.disabled = false;
+		}
+	}));
+	return card;
+}
 
 // Handle Profile Form
 profileForm.addEventListener("submit", async (e) => {
@@ -126,7 +183,7 @@ profileForm.addEventListener("submit", async (e) => {
 
 		if (imageInput.files.length > 0) {
 			const file = imageInput.files[0];
-			const storageRef = ref(storage, `profiles/${currentUser.uid}_${Date.now()}_${file.name}`);
+			const storageRef = ref(storage, `profiles/${currentUser.uid}/${Date.now()}_${file.name}`);
 			const snapshot = await uploadBytes(storageRef, file);
 			profileImageUrl = await getDownloadURL(snapshot.ref);
 		}

@@ -280,6 +280,19 @@ textarea {
 	gap: 10px;
 }
 
+.inquiry-backdrop { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: rgba(15, 23, 42, .58); opacity: 0; transition: opacity .18s ease; }
+.inquiry-backdrop.open { opacity: 1; }
+.inquiry-modal { position: relative; width: min(100%, 520px); padding: 28px; border-radius: var(--fl-radius-lg); background: var(--fl-white); box-shadow: var(--fl-shadow-lg); color: var(--fl-ink); }
+.inquiry-modal h2 { margin: 4px 0 6px; }
+.inquiry-listing { margin: 0 0 20px; color: var(--fl-muted); }
+.inquiry-close { position: absolute; top: 12px; right: 14px; border: 0; background: transparent; color: var(--fl-muted); font-size: 28px; cursor: pointer; }
+.inquiry-modal form { display: grid; gap: 16px; }
+.inquiry-modal label { display: grid; gap: 6px; font-weight: 600; }
+.inquiry-modal input, .inquiry-modal textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--fl-line); border-radius: var(--fl-radius); background: var(--fl-white); color: var(--fl-ink); }
+.inquiry-feedback { min-height: 1.4em; margin: 0; font-size: .9rem; }
+.inquiry-feedback.success { color: var(--fl-up); }
+.inquiry-feedback.error { color: var(--fl-down); }
+
 @media (max-width: 900px) {
 	.toolbar { grid-template-columns: 1fr 1fr; }
 	.toolbar label:first-child { grid-column: 1 / -1; }
