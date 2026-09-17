@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { isCronAuthorized } from '../../server/cron-auth.js';
 import { fetchExchangeSnapshot } from '../../server/exchange-prices.js';
 
 /** Vercel Cron: веднъж дневно — опреснява кеша на борсовите цени. */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-	const secret = process.env.CRON_SECRET;
-	if (secret && req.headers.authorization !== `Bearer ${secret}`) {
+	if (!isCronAuthorized(req.headers.authorization)) {
 		res.status(401).json({ error: 'Unauthorized' });
 		return;
 	}

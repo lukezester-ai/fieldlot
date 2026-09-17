@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { isCronAuthorized } from '../../server/cron-auth.js';
 import { runListingsSyncPipeline } from '../../server/sync-listings-pipeline.js';
 
 /** Vercel Cron: опреснява кеша на обявите от borsaagro.com. */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-	const secret = process.env.CRON_SECRET;
-	if (secret && req.headers.authorization !== `Bearer ${secret}`) {
+	if (!isCronAuthorized(req.headers.authorization)) {
 		res.status(401).json({ error: 'Unauthorized' });
 		return;
 	}
