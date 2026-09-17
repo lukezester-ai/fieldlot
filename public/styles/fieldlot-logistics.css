@@ -282,3 +282,41 @@
 	font-size: 1.05rem;
 	opacity: 0.9;
 }
+.logistics-contact-dialog {
+	width: min(620px, calc(100% - 32px));
+	max-height: calc(100vh - 32px);
+	padding: 0;
+	border: 1px solid var(--border-color);
+	border-radius: 18px;
+	background: var(--bg-card);
+	color: var(--text-color);
+	box-shadow: var(--fl-shadow-lg);
+}
+
+.logistics-contact-dialog::backdrop {
+	background: rgba(15, 23, 42, 0.7);
+	backdrop-filter: blur(4px);
+}
+
+.logistics-contact-form { padding: 24px; }
+.logistics-contact-heading { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
+.logistics-contact-heading h2 { margin: 4px 0 0; }
+.logistics-dialog-close { border: 0; background: transparent; color: inherit; font-size: 2rem; line-height: 1; cursor: pointer; }
+.logistics-contact-listing { padding: 12px 14px; border-radius: 10px; background: var(--bg-sub); font-weight: 600; }
+.logistics-contact-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.logistics-contact-fields label { display: grid; gap: 6px; font-weight: 600; }
+.logistics-contact-fields input,
+.logistics-contact-fields textarea { width: 100%; box-sizing: border-box; }
+.logistics-contact-message { grid-column: 1 / -1; }
+.logistics-contact-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.logistics-contact-status { min-height: 24px; margin: 14px 0 0; }
+.logistics-contact-status.is-success { color: var(--success-color, #15803d); }
+.logistics-contact-status.is-error { color: var(--danger-color, #b91c1c); }
+.logistics-contact-status a { font-weight: 700; text-decoration: underline; }
+
+@media (max-width: 640px) {
+	.logistics-contact-fields { grid-template-columns: 1fr; }
+	.logistics-contact-message { grid-column: auto; }
+	.logistics-contact-actions { flex-direction: column-reverse; }
+	.logistics-contact-actions .btn { width: 100%; }
+}

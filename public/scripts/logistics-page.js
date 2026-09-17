@@ -32,6 +32,50 @@ const ADS = [
 	}
 ];
 
+const contactDialog = document.getElementById('logistics-contact-dialog');
+const contactForm = document.getElementById('logistics-contact-form');
+const contactStatus = document.getElementById('logistics-contact-status');
+let contactOpenedAt = Date.now();
+
+function selectedLogisticsItem() {
+	const id = document.getElementById('logistics-contact-id')?.value;
+	return DUMMY_LOGISTICS.find((item) => item.id === id);
+}
+
+function closeContactDialog() {
+	if (contactDialog?.open) contactDialog.close();
+}
+
+function openContactDialog(item) {
+	if (!contactDialog || !contactForm) return;
+	contactForm.reset();
+	document.getElementById('logistics-contact-id').value = item.id;
+	document.getElementById('logistics-contact-listing').textContent = `${item.title} · ${item.region} · ${item.sourceName}`;
+	document.getElementById('logistics-contact-message').value = `Здравейте, интересувам се от „${item.title}“. Моля, свържете се с мен за повече информация.`;
+	contactStatus.textContent = '';
+	contactStatus.className = 'logistics-contact-status';
+	contactOpenedAt = Date.now();
+	contactDialog.showModal();
+	document.getElementById('logistics-contact-name').focus();
+}
+
+function mailFallback(item, values) {
+	const subject = encodeURIComponent(`Запитване за логистична обява: ${item.title}`);
+	const body = encodeURIComponent([
+		`Обява: ${item.title} (${item.id})`,
+		`Регион: ${item.region}`,
+		`Доставчик: ${item.sourceName}`,
+		'',
+		values.message,
+		'',
+		`Име: ${values.fullName}`,
+		`Фирма: ${values.companyName || '-'}`,
+		`Имейл: ${values.businessEmail}`,
+		`Телефон: ${values.phone || '-'}`,
+	].join('\n'));
+	return `mailto:info@agrinexus.eu?subject=${subject}&body=${body}`;
+}
+
 function renderLogistics() {
 	const grid = document.getElementById('logistics-grid');
 	if (!grid) return;
@@ -72,7 +116,7 @@ function renderLogistics() {
 				<p style="font-size:0.9rem; color:var(--text-muted); margin-top:0.5rem; line-height:1.4;">${item.desc}</p>
 			</div>
 			<div class="listing-footer">
-				<a href="#cta" class="btn btn-primary" style="width:100%; text-align:center;">Свържи се</a>
+				<button type="button" class="btn btn-primary logistics-contact-button" data-logistics-id="${item.id}" style="width:100%; text-align:center;">Свържи се</button>
 			</div>
 		`;
 		grid.appendChild(card);
@@ -109,6 +153,66 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.getElementById('q').value = '';
 		document.getElementById('service-type').value = '';
 		renderLogistics();
+	});
+
+	document.getElementById('logistics-grid')?.addEventListener('click', (event) => {
+		const button = event.target.closest('.logistics-contact-button');
+		if (!button) return;
+		const item = DUMMY_LOGISTICS.find((entry) => entry.id === button.dataset.logisticsId);
+		if (item) openContactDialog(item);
+	});
+
+	document.getElementById('logistics-contact-close')?.addEventListener('click', closeContactDialog);
+	document.getElementById('logistics-contact-cancel')?.addEventListener('click', closeContactDialog);
+	contactDialog?.addEventListener('click', (event) => {
+		if (event.target === contactDialog) closeContactDialog();
+	});
+
+	contactForm?.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		const item = selectedLogisticsItem();
+		if (!item) return;
+
+		const submit = document.getElementById('logistics-contact-submit');
+		const values = {
+			fullName: document.getElementById('logistics-contact-name').value.trim(),
+			businessEmail: document.getElementById('logistics-contact-email').value.trim(),
+			phone: document.getElementById('logistics-contact-phone').value.trim(),
+			companyName: document.getElementById('logistics-contact-company').value.trim(),
+			message: document.getElementById('logistics-contact-message').value.trim(),
+		};
+		submit.disabled = true;
+		contactStatus.textContent = 'Изпращане…';
+		contactStatus.className = 'logistics-contact-status';
+
+		try {
+			const response = await fetch('/api/register-interest', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					...values,
+					marketFocus: `Логистика: ${item.title} (${item.id}) — ${values.message}`,
+					subscribeAlerts: false,
+					hpCompanyWebsite: '',
+					formOpenedAt: contactOpenedAt,
+				}),
+			});
+			const data = await response.json().catch(() => ({}));
+			if (!response.ok || !data.ok) throw new Error(data.error || 'Запитването не беше изпратено.');
+
+			contactStatus.classList.add('is-success');
+			if (data.mailDelivery === 'sent') {
+				contactStatus.textContent = 'Запитването е изпратено успешно. Ще се свържем с вас скоро.';
+				contactForm.reset();
+			} else {
+				contactStatus.innerHTML = 'Запитването е подготвено. <a href="' + mailFallback(item, values) + '">Изпрати го по имейл</a>.';
+			}
+		} catch (error) {
+			contactStatus.classList.add('is-error');
+			contactStatus.textContent = error instanceof Error ? error.message : 'Възникна грешка при изпращането.';
+		} finally {
+			submit.disabled = false;
+		}
 	});
 
 	// Calculator Logic

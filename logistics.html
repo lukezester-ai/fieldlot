@@ -160,6 +160,32 @@
 		</aside>
 	</main>
 
+	<dialog class="logistics-contact-dialog" id="logistics-contact-dialog" aria-labelledby="logistics-contact-title">
+		<form class="logistics-contact-form" id="logistics-contact-form">
+			<div class="logistics-contact-heading">
+				<div>
+					<p class="eyebrow">Запитване за логистична услуга</p>
+					<h2 id="logistics-contact-title">Свържи се с доставчика</h2>
+				</div>
+				<button type="button" class="logistics-dialog-close" id="logistics-contact-close" aria-label="Затвори">×</button>
+			</div>
+			<p class="logistics-contact-listing" id="logistics-contact-listing"></p>
+			<input type="hidden" id="logistics-contact-id" />
+			<div class="logistics-contact-fields">
+				<label>Име и фамилия *<input id="logistics-contact-name" name="fullName" type="text" required minlength="2" maxlength="120" autocomplete="name" /></label>
+				<label>Имейл *<input id="logistics-contact-email" name="businessEmail" type="email" required maxlength="200" autocomplete="email" /></label>
+				<label>Телефон<input id="logistics-contact-phone" name="phone" type="tel" maxlength="32" autocomplete="tel" placeholder="+359888123456" /></label>
+				<label>Фирма<input id="logistics-contact-company" name="companyName" type="text" maxlength="160" autocomplete="organization" /></label>
+				<label class="logistics-contact-message">Съобщение<textarea id="logistics-contact-message" name="message" rows="4" maxlength="800"></textarea></label>
+			</div>
+			<div class="logistics-contact-actions">
+				<button type="button" class="btn btn-secondary" id="logistics-contact-cancel">Отказ</button>
+				<button type="submit" class="btn btn-primary" id="logistics-contact-submit">Изпрати запитване</button>
+			</div>
+			<p class="logistics-contact-status" id="logistics-contact-status" role="status" aria-live="polite"></p>
+		</form>
+	</dialog>
+
 	<footer class="site-footer">
 		<div class="container">
 			<p>© Fieldlot · Логистика</p>
