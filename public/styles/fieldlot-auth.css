@@ -104,6 +104,22 @@
 	font-size: 16px;
 }
 
+.fl-auth-reset {
+	display: block;
+	margin: 12px auto 0;
+	padding: 2px 4px;
+	border: 0;
+	background: transparent;
+	color: var(--fl-emerald);
+	font: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.fl-auth-reset:hover { text-decoration: underline; }
+.fl-auth-reset:disabled { opacity: .65; cursor: wait; }
+
 .fl-auth-switch {
 	margin-top: 20px;
 	text-align: center;
@@ -155,3 +171,5 @@
 	text-align: center;
 	min-height: 18px;
 }
+
+.fl-auth-error.success { color: var(--fl-up); }

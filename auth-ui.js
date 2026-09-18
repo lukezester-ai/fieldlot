@@ -1,5 +1,5 @@
 import { auth } from "./firebase-init.js";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "firebase/auth";
 
 const modalHTML = `
 <div class="fl-auth-backdrop" id="fl-auth-backdrop">
@@ -22,6 +22,7 @@ const modalHTML = `
 				</div>
 				<button type="submit" class="btn btn-primary fl-auth-btn" id="fl-auth-submit">Влезте</button>
 			</form>
+			<button type="button" class="fl-auth-reset" id="fl-auth-reset">Забравена парола?</button>
 			<div class="fl-auth-switch">
 				<span id="fl-auth-switch-text">Нямате профил?</span>
 				<button type="button" id="fl-auth-switch-btn">Регистрирайте се</button>
@@ -44,6 +45,7 @@ const subtitleEl = document.getElementById('fl-auth-subtitle');
 const submitBtn = document.getElementById('fl-auth-submit');
 const switchText = document.getElementById('fl-auth-switch-text');
 const switchBtn = document.getElementById('fl-auth-switch-btn');
+const resetBtn = document.getElementById('fl-auth-reset');
 const errorEl = document.getElementById('fl-auth-error');
 
 let isLoginMode = true;
@@ -51,6 +53,7 @@ let isLoginMode = true;
 function openModal(mode = 'login') {
 	isLoginMode = mode === 'login';
 	updateModalUI();
+	errorEl.classList.remove('success');
 	errorEl.textContent = '';
 	backdrop.classList.add('active');
 	emailInput.focus();
@@ -68,7 +71,34 @@ backdrop.addEventListener('click', (e) => {
 switchBtn.addEventListener('click', () => {
 	isLoginMode = !isLoginMode;
 	updateModalUI();
+	errorEl.classList.remove('success');
 	errorEl.textContent = '';
+});
+
+resetBtn.addEventListener('click', async () => {
+	const email = emailInput.value.trim();
+	errorEl.classList.remove('success');
+	if (!email) {
+		errorEl.textContent = 'Въведете имейла си, за да получите линк за нова парола.';
+		emailInput.focus();
+		return;
+	}
+
+	resetBtn.disabled = true;
+	resetBtn.textContent = 'Изпращане...';
+	try {
+		await sendPasswordResetEmail(auth, email);
+		errorEl.classList.add('success');
+		errorEl.textContent = 'Ако има профил с този имейл, изпратихме линк за нова парола. Проверете и папка Спам.';
+	} catch (err) {
+		console.error('Password reset error:', err);
+		errorEl.textContent = err.code === 'auth/invalid-email'
+			? 'Имейл адресът не е валиден.'
+			: 'Линкът не беше изпратен. Опитайте отново след малко.';
+	} finally {
+		resetBtn.disabled = false;
+		resetBtn.textContent = 'Забравена парола?';
+	}
 });
 
 function updateModalUI() {
@@ -78,12 +108,14 @@ function updateModalUI() {
 		submitBtn.textContent = 'Влезте';
 		switchText.textContent = 'Нямате профил?';
 		switchBtn.textContent = 'Регистрирайте се';
+		resetBtn.hidden = false;
 	} else {
 		titleEl.textContent = 'Регистрация';
 		subtitleEl.textContent = 'Създайте своя агро профил';
 		submitBtn.textContent = 'Регистриране';
 		switchText.textContent = 'Вече имате профил?';
 		switchBtn.textContent = 'Влезте тук';
+		resetBtn.hidden = true;
 	}
 }
 
@@ -92,6 +124,7 @@ form.addEventListener('submit', async (e) => {
 	e.preventDefault();
 	const email = emailInput.value;
 	const password = passwordInput.value;
+	errorEl.classList.remove('success');
 	errorEl.textContent = '';
 	submitBtn.disabled = true;
 
@@ -105,6 +138,7 @@ form.addEventListener('submit', async (e) => {
 		form.reset();
 	} catch (err) {
 		console.error("Auth error:", err);
+		errorEl.classList.remove('success');
 		if (err.code === 'auth/email-already-in-use') errorEl.textContent = 'Този имейл вече е регистриран.';
 		else if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') errorEl.textContent = 'Грешен имейл или парола.';
 		else errorEl.textContent = 'Възникна грешка. Моля, опитайте отново.';
