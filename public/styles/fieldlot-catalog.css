@@ -280,8 +280,26 @@ textarea {
 	gap: 10px;
 }
 
-.inquiry-backdrop { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: rgba(15, 23, 42, .58); opacity: 0; transition: opacity .18s ease; }
-.inquiry-backdrop.open { opacity: 1; }
+.inquiry-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 80;
+	display: none;
+	place-items: center;
+	padding: 20px;
+	background: rgba(15, 23, 42, .58);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity .18s ease;
+}
+.inquiry-backdrop.open {
+	display: grid;
+	opacity: 1;
+	pointer-events: auto;
+}
+.inquiry-backdrop[hidden] {
+	display: none !important;
+}
 .inquiry-modal { position: relative; width: min(100%, 520px); padding: 28px; border-radius: var(--fl-radius-lg); background: var(--fl-white); box-shadow: var(--fl-shadow-lg); color: var(--fl-ink); }
 .inquiry-modal h2 { margin: 4px 0 6px; }
 .inquiry-listing { margin: 0 0 20px; color: var(--fl-muted); }
