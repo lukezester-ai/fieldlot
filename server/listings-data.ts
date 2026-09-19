@@ -31,8 +31,21 @@ export function isSyntheticListing(listing: FieldlotListing): boolean {
 	return source === 'GlobalFeed' || id.startsWith('gf-') || subtitle.includes('Global Feed');
 }
 
+export function redactListingPii(listing: FieldlotListing): FieldlotListing {
+	const scrub = (value: string | undefined): string =>
+		String(value ?? '')
+			.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[контакт скрит]')
+			.replace(/(?:\+|00)?\d[\d\s()./-]{7,}\d/g, '[телефон скрит]');
+	return {
+		...listing,
+		quality: scrub(listing.quality),
+		contact: scrub(listing.contact),
+		harvest: scrub(listing.harvest),
+	};
+}
+
 export function withoutSyntheticListings(listings: FieldlotListing[]): FieldlotListing[] {
-	return listings.filter((row) => !isSyntheticListing(row));
+	return listings.filter((row) => !isSyntheticListing(row)).map(redactListingPii);
 }
 
 const STATIC = liveSnapshot as ListingsSnapshot;

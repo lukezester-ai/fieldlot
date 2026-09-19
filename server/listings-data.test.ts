@@ -22,5 +22,6 @@ test('synthetic Global Feed listings are excluded from the catalog', () => {
 	);
 	for (const row of getAllListingsSync()) {
 		assert.equal(isSyntheticListing(row), false);
+		assert.equal(/\S+@\S+\.\S+/.test(`${row.quality} ${row.contact}`), false);
 	}
 });
