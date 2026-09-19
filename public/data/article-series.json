@@ -12,8 +12,13 @@
         "en": "Yields look promising, but climate anomalies keep prices volatile...",
         "de": "Die Erträge sehen vielversprechend aus, aber Klima-Anomalien halten die Preise volatil..."
       },
+      "body": {
+        "bg": "Добивите от пшеница в Добруджа и Северна България се очертават стабилни, но късните дъждове държат протеина и хектолитрите под въпрос.\n\nЗа B2B сделки това означава по-строги спецификации при EXW/DAP и по-голямо внимание към влагата при товарене. Купувачите търсят партиди с лабораторни протоколи, а не само обявена реколта.\n\nFieldlot препоръчва да се фиксира качеството в офертата (протеин, глутен, влага) преди логистиката, за да няма спор на кантар.",
+        "en": "Wheat yields in Dobrudzha look stable, but late rains keep protein and test weight uncertain.\n\nB2B deals need tighter EXW/DAP specs and moisture checks at loading. Buyers want lab reports, not just a harvest year.\n\nLock quality in the offer before logistics to avoid weighbridge disputes.",
+        "de": "Die Weizenerträge in der Dobrudscha wirken stabil, späte Regen halten Protein und Hektoliter unsicher.\n\nB2B-Deals brauchen klarere EXW/DAP-Specs und Feuchtekontrolle beim Laden."
+      },
       "date": "07 Юни 2026",
-      "href": "javascript:document.getElementById('llm-fab') ? document.getElementById('llm-fab').click() : void(0)"
+      "href": "/article.html?part=1"
     },
     {
       "part": "2",
@@ -27,8 +32,13 @@
         "en": "Increased imports from neighboring countries are pressuring the local market...",
         "de": "Gesteigerte Importe aus Nachbarländern setzen den lokalen Markt unter Druck..."
       },
+      "body": {
+        "bg": "Вносът от Румъния и Украйна притиска локалната цена на слънчогледа. Преработвателите купуват на по-къси партиди и държат базиса към пристанище.\n\nПроизводителите с наличност в силоз имат предимство ако могат DAP завод, а не само EXW стопанство.\n\nСледете маслодайността — разликата от 1–2% често покрива транспорта до Бургас/Варна.",
+        "en": "Imports from Romania and Ukraine are pressing local sunflower prices. Crushers buy shorter lots and keep the basis to the port.\n\nSellers with silo stock win if they can offer DAP plant, not only farm EXW.",
+        "de": "Importe aus Rumänien und der Ukraine drücken den lokalen Sonnenblumenpreis."
+      },
       "date": "05 Юни 2026",
-      "href": "javascript:document.getElementById('llm-fab') ? document.getElementById('llm-fab').click() : void(0)"
+      "href": "/article.html?part=2"
     },
     {
       "part": "3",
@@ -42,8 +52,13 @@
         "en": "How logistics and port fees affect the final profit of the producer...",
         "de": "Wie Logistik und Hafengebühren den Endgewinn des Produzenten beeinflussen..."
       },
+      "body": {
+        "bg": "При царевицата маржът често се изяжда между стопанството и FOB Варна: автотранспорт, кантар, сюрвей, терминал.\n\nПресмятайте 2.50 лв/км като ориентир, не като договор. Реалната оферта зависи от обратен товар и чакане на рампа.\n\nFieldlot свързва обявата с логистичната дъска — сравнете DAP и FOB преди да затворите количеството.",
+        "en": "On corn, margin is often lost between farm and FOB Varna: trucking, weighbridge, survey, terminal.\n\nTreat 2.50 BGN/km as a sketch, not a contract. Compare DAP vs FOB before closing volume.",
+        "de": "Beim Mais geht die Marge oft zwischen Hof und FOB Varna verloren."
+      },
       "date": "01 Юни 2026",
-      "href": "#cta"
+      "href": "/article.html?part=3"
     }
   ]
 }

@@ -155,9 +155,18 @@ export async function rebuildFieldlotRagIndex(listings: FieldlotListing[]): Prom
 	return { ok: true, chunkCount: chunks.length, embedded };
 }
 
+function isSyntheticRagChunk(c: RagChunk): boolean {
+	if (process.env.FIELDLOT_ENABLE_SYNTHETIC_FEED === '1') return false;
+	if (c.kind !== 'listing') return false;
+	if (c.listingId?.startsWith('gf-')) return true;
+	return /Global Feed|GlobalFeed/.test(`${c.title} ${c.text}`);
+}
+
 function readIndex(): RagIndexFile | null {
 	try {
-		return JSON.parse(fs.readFileSync(INDEX_PATH, 'utf8')) as RagIndexFile;
+		const index = JSON.parse(fs.readFileSync(INDEX_PATH, 'utf8')) as RagIndexFile;
+		if (!index?.chunks) return index;
+		return { ...index, chunks: index.chunks.filter((c) => !isSyntheticRagChunk(c)) };
 	} catch {
 		return null;
 	}

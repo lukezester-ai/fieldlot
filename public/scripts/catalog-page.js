@@ -74,7 +74,12 @@
 			const res = await fetch('/api/listings');
 			if (res.ok) {
 				const data = await res.json();
-				staticData = Array.isArray(data.listings) ? data.listings : [];
+				staticData = (Array.isArray(data.listings) ? data.listings : []).filter((row) => {
+					const source = String(row.source || '');
+					const id = String(row.id || '');
+					const subtitle = String(row.subtitle || '');
+					return source !== 'GlobalFeed' && !id.startsWith('gf-') && !subtitle.includes('Global Feed');
+				});
 			}
 		} catch {}
 
@@ -183,7 +188,7 @@
 		countEl.innerHTML = `<strong>${n}</strong> ${word}`;
 	}
 
-	function openDetail(raw) {
+	async function openDetail(raw) {
 		detailItemRaw = raw;
 		const item = loc(raw);
 		detailTitle.textContent = item.title;
@@ -191,12 +196,31 @@
 			? `<p class="detail-note"><a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(t('catalog.sourceLink'))}</a></p>`
 			: '';
 		const cat = categoryLabel(item);
+		let sellerHtml = '';
+		if (raw.isFirebase && raw.userId && typeof window.fetchUserProfile === 'function') {
+			const profile = await window.fetchUserProfile(raw.userId);
+			if (profile && (profile.companyName || profile.profileDesc)) {
+				const certs = Array.isArray(profile.certs) && profile.certs.length
+					? `<p class="meta">Сертификати: ${escapeHtml(profile.certs.join(', '))}</p>`
+					: '';
+				sellerHtml = `<div class="seller-card" style="margin: 16px 0; padding: 12px; border: 1px solid var(--line, #ddd); border-radius: 8px;">
+					<p class="board-eyebrow">Продавач</p>
+					<h3 style="margin: 0 0 6px;">${escapeHtml(profile.companyName || 'Стопанство')}</h3>
+					${profile.profileDesc ? `<p>${escapeHtml(profile.profileDesc)}</p>` : ''}
+					${certs}
+				</div>`;
+			}
+		}
+		const reportBtn = raw.isFirebase
+			? `<p class="detail-note"><button type="button" class="btn btn-secondary" id="detail-report">Докладвай обява</button></p>`
+			: '';
 		detailBody.innerHTML = `
 			<div class="detail-highlight yp-detail-lead">
 				${cat ? `<p class="yp-detail-cat">${escapeHtml(cat)}</p>` : ''}
 				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>
 				<p class="meta">${escapeHtml(item.qty)} · ${escapeHtml(item.incoterm)}</p>
 			</div>
+			${sellerHtml}
 			<dl class="detail-dl">
 				<div><dt>${escapeHtml(t('catalog.loc'))}</dt><dd>${window.FieldlotI18n ? window.FieldlotI18n.renderFlags(escapeHtml(item.subtitle)) : escapeHtml(item.subtitle)}</dd></div>
 				<div><dt>${escapeHtml(t('catalog.qty'))}</dt><dd>${escapeHtml(item.qty)}</dd></div>
@@ -216,6 +240,7 @@
 			</div>
 			<p class="detail-note">${escapeHtml(t('catalog.detailNote'))}</p>
 			${sourceLink}
+			${reportBtn}
 		`;
 
 		// Bind Calculator Logic
@@ -239,6 +264,15 @@
 			});
 		}
 
+		document.getElementById('detail-report')?.addEventListener('click', async (event) => {
+			event.preventDefault();
+			try {
+				await global.FieldlotInquiries?.report?.(raw.id);
+			} catch (err) {
+				console.error(err);
+				alert('Докладът не беше записан.');
+			}
+		});
 		const canInquire = Boolean(raw.isFirebase && raw.userId);
 		detailCta.dataset.inquiryEnabled = canInquire ? 'true' : 'false';
 		detailCta.textContent = canInquire ? 'Изпрати запитване' : 'Виж оригиналната обява';

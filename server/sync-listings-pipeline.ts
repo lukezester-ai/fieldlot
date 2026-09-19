@@ -3,12 +3,14 @@ import path from 'node:path';
 import { fetchAllListingsSnapshot } from './listing-sources/index.js';
 import { rebuildFieldlotRagIndex } from './fieldlot-semantic-rag.js';
 import { enrichListing } from './fieldlot-categories.js';
-import { stripListingMedia } from './listings-data.js';
+import { stripListingMedia, setListingsMemoryCache, withoutSyntheticListings } from './listings-data.js';
+import { persistListingsSnapshot } from './listings-snapshot-store.js';
 
 export type SyncPipelineResult = {
 	snapshot: Awaited<ReturnType<typeof fetchAllListingsSnapshot>>;
 	rag: Awaited<ReturnType<typeof rebuildFieldlotRagIndex>>;
 	wroteFiles: boolean;
+	persisted: 'remote' | 'memory';
 	paths: { listings?: string; manifest?: string; publicListings?: string };
 };
 
@@ -39,6 +41,13 @@ export async function runListingsSyncPipeline(opts?: {
 		}),
 	};
 	const rag = await rebuildFieldlotRagIndex(snap.listings);
+	const cacheSnap = {
+		...snap,
+		listings: withoutSyntheticListings(snap.listings),
+	};
+	cacheSnap.count = cacheSnap.listings.length;
+	setListingsMemoryCache(cacheSnap);
+	const remote = await persistListingsSnapshot(cacheSnap);
 
 	const paths: SyncPipelineResult['paths'] = {};
 	if (writeToDisk) {
@@ -82,5 +91,5 @@ export async function runListingsSyncPipeline(opts?: {
 		paths.publicListings = publicData;
 	}
 
-	return { snapshot: snap, rag, wroteFiles: writeToDisk, paths };
+	return { snapshot: cacheSnap, rag, wroteFiles: writeToDisk, persisted: remote.persisted, paths };
 }

@@ -26,6 +26,8 @@ window.fetchFirebaseListings = async function(limitCount = 20) {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       const d = doc.data();
+      const moderation = d.moderationStatus || "approved";
+      if (moderation === "hidden" || moderation === "flagged") return;
       fbData.push({
         id: doc.id,
         title: d.title,
@@ -36,10 +38,12 @@ window.fetchFirebaseListings = async function(limitCount = 20) {
         qty: d.qty ? String(d.qty) : "",
         role: "sell",
         publishedAt: d.createdAt && typeof d.createdAt.toDate === 'function' ? d.createdAt.toDate().toISOString() : (d.createdAt ? new Date(d.createdAt).toISOString() : new Date().toISOString()),
-        contact: d.userEmail || "Фермер",
+        contact: "Fieldlot продавач",
         tags: d.category ? [d.category] : [],
         isFirebase: true,
-        userId: d.userId
+        userId: d.userId,
+        moderationStatus: d.moderationStatus || "approved",
+        desc: d.desc || "",
       });
     });
   } catch (e) {
@@ -51,14 +55,45 @@ window.fetchFirebaseListings = async function(limitCount = 20) {
 window.fetchUserProfile = async function(userId) {
   if (!userId) return null;
   try {
-    const userDoc = await getDoc(doc(db, "users", userId));
+    const userDoc = await getDoc(doc(db, "publicProfiles", userId));
     if (userDoc.exists()) {
       return userDoc.data();
     }
   } catch (e) {
-    console.error("Error fetching user profile:", e);
+    console.error("Error fetching public profile:", e);
   }
   return null;
+};
+
+window.fetchFirebaseLogistics = async function(limitCount = 40) {
+  const rows = [];
+  try {
+    const q = query(collection(db, "logistics"), orderBy("createdAt", "desc"), limit(limitCount));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((docSnap) => {
+      const d = docSnap.data();
+      rows.push({
+        id: docSnap.id,
+        title: d.title,
+        category: d.category || "transport",
+        qty: d.qty ? String(d.qty) : "",
+        unit: d.unit || "",
+        price: d.price || "По договаряне",
+        region: d.region || "",
+        role: d.role === "buy" ? "buy" : "sell",
+        sourceName: d.companyName || "Fieldlot",
+        publishedAt: d.createdAt && typeof d.createdAt.toDate === "function" ? d.createdAt.toDate().toISOString() : new Date().toISOString(),
+        img: d.imageUrl || null,
+        desc: d.desc || "",
+        isFirebase: true,
+        userId: d.userId,
+        demo: false,
+      });
+    });
+  } catch (e) {
+    console.error("Firebase logistics fetch error:", e);
+  }
+  return rows;
 };
 
 console.log("Firebase initialized successfully!");

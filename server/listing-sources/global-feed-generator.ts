@@ -1,3 +1,7 @@
+/**
+ * Demo-only RNG listings. Never enable in production catalogs unless
+ * FIELDLOT_ENABLE_SYNTHETIC_FEED=1. Filtered out of live JSON by listings-data.
+ */
 import { enrichListing } from '../listing-parse-utils.js';
 import type { FieldlotListing } from '../borsa-listings-fetcher.js';
 

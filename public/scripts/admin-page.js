@@ -1,15 +1,14 @@
-const TOKEN_KEY = 'fieldlot-admin-token';
+const SESSION_FLAG = 'fieldlot-admin-ok';
 
 function authHeaders() {
-	const token = localStorage.getItem(TOKEN_KEY) || '';
-	return {
-		Authorization: `Bearer ${token}`,
-		'Content-Type': 'application/json',
-	};
+	return { 'Content-Type': 'application/json' };
 }
 
 async function apiGet(action) {
-	const res = await fetch(`/api/admin/${action}`, { headers: authHeaders() });
+	const res = await fetch(`/api/admin/${action}`, {
+		headers: authHeaders(),
+		credentials: 'include',
+	});
 	const data = await res.json().catch(() => ({}));
 	if (!res.ok) throw new Error(data.error || res.statusText);
 	return data;
@@ -19,6 +18,7 @@ async function apiPost(action, body) {
 	const res = await fetch(`/api/admin/${action}`, {
 		method: 'POST',
 		headers: authHeaders(),
+		credentials: 'include',
 		body: JSON.stringify(body ?? {}),
 	});
 	const data = await res.json().catch(() => ({}));
@@ -29,6 +29,12 @@ async function apiPost(action, body) {
 function showAdmin() {
 	document.getElementById('login-view').hidden = true;
 	document.getElementById('admin-view').hidden = false;
+}
+
+function showLogin() {
+	sessionStorage.removeItem(SESSION_FLAG);
+	document.getElementById('login-view').hidden = false;
+	document.getElementById('admin-view').hidden = true;
 }
 
 async function loadStatus() {
@@ -56,27 +62,40 @@ async function loadSources() {
 	);
 }
 
+async function enterAdmin() {
+	showAdmin();
+	await Promise.all([loadStatus(), loadKnowledge(), loadSources()]);
+}
+
 document.getElementById('login-btn')?.addEventListener('click', async () => {
 	const token = document.getElementById('admin-token').value.trim();
 	const err = document.getElementById('login-err');
 	err.textContent = '';
 	if (!token) return;
-	localStorage.setItem(TOKEN_KEY, token);
 	try {
-		await apiGet('status');
-		showAdmin();
-		await Promise.all([loadStatus(), loadKnowledge(), loadSources()]);
+		await apiPost('login', { token });
+		document.getElementById('admin-token').value = '';
+		sessionStorage.setItem(SESSION_FLAG, '1');
+		await enterAdmin();
 	} catch (e) {
-		localStorage.removeItem(TOKEN_KEY);
+		showLogin();
 		err.textContent = e instanceof Error ? e.message : 'Грешен токен';
 	}
 });
 
-if (localStorage.getItem(TOKEN_KEY)) {
+document.getElementById('logout-btn')?.addEventListener('click', async () => {
+	try {
+		await apiPost('logout', {});
+	} catch {
+		// Cookie is cleared server-side when possible; still hide the panel.
+	}
+	showLogin();
+});
+
+if (sessionStorage.getItem(SESSION_FLAG)) {
 	showAdmin();
 	Promise.all([loadStatus(), loadKnowledge(), loadSources()]).catch(() => {
-		localStorage.removeItem(TOKEN_KEY);
-		location.reload();
+		showLogin();
 	});
 }
 

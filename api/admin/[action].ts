@@ -2,18 +2,29 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import {
 	handleAdminGet,
 	handleAdminGetKnowledge,
+	handleAdminLogin,
+	handleAdminLogout,
 	handleAdminPost,
+	type AdminAuthInput,
 } from '../../server/admin-handler.js';
+import { clientIpFromVercelRequest } from '../../lib/client-ip.js';
 import { vercelJsonBody } from '../../lib/vercel-json-body.js';
 
 export const config = { maxDuration: 120 };
 
-function auth(req: VercelRequest): string | undefined {
-	return (
-		(typeof req.headers.authorization === 'string' && req.headers.authorization) ||
-		(typeof req.headers.Authorization === 'string' && req.headers.Authorization) ||
-		undefined
-	);
+function auth(req: VercelRequest): AdminAuthInput {
+	return {
+		authorization:
+			(typeof req.headers.authorization === 'string' && req.headers.authorization) ||
+			(typeof req.headers.Authorization === 'string' && req.headers.Authorization) ||
+			undefined,
+		cookie: typeof req.headers.cookie === 'string' ? req.headers.cookie : undefined,
+	};
+}
+
+function send(res: VercelResponse, r: { status: number; body: Record<string, unknown>; setCookie?: string }) {
+	if (r.setCookie) res.setHeader('Set-Cookie', r.setCookie);
+	res.status(r.status).json(r.body);
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -24,22 +35,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 			return;
 		}
 
+		if (req.method === 'POST' && action === 'login') {
+			send(
+				res,
+				await handleAdminLogin(auth(req), vercelJsonBody(req.body), {
+					clientIp: clientIpFromVercelRequest(req),
+				}),
+			);
+			return;
+		}
+
+		if (req.method === 'POST' && action === 'logout') {
+			send(res, handleAdminLogout());
+			return;
+		}
+
 		if (req.method === 'GET' && action === 'knowledge') {
-			const r = await handleAdminGetKnowledge(auth(req));
-			res.status(r.status).json(r.body);
+			send(res, await handleAdminGetKnowledge(auth(req)));
 			return;
 		}
 
 		if (req.method === 'GET') {
-			const r = await handleAdminGet(action, auth(req));
-			res.status(r.status).json(r.body);
+			send(res, await handleAdminGet(action, auth(req)));
 			return;
 		}
 
 		if (req.method === 'POST') {
-			const body = vercelJsonBody(req.body);
-			const r = await handleAdminPost(action, auth(req), body);
-			res.status(r.status).json(r.body);
+			send(res, await handleAdminPost(action, auth(req), vercelJsonBody(req.body)));
 			return;
 		}
 

@@ -1,11 +1,11 @@
-# FIELDLOT FastAPI Backend
+# FIELDLOT FastAPI Backend (optional local prototype)
 
-Smart agriculture marketplace API (MVP).
+Not part of the production stack (Firebase + Node on Vercel). The website UI does not call `/api/v1`. Start with `npm run dev:full` from the repo root.
 
 ## Setup
 
 ```bash
-cd backend
+cd dev/backend
 python -m venv .venv
 .venv\Scripts\activate          # Windows
 # source .venv/bin/activate     # macOS/Linux
@@ -15,10 +15,10 @@ cp .env.example .env
 
 ## Run
 
-From repo root (with `npm run dev`) or standalone:
+From repo root: `npm run dev:full`. Standalone:
 
 ```bash
-cd backend
+cd dev/backend
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 

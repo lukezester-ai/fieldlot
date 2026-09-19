@@ -1,14 +1,23 @@
 import 'dotenv/config';
 import http from 'node:http';
-import { handleAdminGet, handleAdminGetKnowledge, handleAdminPost } from './admin-handler.js';
+import {
+	handleAdminGet,
+	handleAdminGetKnowledge,
+	handleAdminLogin,
+	handleAdminLogout,
+	handleAdminPost,
+} from './admin-handler.js';
 import { handleFieldlotChatPost } from './fieldlot-chat-handler.js';
 import { handleDraftListingRequest } from './fieldlot-listing-writer.js';
+import { classifyAgroImage } from './fieldlot-vision.js';
 import { getRagIndexStatus } from './fieldlot-semantic-rag.js';
 import { getAllListings } from './fieldlot-rag.js';
 import { getListingsSnapshot } from './listings-data.js';
 import { handleRegisterInterestPost } from './register-interest.js';
+import { handleNotifyInquiryPost } from './notify-inquiry.js';
 import { fetchExchangeSnapshot, getExchangeSnapshotCached } from './exchange-prices.js';
 import { isAnyLlmConfigured, resolveTextChatUpstream } from './llm-upstream.js';
+import { assertLlmRouteRateLimit, assertIpRateLimit } from './api-rate-limit.js';
 
 function clientIpFromNodeRequest(req: http.IncomingMessage): string | null {
 	const realIp = req.headers['x-real-ip'];
@@ -98,14 +107,19 @@ const server = http.createServer(async (req, res) => {
 		}
 
 		if (path === '/api/fieldlot-chat' && req.method === 'POST') {
+			const clientIp = clientIpFromNodeRequest(req);
+			const limited = assertLlmRouteRateLimit(clientIp, 'chat');
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { error: limited.error, hint: limited.hint });
+				return;
+			}
 			const body = await readJson(req);
 			if (body === null) {
 				send(res, 400, { error: 'Invalid JSON' });
 				return;
 			}
-			const result = await handleFieldlotChatPost(body, {
-				clientIp: clientIpFromNodeRequest(req),
-			});
+			const result = await handleFieldlotChatPost(body, { clientIp });
 			if (result.ok) {
 				send(res, 200, {
 					reply: result.reply,
@@ -123,6 +137,12 @@ const server = http.createServer(async (req, res) => {
 		}
 
 		if (path === '/api/draft-listing' && req.method === 'POST') {
+			const limited = assertLlmRouteRateLimit(clientIpFromNodeRequest(req), 'draft');
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { ok: false, error: limited.error, hint: limited.hint });
+				return;
+			}
 			const body = await readJson(req);
 			if (body === null || typeof body !== 'object') {
 				send(res, 400, { ok: false, error: 'Invalid JSON' });
@@ -130,6 +150,62 @@ const server = http.createServer(async (req, res) => {
 			}
 			const result = await handleDraftListingRequest(body as Record<string, unknown>);
 			send(res, result.ok ? 200 : 400, result);
+			return;
+		}
+
+		if (path === '/api/classify-image' && req.method === 'POST') {
+			const limited = assertLlmRouteRateLimit(clientIpFromNodeRequest(req), 'classify');
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { ok: false, error: limited.error, hint: limited.hint });
+				return;
+			}
+			const body = await readJson(req);
+			if (body === null || typeof body !== 'object') {
+				send(res, 400, { ok: false, error: 'Invalid JSON' });
+				return;
+			}
+			const rec = body as Record<string, unknown>;
+			const imageBase64 =
+				typeof rec.imageBase64 === 'string'
+					? rec.imageBase64
+					: typeof rec.image === 'string'
+						? rec.image
+						: '';
+			if (!imageBase64.trim()) {
+				send(res, 400, { ok: false, error: 'Липсва imageBase64' });
+				return;
+			}
+			if (imageBase64.length > 6_000_000) {
+				send(res, 413, { ok: false, error: 'Снимката е твърде голяма' });
+				return;
+			}
+			const mimeType = typeof rec.mimeType === 'string' ? rec.mimeType : 'image/jpeg';
+			const lang = rec.lang === 'en' ? 'en' : 'bg';
+			const result = await classifyAgroImage({ imageBase64, mimeType, lang });
+			send(res, result.ok ? 200 : 502, result);
+			return;
+		}
+
+		if (path === '/api/notify-inquiry' && req.method === 'POST') {
+			const limited = assertIpRateLimit({
+				clientIp: clientIpFromNodeRequest(req),
+				bucket: 'notify-inquiry',
+				max: 20,
+				windowMs: 15 * 60 * 1000,
+			});
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { ok: false, error: limited.error, hint: limited.hint });
+				return;
+			}
+			const body = await readJson(req);
+			if (body === null || typeof body !== 'object') {
+				send(res, 400, { ok: false, error: 'Invalid JSON' });
+				return;
+			}
+			const result = await handleNotifyInquiryPost(body as Record<string, unknown>);
+			send(res, result.ok ? 200 : result.status, result);
 			return;
 		}
 
@@ -163,21 +239,39 @@ const server = http.createServer(async (req, res) => {
 				send(res, 400, { error: 'Invalid URI component' });
 				return;
 			}
-			const authH =
-				typeof req.headers.authorization === 'string' ? req.headers.authorization : undefined;
+			const auth = {
+				authorization:
+					typeof req.headers.authorization === 'string' ? req.headers.authorization : undefined,
+				cookie: typeof req.headers.cookie === 'string' ? req.headers.cookie : undefined,
+			};
+			if (req.method === 'POST' && action === 'login') {
+				const body = await readJson(req);
+				const r = await handleAdminLogin(auth, body, {
+					clientIp: clientIpFromNodeRequest(req),
+				});
+				if (r.setCookie) res.setHeader('Set-Cookie', r.setCookie);
+				send(res, r.status, r.body);
+				return;
+			}
+			if (req.method === 'POST' && action === 'logout') {
+				const r = handleAdminLogout();
+				if (r.setCookie) res.setHeader('Set-Cookie', r.setCookie);
+				send(res, r.status, r.body);
+				return;
+			}
 			if (req.method === 'GET' && action === 'knowledge') {
-				const r = await handleAdminGetKnowledge(authH);
+				const r = await handleAdminGetKnowledge(auth);
 				send(res, r.status, r.body);
 				return;
 			}
 			if (req.method === 'GET') {
-				const r = await handleAdminGet(action, authH);
+				const r = await handleAdminGet(action, auth);
 				send(res, r.status, r.body);
 				return;
 			}
 			if (req.method === 'POST') {
 				const body = await readJson(req);
-				const r = await handleAdminPost(action, authH, body);
+				const r = await handleAdminPost(action, auth, body);
 				send(res, r.status, r.body);
 				return;
 			}

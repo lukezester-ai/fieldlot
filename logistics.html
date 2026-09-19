@@ -70,6 +70,9 @@
 				<p data-i18n="logistics.page.lead">
 					Намери камион, складова база или предложи свои логистични услуги.
 				</p>
+				<p id="logistics-demo-banner" class="demo-strip" hidden style="margin-top:1rem;padding:0.75rem 1rem;background:#fff3cd;color:#5c4a00;border-radius:8px;">
+					Показани са демо оферти. Реалните обяви от потребители се появяват отгоре, когато има такива.
+				</p>
 			</div>
 		</section>
 
@@ -81,7 +84,7 @@
 				<div class="logistics-calculator ad-sponsored" id="sponsored-calc">
 					<div class="calc-sponsor-badge">Спонсорирано от: <strong id="calc-sponsor-name">Speedy Freight Ltd.</strong></div>
 					<h3>Калкулатор за транспорт</h3>
-					<p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Ориентировъчна цена за превоз</p>
+					<p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Ориентировъчно (2.50 лв/км, +0.50 над 20 т) — не е търговска оферта.</p>
 					<div class="calc-form">
 						<label>Разстояние (км)<input type="number" id="calc-km" placeholder="напр. 150" min="1"></label>
 						<label>Товар (тонове)<input type="number" id="calc-tons" placeholder="напр. 24" min="1"></label>
@@ -196,6 +199,7 @@
 	<script src="/scripts/fieldlot-i18n-messages.js"></script>
 	<script src="/scripts/fieldlot-i18n.js"></script>
 	<script src="/scripts/fieldlot-theme.js"></script>
+	<script type="module" src="/firebase-init.js"></script>
 	<script type="module" src="/scripts/logistics-page.js"></script>
 	<script src="/scripts/fieldlot-mobile.js"></script>
 </body>

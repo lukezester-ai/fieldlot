@@ -171,6 +171,9 @@
 				'Камиони, складове, хладилни бази и проследяване - интегрирани в екосистемата.',
 			'logistics.page.title': 'Транспорт и Складиране',
 			'logistics.page.lead': 'Намери камион, складова база или предложи свои логистични услуги.',
+			'logistics.meta.title': 'Логистика и транспорт — Fieldlot',
+			'logistics.meta.description':
+				'Транспорт, складове и логистични услуги в агро екосистемата на Fieldlot.',
 			'logistics.transport': 'Транспорт',
 			'logistics.transportDesc':
 				'Намери камион до София, Варна или експортен пункт. Договаряне директно с превозвач.',
@@ -443,6 +446,11 @@
 			'logistics.title': 'From field to warehouse or buyer',
 			'logistics.lead':
 				'Trucks, warehouses, cold storage and tracking — integrated in the ecosystem.',
+			'logistics.page.title': 'Transport und Lagerung',
+			'logistics.page.lead': 'Finde einen Lkw, ein Lager oder biete Logistikleistungen an.',
+			'logistics.meta.title': 'Logistik und Transport — Fieldlot',
+			'logistics.meta.description':
+				'Transport, Lager und Logistikleistungen im Fieldlot-Agrarökosystem.',
 			'logistics.transport': 'Transport',
 			'logistics.transportDesc':
 				'Find a truck to Sofia, Varna or an export hub. Deal directly with the carrier.',
@@ -713,6 +721,11 @@
 			'logistics.title': 'From field to warehouse or buyer',
 			'logistics.lead':
 				'Trucks, warehouses, cold storage and tracking — integrated in the ecosystem.',
+			'logistics.page.title': 'Transport and warehousing',
+			'logistics.page.lead': 'Find a truck, a warehouse, or offer logistics services.',
+			'logistics.meta.title': 'Logistics and transport — Fieldlot',
+			'logistics.meta.description':
+				'Transport, warehousing and logistics services in the Fieldlot agro ecosystem.',
 			'logistics.transport': 'Transport',
 			'logistics.transportDesc':
 				'Find a truck to Sofia, Varna or an export hub. Deal directly with the carrier.',

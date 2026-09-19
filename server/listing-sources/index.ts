@@ -114,9 +114,13 @@ export async function fetchAllListingsSnapshot(detailLimit = 40): Promise<Listin
 				continue;
 			}
 			if (src.type === 'global-feed') {
+				if (process.env.FIELDLOT_ENABLE_SYNTHETIC_FEED !== '1') {
+					console.info('[listing-sources] skipping global-feed: synthetic feed disabled');
+					continue;
+				}
 				const rows = await fetchGlobalFeedListings(src.maxLinks ?? 20);
 				all.push(...rows);
-				sourceNames.push('Global Feed Exchange');
+				sourceNames.push('Global Feed Exchange (synthetic)');
 				continue;
 			}
 			if (src.type === 'romania-bursa') {
