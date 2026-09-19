@@ -15,6 +15,9 @@ import { getAllListings } from './fieldlot-rag.js';
 import { getListingsSnapshot } from './listings-data.js';
 import { handleRegisterInterestPost } from './register-interest.js';
 import { handleNotifyInquiryPost } from './notify-inquiry.js';
+import { addListingReport, getHiddenListingIds } from './moderation-store.js';
+import { lookupFirebaseIdToken } from './firebase-id-token.js';
+import { registerMailbox } from './mailbox-store.js';
 import { fetchExchangeSnapshot, getExchangeSnapshotCached } from './exchange-prices.js';
 import { isAnyLlmConfigured, resolveTextChatUpstream } from './llm-upstream.js';
 import { assertLlmRouteRateLimit, assertIpRateLimit } from './api-rate-limit.js';
@@ -76,7 +79,9 @@ const server = http.createServer(async (req, res) => {
 		if (path === '/api/listings' && req.method === 'GET') {
 			const refresh = url.searchParams.get('refresh') === '1';
 			const snap = await getListingsSnapshot(refresh);
-			send(res, 200, snap);
+			const hidden = new Set(await getHiddenListingIds());
+			const listings = snap.listings.filter((row) => !hidden.has(String(row.id)));
+			send(res, 200, { ...snap, listings, count: listings.length, hiddenIds: [...hidden] });
 			return;
 		}
 
@@ -206,6 +211,66 @@ const server = http.createServer(async (req, res) => {
 			}
 			const result = await handleNotifyInquiryPost(body as Record<string, unknown>);
 			send(res, result.ok ? 200 : result.status, result);
+			return;
+		}
+
+		if (path === '/api/listing-report' && req.method === 'POST') {
+			const limited = assertIpRateLimit({
+				clientIp: clientIpFromNodeRequest(req),
+				bucket: 'listing-report',
+				max: 20,
+				windowMs: 15 * 60 * 1000,
+			});
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { ok: false, error: limited.error });
+				return;
+			}
+			const body = await readJson(req);
+			if (body === null || typeof body !== 'object') {
+				send(res, 400, { ok: false, error: 'Invalid JSON' });
+				return;
+			}
+			const rec = body as Record<string, unknown>;
+			const listingId = typeof rec.listingId === 'string' ? rec.listingId.trim() : '';
+			const reason = typeof rec.reason === 'string' ? rec.reason.trim() : '';
+			const reporterId = typeof rec.reporterId === 'string' ? rec.reporterId.trim() : '';
+			if (listingId.length < 4 || reason.length < 4 || reporterId.length < 4) {
+				send(res, 400, { ok: false, error: 'Непълен доклад' });
+				return;
+			}
+			const report = await addListingReport({ listingId, reason, reporterId });
+			send(res, 200, { ok: true, id: report.id });
+			return;
+		}
+
+		if (path === '/api/register-mailbox' && req.method === 'POST') {
+			const limited = assertIpRateLimit({
+				clientIp: clientIpFromNodeRequest(req),
+				bucket: 'register-mailbox',
+				max: 40,
+				windowMs: 15 * 60 * 1000,
+			});
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { ok: false, error: limited.error });
+				return;
+			}
+			const body = await readJson(req);
+			if (body === null || typeof body !== 'object') {
+				send(res, 400, { ok: false, error: 'Invalid JSON' });
+				return;
+			}
+			const idToken = typeof (body as { idToken?: unknown }).idToken === 'string'
+				? (body as { idToken: string }).idToken
+				: '';
+			const user = await lookupFirebaseIdToken(idToken);
+			if (!user) {
+				send(res, 401, { ok: false, error: 'Невалидна сесия' });
+				return;
+			}
+			await registerMailbox(user.uid, user.email);
+			send(res, 200, { ok: true });
 			return;
 		}
 

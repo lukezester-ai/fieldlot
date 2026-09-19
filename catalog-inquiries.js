@@ -81,6 +81,7 @@ form.addEventListener("submit", async (event) => {
 			body: JSON.stringify({
 				listingTitle: listing.title,
 				listingId: listing.id,
+				listingOwnerId: listing.userId,
 				buyerName: payload.buyerName,
 				buyerEmail: payload.buyerEmail,
 				message: payload.message,
@@ -118,6 +119,15 @@ window.FieldlotInquiries = {
 			reporterId: auth.currentUser.uid,
 			createdAt: serverTimestamp(),
 		});
+		fetch("/api/listing-report", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				listingId,
+				reason: reason.trim().slice(0, 500),
+				reporterId: auth.currentUser.uid,
+			}),
+		}).catch(() => {});
 		alert("Докладът е записан за преглед.");
 	},
 };

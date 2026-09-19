@@ -30,14 +30,41 @@ function escapeHtml(s: string): string {
 		.replace(/"/g, '&quot;');
 }
 
+async function sendResend(opts: {
+	from: string;
+	to: string[];
+	subject: string;
+	html: string;
+	replyTo?: string;
+	key: string;
+}): Promise<boolean> {
+	const res = await fetch('https://api.resend.com/emails', {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${opts.key}`,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			from: opts.from,
+			to: opts.to,
+			subject: opts.subject,
+			html: opts.html,
+			reply_to: opts.replyTo ? [opts.replyTo] : undefined,
+		}),
+	});
+	return res.ok;
+}
+
 export async function handleNotifyInquiryPost(raw: Record<string, unknown>): Promise<{
 	ok: boolean;
 	status: number;
 	mailDelivery?: 'sent' | 'skipped' | 'failed';
+	sellerNotified?: boolean;
 	error?: string;
 }> {
 	const listingTitle = clip(raw.listingTitle, 200);
 	const listingId = clip(raw.listingId, 80);
+	const listingOwnerId = clip(raw.listingOwnerId, 80);
 	const buyerName = clip(raw.buyerName, 100);
 	const message = clip(raw.message, 1500);
 	const requestQty = clip(raw.requestQty, 40);
@@ -46,16 +73,19 @@ export async function handleNotifyInquiryPost(raw: Record<string, unknown>): Pro
 		return { ok: false, status: 400, error: 'Непълно запитване' };
 	}
 
-	const to = inboxTo();
+	const toInbox = inboxTo();
 	const from = fromAddress();
 	const key = process.env.RESEND_API_KEY?.trim();
-	if (!to || !from || !key) {
-		return { ok: true, status: 200, mailDelivery: 'skipped' };
+	if (!toInbox || !from || !key) {
+		return { ok: true, status: 200, mailDelivery: 'skipped', sellerNotified: false };
 	}
 
 	const replyTo = typeof raw.buyerEmail === 'string' && EMAIL_RE.test(raw.buyerEmail.trim())
 		? raw.buyerEmail.trim()
 		: undefined;
+
+	const { lookupMailbox } = await import('./mailbox-store.js');
+	const sellerEmail = listingOwnerId ? await lookupMailbox(listingOwnerId) : null;
 
 	const html = `
 		<h2>Fieldlot — ново запитване</h2>
@@ -64,26 +94,34 @@ export async function handleNotifyInquiryPost(raw: Record<string, unknown>): Pro
 		<p><strong>Кол.:</strong> ${escapeHtml(requestQty || '-')}</p>
 		<p><strong>Цена:</strong> ${escapeHtml(requestPrice || '-')}</p>
 		<p>${escapeHtml(message).replace(/\n/g, '<br/>')}</p>
+		<p><a href="https://fieldlot-two.vercel.app/dashboard.html">Отвори таблото Fieldlot</a></p>
 	`;
 
 	try {
-		const res = await fetch('https://api.resend.com/emails', {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${key}`,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				from,
-				to: [to],
-				subject: `Запитване: ${listingTitle}`,
-				html,
-				reply_to: replyTo ? [replyTo] : undefined,
-			}),
+		const inboxOk = await sendResend({
+			from,
+			to: [toInbox],
+			subject: `Запитване: ${listingTitle}`,
+			html,
+			replyTo,
+			key,
 		});
-		if (!res.ok) return { ok: true, status: 200, mailDelivery: 'failed' };
-		return { ok: true, status: 200, mailDelivery: 'sent' };
+		let sellerNotified = false;
+		if (sellerEmail && sellerEmail !== toInbox.trim().toLowerCase()) {
+			sellerNotified = await sendResend({
+				from,
+				to: [sellerEmail],
+				subject: `Fieldlot: запитване за „${listingTitle}“`,
+				html,
+				replyTo,
+				key,
+			});
+		} else if (sellerEmail && sellerEmail === toInbox.toLowerCase()) {
+			sellerNotified = inboxOk;
+		}
+		if (!inboxOk) return { ok: true, status: 200, mailDelivery: 'failed', sellerNotified };
+		return { ok: true, status: 200, mailDelivery: 'sent', sellerNotified };
 	} catch {
-		return { ok: true, status: 200, mailDelivery: 'failed' };
+		return { ok: true, status: 200, mailDelivery: 'failed', sellerNotified: false };
 	}
 }

@@ -137,6 +137,7 @@
 				<nav class="dashboard-nav">
 					<a href="#listings" class="active" id="tab-listings">Моите обяви</a>
 					<a href="#inquiries" id="tab-inquiries">Запитвания <span id="inquiry-count"></span></a>
+					<a href="#moderation" id="tab-moderation" hidden>Модерация</a>
 					<a href="#profile" id="tab-profile">Настройки на профила</a>
 				</nav>
 			</aside>
@@ -160,6 +161,19 @@
 					<div id="dashboard-inquiries" class="inquiry-list" aria-live="polite">
 						<p class="meta">Зареждане на запитванията...</p>
 					</div>
+				</div>
+
+				<div id="view-moderation" style="display: none;">
+					<div class="dashboard-header">
+						<div>
+							<h1>Модерация</h1>
+							<p class="meta">Одобрете обяви с статус „изчаква преглед“ и прегледайте сигнали. За cookie admin панела вижте и /admin.html.</p>
+						</div>
+					</div>
+					<h2>Чакащи обяви</h2>
+					<div id="moderation-pending" class="inquiry-list"></div>
+					<h2>Сигнали</h2>
+					<div id="moderation-reports" class="inquiry-list"></div>
 				</div>
 
 				<div id="view-profile" style="display: none;">

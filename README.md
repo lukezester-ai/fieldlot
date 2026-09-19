@@ -70,15 +70,17 @@ Backend API-тата (**`/api/register-interest`**, **`/api/fieldlot-chat`**) **
 | `FIELDLOT_ADMIN_SECRET` | Токен за `/admin` панела |
 | `VITE_FIREBASE_*` | Firebase Auth/Firestore (задължителни при `npm run build`) |
 | `CRON_SECRET` | Vercel cron за sync на обяви |
-| `FIELDLOT_SNAPSHOT_URL` / `FIELDLOT_SNAPSHOT_PUT_URL` | Отдалечен JSON snapshot между serverless инстанции |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob — persist на каталога между инстанции |
+| `FIELDLOT_SNAPSHOT_URL` / `FIELDLOT_SNAPSHOT_PUT_URL` | Алтернативен JSON snapshot (ако няма Blob) |
 | `FIELDLOT_ENABLE_SYNTHETIC_FEED=1` | Включва RNG „Global Feed“ (изключен по подразбиране) |
 
 ## Обяви, снимки, RAG и държавни сайтове
 
 - **Sync:** `npm run sync:listings` — тегли обяви, обновява `data/live-listings.json` и копира към `public/data/` при build.
-- **Cron:** Vercel вика `/api/cron/sync-listings` на всеки 6 часа. За persist между инстанции задай `FIELDLOT_SNAPSHOT_PUT_URL` + `FIELDLOT_SNAPSHOT_URL`.
-- **Admin:** cookie сесия след вход в `/admin.html` (не пази секрета в localStorage).
-- **Снимки:** `npm run sync:images` — сваля/обновява изображения от manifest.
+- **Cron:** Vercel вика `/api/cron/sync-listings` на всеки 6 часа. Persist: задай `BLOB_READ_WRITE_TOKEN` (Vercel Blob) или `FIELDLOT_SNAPSHOT_PUT_URL` + `FIELDLOT_SNAPSHOT_URL`.
+- **Admin:** cookie сесия след вход в `/admin.html` (не пази секрета в localStorage). Сигнали: секция в admin панела. За одобрение на потребителски обяви създай Firestore документ `admins/{uid}`.
+- **Снимки:** `npm run sync:images` — сваля/обновява изображения от manifest. Потребителските обяви качват снимка в Storage; каталогът показва снимка по култура или оригинал.
+- **Модерация:** нови обяви влизат като `pending` и се появяват в каталога след одобрение.
 - **Източници:** `data/listing-sources.json` — **продава и купува** от **borsaagro.com**, **agro.bg**, **agri.bg**. Само продажби: `FIELDLOT_SALES_ONLY=1`.
 - **Admin:** http://localhost:5174/admin.html (или `/admin` на Vercel) — sync, knowledge, източници. Header: `Authorization: Bearer <FIELDLOT_ADMIN_SECRET>`.
 - **Чат:** Fieldlot Guide ползва keyword + семантичен RAG; в UI се показват **Doc Discovery** хитове при `MISTRAL_API_KEY`.

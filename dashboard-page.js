@@ -33,26 +33,32 @@ imageInput.addEventListener('change', () => {
 
 const tabListings = document.getElementById("tab-listings");
 const tabInquiries = document.getElementById("tab-inquiries");
+const tabModeration = document.getElementById("tab-moderation");
 const tabProfile = document.getElementById("tab-profile");
 const viewListings = document.getElementById("view-listings");
 const viewInquiries = document.getElementById("view-inquiries");
+const viewModeration = document.getElementById("view-moderation");
 const viewProfile = document.getElementById("view-profile");
 const inquiriesEl = document.getElementById("dashboard-inquiries");
 const inquiryCountEl = document.getElementById("inquiry-count");
+const pendingEl = document.getElementById("moderation-pending");
+const reportsEl = document.getElementById("moderation-reports");
 
 const btnNewListing = document.getElementById("btn-new-listing");
 
 function showView(name) {
-	const tabs = { listings: tabListings, inquiries: tabInquiries, profile: tabProfile };
-	const views = { listings: viewListings, inquiries: viewInquiries, profile: viewProfile };
+	const tabs = { listings: tabListings, inquiries: tabInquiries, profile: tabProfile, moderation: tabModeration };
+	const views = { listings: viewListings, inquiries: viewInquiries, profile: viewProfile, moderation: viewModeration };
 	Object.entries(tabs).forEach(([key, tab]) => tab?.classList.toggle("active", key === name));
 	Object.entries(views).forEach(([key, view]) => { if (view) view.style.display = key === name ? "block" : "none"; });
 	if (name === "inquiries") loadInquiries();
+	if (name === "moderation") loadModeration();
 }
 
 tabListings.addEventListener("click", (e) => { e.preventDefault(); showView("listings"); });
 tabInquiries.addEventListener("click", (e) => { e.preventDefault(); showView("inquiries"); });
 tabProfile.addEventListener("click", (e) => { e.preventDefault(); showView("profile"); });
+tabModeration?.addEventListener("click", (e) => { e.preventDefault(); showView("moderation"); });
 
 // New Listing Button hooks into existing publish-ui.js logic
 btnNewListing.addEventListener("click", () => {
@@ -72,6 +78,22 @@ onAuthStateChanged(auth, async (user) => {
 	
 	currentUser = user;
 	emailInput.value = user.email;
+	try {
+		const idToken = await user.getIdToken();
+		await fetch("/api/register-mailbox", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ idToken }),
+		});
+	} catch {
+		/* ignore */
+	}
+	try {
+		const adminDoc = await getDoc(doc(db, "admins", user.uid));
+		if (adminDoc.exists() && tabModeration) tabModeration.hidden = false;
+	} catch {
+		/* ignore */
+	}
 	
 	// Fetch user profile data
 	try {
@@ -303,6 +325,10 @@ async function loadMyListings() {
 		
 		snapshot.forEach(docSnap => {
 			const d = docSnap.data();
+			if (!d.moderationStatus) {
+				updateDoc(doc(db, "listings", docSnap.id), { moderationStatus: "approved" }).catch(() => {});
+				d.moderationStatus = "approved";
+			}
 			grid.appendChild(createCard(docSnap.id, d));
 		});
 		
@@ -318,18 +344,25 @@ function createCard(id, item) {
 	article.dataset.id = id;
 	
 	// Create visual elements
+	const status = item.moderationStatus || "approved";
+	const statusLabel = status === "pending" ? "Изчаква преглед" : status === "hidden" ? "Скрита" : status === "flagged" ? "Сигнал" : "Активна";
+	const photo = item.imageUrl
+		? `<img class="yp-entry-photo" src="${escapeHtml(item.imageUrl)}" alt="" />`
+		: "";
 	article.innerHTML = `
+		${photo}
 		<div class="yp-entry-main">
 			<div class="yp-entry-head">
 				<span class="tag sell">Продава</span>
 				${item.category ? `<span class="tag yp-cat">${escapeHtml(item.category)}</span>` : ''}
+				<span class="tag">${escapeHtml(statusLabel)}</span>
 			</div>
 			<h3 class="yp-entry-title">${escapeHtml(item.title)}</h3>
 			<p class="yp-entry-line">${escapeHtml(item.location || "България")} · ${escapeHtml(item.qty || "")}</p>
 		</div>
 		<div class="yp-entry-aside">
 			<div class="price">${item.price ? escapeHtml(item.price) : "по договаряне"} <small>лв</small></div>
-			<button class="btn btn-secondary btn-hide" style="padding: 4px 8px; margin-top: 8px;">${item.moderationStatus === "hidden" ? "Покажи" : "Скрий"}</button>
+			<button class="btn btn-secondary btn-hide" style="padding: 4px 8px; margin-top: 8px;">${status === "hidden" ? "Прати за преглед" : "Скрий"}</button>
 			<button class="btn btn-secondary btn-delete" style="color: red; border-color: red; background: transparent; padding: 4px 8px; margin-top: 8px;">Изтрий</button>
 		</div>
 	`;
@@ -337,11 +370,11 @@ function createCard(id, item) {
 	const hideBtn = article.querySelector('.btn-hide');
 	hideBtn.addEventListener('click', async (e) => {
 		e.stopPropagation();
-		const next = item.moderationStatus === "hidden" ? "approved" : "hidden";
+		const next = item.moderationStatus === "hidden" ? "pending" : "hidden";
 		try {
 			await updateDoc(doc(db, "listings", id), { moderationStatus: next });
 			item.moderationStatus = next;
-			hideBtn.textContent = next === "hidden" ? "Покажи" : "Скрий";
+			hideBtn.textContent = next === "hidden" ? "Прати за преглед" : "Скрий";
 		} catch (err) {
 			console.error("Error hiding listing", err);
 			alert("Статусът не беше обновен.");
@@ -366,4 +399,74 @@ function createCard(id, item) {
 	});
 	
 	return article;
+}
+
+async function loadModeration() {
+	if (!pendingEl || !reportsEl) return;
+	pendingEl.innerHTML = '<p class="meta">Зареждане...</p>';
+	reportsEl.innerHTML = '<p class="meta">Зареждане...</p>';
+	try {
+		const pendingSnap = await getDocs(
+			query(collection(db, "listings"), where("moderationStatus", "==", "pending")),
+		);
+		if (pendingSnap.empty) {
+			pendingEl.innerHTML = '<p class="meta">Няма обяви в изчакване.</p>';
+		} else {
+			pendingEl.innerHTML = "";
+			pendingSnap.forEach((snap) => {
+				const d = snap.data();
+				const card = document.createElement("article");
+				card.className = "inquiry-card";
+				card.innerHTML = `<h3>${escapeHtml(d.title || snap.id)}</h3>
+					<p class="inquiry-meta">${escapeHtml(d.location || "")} · ${escapeHtml(d.qty || "")} · ${escapeHtml(String(d.price || ""))} лв</p>
+					<div class="inquiry-actions">
+						<button type="button" class="btn btn-primary" data-approve>Одобри</button>
+						<button type="button" class="btn btn-secondary" data-hide>Скрий</button>
+					</div>`;
+				card.querySelector("[data-approve]").addEventListener("click", async () => {
+					await updateDoc(doc(db, "listings", snap.id), { moderationStatus: "approved", updatedAt: serverTimestamp() });
+					await loadModeration();
+				});
+				card.querySelector("[data-hide]").addEventListener("click", async () => {
+					await updateDoc(doc(db, "listings", snap.id), { moderationStatus: "hidden", updatedAt: serverTimestamp() });
+					await loadModeration();
+				});
+				pendingEl.appendChild(card);
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		pendingEl.innerHTML = '<p class="meta">Нямате права за модерация. Добавете документа <code>admins/&lt;вашия uid&gt;</code> в Firestore.</p>';
+	}
+	try {
+		const reportSnap = await getDocs(collection(db, "reports"));
+		if (reportSnap.empty) {
+			reportsEl.innerHTML = '<p class="meta">Няма сигнали.</p>';
+			return;
+		}
+		reportsEl.innerHTML = "";
+		reportSnap.forEach((snap) => {
+			const d = snap.data();
+			const card = document.createElement("article");
+			card.className = "inquiry-card";
+			card.innerHTML = `<h3>${escapeHtml(d.listingId || snap.id)}</h3>
+				<p class="inquiry-message">${escapeHtml(d.reason || "")}</p>
+				<div class="inquiry-actions">
+					<button type="button" class="btn btn-primary" data-flag>Скрий обявата</button>
+				</div>`;
+			card.querySelector("[data-flag]").addEventListener("click", async () => {
+				if (d.listingId) {
+					await updateDoc(doc(db, "listings", d.listingId), {
+						moderationStatus: "flagged",
+						updatedAt: serverTimestamp(),
+					}).catch(() => {});
+				}
+				await loadModeration();
+			});
+			reportsEl.appendChild(card);
+		});
+	} catch (error) {
+		console.error(error);
+		reportsEl.innerHTML = '<p class="meta">Сигналите не могат да се заредят.</p>';
+	}
 }

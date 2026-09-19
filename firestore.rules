@@ -2,19 +2,42 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
+    function isPlatformAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function listingPublic(data) {
+      return !('moderationStatus' in data)
+        || data.moderationStatus == 'approved';
+    }
+
+    match /admins/{userId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
 
     match /listings/{listingId} {
-      allow read: if true;
+      allow read: if listingPublic(resource.data)
+        || (signedIn() && resource.data.userId == request.auth.uid)
+        || isPlatformAdmin();
       allow create: if signedIn()
         && request.resource.data.userId == request.auth.uid
         && !request.resource.data.keys().hasAny(['userEmail', 'email', 'phone'])
-        && request.resource.data.moderationStatus in ['approved', 'hidden'];
+        && request.resource.data.moderationStatus == 'pending';
       allow update, delete: if signedIn() && resource.data.userId == request.auth.uid
         && request.resource.data.userId == request.auth.uid
         && (
-          !request.resource.data.keys().hasAny(['moderationStatus'])
-          || request.resource.data.moderationStatus in ['approved', 'hidden', 'flagged']
+          request.resource.data.moderationStatus in ['pending', 'hidden']
+          || (
+            request.resource.data.moderationStatus == 'approved'
+            && (
+              !('moderationStatus' in resource.data)
+              || resource.data.moderationStatus in ['approved', 'hidden']
+            )
+          )
         );
+      allow update: if isPlatformAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['moderationStatus', 'updatedAt'])
+        && request.resource.data.moderationStatus in ['pending', 'approved', 'hidden', 'flagged'];
     }
 
     match /logistics/{itemId} {
@@ -32,7 +55,8 @@ service cloud.firestore {
         && request.resource.data.reason is string
         && request.resource.data.reason.size() >= 4
         && request.resource.data.reason.size() <= 500;
-      allow read, update, delete: if false;
+      allow read, update: if isPlatformAdmin();
+      allow delete: if false;
     }
 
     match /users/{userId} {

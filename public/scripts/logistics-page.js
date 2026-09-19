@@ -39,7 +39,7 @@ let contactOpenedAt = Date.now();
 
 function selectedLogisticsItem() {
 	const id = document.getElementById('logistics-contact-id')?.value;
-	return DUMMY_LOGISTICS.find((item) => item.id === id);
+	return logisticsItems.find((item) => item.id === id);
 }
 
 function closeContactDialog() {
@@ -160,9 +160,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 		console.error(e);
 	}
 	const demo = DUMMY_LOGISTICS.map((row) => ({ ...row, demo: true }));
-	logisticsItems = [...live, ...demo];
+	logisticsItems = live.length > 0 ? live : demo;
 	const banner = document.getElementById('logistics-demo-banner');
-	if (banner) banner.hidden = live.length > 0;
+	if (banner) {
+		banner.hidden = live.length > 0;
+		if (live.length === 0) {
+			banner.textContent = 'Няма реални логистични обяви — показани са демо оферти.';
+		}
+	}
 	renderLogistics();
 	renderAds();
 

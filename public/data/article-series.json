@@ -59,6 +59,26 @@
       },
       "date": "01 Юни 2026",
       "href": "/article.html?part=3"
+    },
+    {
+      "part": "4",
+      "title": {
+        "bg": "Ечемик: фураж срещу малц",
+        "en": "Barley: feed versus malt",
+        "de": "Gerste: Futter gegen Malz"
+      },
+      "excerpt": {
+        "bg": "Двата пазара не се заместват — спецификацията решава цената повече от тонажа.",
+        "en": "The two markets are not substitutes — spec sets the price more than tonnage.",
+        "de": "Die zwei Märkte ersetzen sich nicht — die Spezifikation zählt mehr als die Tonnage."
+      },
+      "body": {
+        "bg": "Ечемикът във Fieldlot се върти около две различни сделки: фураж (влага, хектолитър) и малцов (протеин в тесен коридор, калибър, кълняемост).\n\nСмесването на партиди е най-честият спор на кантар. Ако няма лабораторен протокол, купувачът дърпа базиса надолу, дори когато тонажът е наличен.\n\nЛогистиката е къса: DAP фуражен завод в равнината често бие EXW стопанство плюс чакане. За малц планирайте прозорец за товарене — не „когато има камион“.\n\nФиксирайте културата, реколтата и анализа в офертата преди да говорите за километри.",
+        "en": "Barley on Fieldlot is two trades: feed (moisture, test weight) and malt (tight protein band, size, germination).\n\nBlended lots are the usual weighbridge fight. Without a lab sheet the buyer pulls basis even when volume is there.\n\nLock crop, harvest year and analysis in the offer before you talk kilometres.",
+        "de": "Gerste bei Fieldlot sind zwei Geschäfte: Futter und Malz. Ohne Laborblatt zieht der Käufer den Basispreis."
+      },
+      "date": "19 Септември 2026",
+      "href": "/article.html?part=4"
     }
   ]
 }

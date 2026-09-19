@@ -1,5 +1,5 @@
 /**
- * Fieldlot catalog — live listings (yellow-pages style, no photos)
+ * Fieldlot catalog — live listings with crop / seller photos
  */
 (function initCatalogPage(global) {
 	const I18n = () => window.FieldlotI18n;
@@ -60,20 +60,21 @@
 		});
 	}
 
-	function stripMedia(listings) {
-		return listings.map((row) => {
-			const { imageUrl, image, ...rest } = row;
-			return rest;
-		});
+	function listingPhoto(item) {
+		const meta = global.FieldlotImages?.forListingMeta?.(item);
+		if (meta?.src) return meta.src;
+		return item.imageUrl || item.image || '';
 	}
 
 	async function loadListings() {
 		grid.innerHTML = `<p class="meta yp-loading">${escapeHtml(t('catalog.loading'))}</p>`;
 		let staticData = [];
+		let hiddenIds = new Set();
 		try {
 			const res = await fetch('/api/listings');
 			if (res.ok) {
 				const data = await res.json();
+				hiddenIds = new Set((data.hiddenIds || []).map(String));
 				staticData = (Array.isArray(data.listings) ? data.listings : []).filter((row) => {
 					const source = String(row.source || '');
 					const id = String(row.id || '');
@@ -97,7 +98,9 @@
 			console.error("Firebase listings fetch error:", e);
 		}
 
-		allListings = sortListings(stripMedia([...fbData, ...staticData]));
+		allListings = sortListings(
+			[...fbData, ...staticData].filter((row) => !hiddenIds.has(String(row.id))),
+		);
 	}
 
 	function filterListings() {
@@ -148,7 +151,12 @@
 		article.className = 'listing-card yp-entry';
 		article.tabIndex = 0;
 		article.dataset.id = item.id;
+		const photo = listingPhoto(item);
+		const photoHtml = photo
+			? `<img class="yp-entry-photo" src="${escapeHtml(photo)}" alt="${escapeHtml(item.title)}" loading="lazy" />`
+			: '';
 		article.innerHTML = `
+			${photoHtml}
 			<div class="yp-entry-main">
 				<div class="yp-entry-head">
 					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>
@@ -214,7 +222,12 @@
 		const reportBtn = raw.isFirebase
 			? `<p class="detail-note"><button type="button" class="btn btn-secondary" id="detail-report">Докладвай обява</button></p>`
 			: '';
+		const photo = listingPhoto(item);
+		const photoHtml = photo
+			? `<p><img class="yp-detail-photo" src="${escapeHtml(photo)}" alt="${escapeHtml(item.title)}" /></p>`
+			: '';
 		detailBody.innerHTML = `
+			${photoHtml}
 			<div class="detail-highlight yp-detail-lead">
 				${cat ? `<p class="yp-detail-cat">${escapeHtml(cat)}</p>` : ''}
 				<div class="price">${escapeHtml(item.price)} <small>${escapeHtml(item.priceUnit)}</small></div>

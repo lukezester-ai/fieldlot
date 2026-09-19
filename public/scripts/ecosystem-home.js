@@ -294,7 +294,12 @@
 			.slice(0, 2)
 			.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
 			.join('');
+		const photoSrc = window.FieldlotImages?.forListing?.(row) || row.imageUrl || row.image || '';
+		const photo = photoSrc
+			? `<img class="yp-entry-photo" src="${escapeHtml(photoSrc)}" alt="${escapeHtml(row.title || '')}" loading="lazy" />`
+			: '';
 		return `<article class="yp-entry listing-card">
+			${photo}
 			<div class="yp-entry-main">
 				<div class="yp-entry-head">
 					<span class="tag ${roleClass}">${escapeHtml(roleLabel)}</span>

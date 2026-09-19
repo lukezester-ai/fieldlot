@@ -30,6 +30,17 @@
 			const title = pick(item.title, lang);
 			const body = pick(item.body, lang) || pick(item.excerpt, lang);
 			document.title = `${title} — Fieldlot`;
+			const nav = items
+				.map((row) => {
+					const n = Number(row.part);
+					const label = pick(row.title, lang) || `Част ${row.part}`;
+					const href = row.href || `/article.html?part=${encodeURIComponent(String(row.part))}`;
+					const current = n === Number(item.part);
+					return current
+						? `<span class="meta">Част ${escapeHtml(String(row.part))}</span>`
+						: `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`;
+				})
+				.join(' · ');
 			root.innerHTML = `
 				<p class="eco-eyebrow">Част ${escapeHtml(String(item.part || part))}</p>
 				<h1>${escapeHtml(title)}</h1>
@@ -38,6 +49,7 @@
 					.split(/\n\n+/)
 					.map((p) => `<p>${escapeHtml(p).replace(/\n/g, '<br/>')}</p>`)
 					.join('')}</div>
+				<p class="meta" style="margin-top:2rem">${nav}</p>
 			`;
 		})
 		.catch(() => {

@@ -62,9 +62,57 @@ async function loadSources() {
 	);
 }
 
+async function loadReports() {
+	const wrap = document.getElementById('reports-list');
+	if (!wrap) return;
+	wrap.textContent = 'Зареждане…';
+	try {
+		const data = await apiGet('reports');
+		const reports = data.reports || [];
+		const hiddenIds = data.hiddenIds || [];
+		if (!reports.length && !hiddenIds.length) {
+			wrap.textContent = 'Няма сигнали.';
+			return;
+		}
+		wrap.innerHTML = '';
+		reports.forEach((row) => {
+			const div = document.createElement('div');
+			div.style.margin = '0.75rem 0';
+			div.innerHTML = `<strong>${row.listingId}</strong> · ${row.status}<br/><span>${row.reason || ''}</span><br/>`;
+			if (row.status === 'open') {
+				const hide = document.createElement('button');
+				hide.className = 'btn';
+				hide.textContent = 'Скрий обявата';
+				hide.addEventListener('click', async () => {
+					await apiPost('hide-listing', { listingId: row.listingId, reportId: row.id });
+					await loadReports();
+				});
+				const dismiss = document.createElement('button');
+				dismiss.className = 'btn';
+				dismiss.style.marginLeft = '0.5rem';
+				dismiss.textContent = 'Отхвърли';
+				dismiss.addEventListener('click', async () => {
+					await apiPost('dismiss-report', { reportId: row.id });
+					await loadReports();
+				});
+				div.appendChild(hide);
+				div.appendChild(dismiss);
+			}
+			wrap.appendChild(div);
+		});
+		if (hiddenIds.length) {
+			const p = document.createElement('p');
+			p.textContent = `Скрити id: ${hiddenIds.join(', ')}`;
+			wrap.appendChild(p);
+		}
+	} catch (e) {
+		wrap.textContent = e instanceof Error ? e.message : String(e);
+	}
+}
+
 async function enterAdmin() {
 	showAdmin();
-	await Promise.all([loadStatus(), loadKnowledge(), loadSources()]);
+	await Promise.all([loadStatus(), loadKnowledge(), loadSources(), loadReports()]);
 }
 
 document.getElementById('login-btn')?.addEventListener('click', async () => {
@@ -94,7 +142,7 @@ document.getElementById('logout-btn')?.addEventListener('click', async () => {
 
 if (sessionStorage.getItem(SESSION_FLAG)) {
 	showAdmin();
-	Promise.all([loadStatus(), loadKnowledge(), loadSources()]).catch(() => {
+	Promise.all([loadStatus(), loadKnowledge(), loadSources(), loadReports()]).catch(() => {
 		showLogin();
 	});
 }

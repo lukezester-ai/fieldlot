@@ -170,12 +170,22 @@ function injectPublishModal() {
 				userId: auth.currentUser.uid,
 				createdAt: serverTimestamp(),
 				status: "active",
-				moderationStatus: "approved",
+				moderationStatus: "pending",
 			});
 
-			successEl.textContent = "Обявата е публикувана успешно!";
+			successEl.textContent = "Обявата е изпратена за преглед. Ще се появи в каталога след одобрение.";
 			successEl.style.display = "block";
 			form.reset();
+			try {
+				const idToken = await auth.currentUser.getIdToken();
+				await fetch("/api/register-mailbox", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ idToken }),
+				});
+			} catch {
+				/* mailbox is best-effort for seller email */
+			}
 			
 			setTimeout(() => {
 				backdrop.classList.remove("open");

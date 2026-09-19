@@ -10,6 +10,12 @@ import { assertIpRateLimit } from './api-rate-limit.js';
 import { getRagIndexStatus } from './fieldlot-semantic-rag.js';
 import { loadSourcesConfig } from './listing-sources/index.js';
 import { getListingsSnapshot } from './listings-data.js';
+import { snapshotPersistConfigured } from './listings-snapshot-store.js';
+import {
+	dismissReport,
+	getModerationState,
+	hideListingId,
+} from './moderation-store.js';
 import { runListingsSyncPipeline } from './sync-listings-pipeline.js';
 
 export type AdminAuthInput = {
@@ -96,8 +102,14 @@ export async function handleAdminGet(
 				rag,
 				sources: loadSourcesConfig(),
 				adminConfigured: Boolean(readAdminSecret()),
+				persist: snapshotPersistConfigured(),
 			},
 		};
+	}
+
+	if (action === 'reports') {
+		const moderation = await getModerationState();
+		return { status: 200, body: { ok: true, ...moderation } };
 	}
 
 	return { status: 404, body: { ok: false, error: 'Unknown action' } };
@@ -160,6 +172,25 @@ export async function handleAdminPost(
 		const p = path.join(process.cwd(), 'data/platform-knowledge.json');
 		fs.writeFileSync(p, `${JSON.stringify({ chunks }, null, '\t')}\n`, 'utf8');
 		return { status: 200, body: { ok: true, saved: chunks.length } };
+	}
+
+	if (action === 'hide-listing') {
+		const rec = body && typeof body === 'object' ? (body as { listingId?: unknown; reportId?: unknown }) : {};
+		const listingId = typeof rec.listingId === 'string' ? rec.listingId.trim() : '';
+		const reportId = typeof rec.reportId === 'string' ? rec.reportId.trim() : '';
+		if (listingId.length < 4) {
+			return { status: 400, body: { ok: false, error: 'listingId required' } };
+		}
+		const moderation = await hideListingId(listingId, reportId || undefined);
+		return { status: 200, body: { ok: true, ...moderation } };
+	}
+
+	if (action === 'dismiss-report') {
+		const rec = body && typeof body === 'object' ? (body as { reportId?: unknown }) : {};
+		const reportId = typeof rec.reportId === 'string' ? rec.reportId.trim() : '';
+		if (!reportId) return { status: 400, body: { ok: false, error: 'reportId required' } };
+		const moderation = await dismissReport(reportId);
+		return { status: 200, body: { ok: true, ...moderation } };
 	}
 
 	if (action === 'save-sources') {

@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, collection, getDocs, query, orderBy, limit, doc, getDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, orderBy, limit, where, doc, getDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -22,16 +22,19 @@ export const storage = getStorage(app);
 window.fetchFirebaseListings = async function(limitCount = 20) {
   const fbData = [];
   try {
-    const q = query(collection(db, "listings"), orderBy("createdAt", "desc"), limit(limitCount));
+    const q = query(
+      collection(db, "listings"),
+      where("moderationStatus", "==", "approved"),
+      orderBy("createdAt", "desc"),
+      limit(limitCount),
+    );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       const d = doc.data();
-      const moderation = d.moderationStatus || "approved";
-      if (moderation === "hidden" || moderation === "flagged") return;
       fbData.push({
         id: doc.id,
         title: d.title,
-        subtitle: d.location, // maps to location
+        subtitle: d.location,
         category: d.category,
         price: d.price ? String(d.price) : "по дог.",
         priceUnit: "лв",
@@ -44,6 +47,7 @@ window.fetchFirebaseListings = async function(limitCount = 20) {
         userId: d.userId,
         moderationStatus: d.moderationStatus || "approved",
         desc: d.desc || "",
+        imageUrl: d.imageUrl || "",
       });
     });
   } catch (e) {

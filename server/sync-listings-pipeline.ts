@@ -3,14 +3,14 @@ import path from 'node:path';
 import { fetchAllListingsSnapshot } from './listing-sources/index.js';
 import { rebuildFieldlotRagIndex } from './fieldlot-semantic-rag.js';
 import { enrichListing } from './fieldlot-categories.js';
-import { stripListingMedia, setListingsMemoryCache, withoutSyntheticListings } from './listings-data.js';
+import { setListingsMemoryCache, withoutSyntheticListings } from './listings-data.js';
 import { persistListingsSnapshot } from './listings-snapshot-store.js';
 
 export type SyncPipelineResult = {
 	snapshot: Awaited<ReturnType<typeof fetchAllListingsSnapshot>>;
 	rag: Awaited<ReturnType<typeof rebuildFieldlotRagIndex>>;
 	wroteFiles: boolean;
-	persisted: 'remote' | 'memory';
+	persisted: 'blob' | 'remote' | 'file' | 'memory';
 	paths: { listings?: string; manifest?: string; publicListings?: string };
 };
 
@@ -37,7 +37,7 @@ export async function runListingsSyncPipeline(opts?: {
 				subtitle: l.subtitle || locWithFlag || 'Международен пазар',
 				priceUnit: l.priceUnit || l.currency || '',
 			};
-			return stripListingMedia(enrichListing(mapped));
+			return enrichListing(mapped);
 		}),
 	};
 	const rag = await rebuildFieldlotRagIndex(snap.listings);
@@ -81,7 +81,7 @@ export async function runListingsSyncPipeline(opts?: {
 		for (const [k, v] of Object.entries(LEGACY_DEMO)) {
 			if (!manifest.listings[k]) manifest.listings[k] = v;
 		}
-		/* Manifest kept for legacy/demo ids only — catalog listings are text-only (no photos). */
+		/* Manifest kept for crop photos when a listing has no original imageUrl. */
 		manifest.source = snap.source;
 		fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, '\t')}\n`, 'utf8');
 		paths.manifest = manifestPath;
