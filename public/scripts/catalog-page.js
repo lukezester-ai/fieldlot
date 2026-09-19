@@ -346,6 +346,10 @@
 		el?.addEventListener('input', render);
 		el?.addEventListener('change', render);
 	});
+	document.getElementById('filters')?.addEventListener('submit', (event) => {
+		event.preventDefault();
+		render();
+	});
 	document.getElementById('reset-filters')?.addEventListener('click', () => {
 		qEl.value = '';
 		if (catEl) catEl.value = '';
