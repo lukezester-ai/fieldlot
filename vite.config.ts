@@ -22,6 +22,7 @@ export default defineConfig(({ mode }) => {
 					dashboard: path.resolve(process.cwd(), 'dashboard.html'),
 					admin: path.resolve(process.cwd(), 'admin.html'),
 					logistics: path.resolve(process.cwd(), 'logistics.html'),
+					article: path.resolve(process.cwd(), 'article.html'),
 				},
 			},
 		},

@@ -23,8 +23,8 @@
     {
       "id": "global-feed",
       "type": "global-feed",
-      "enabled": true,
-      "name": "Global Feed Exchange",
+      "enabled": false,
+      "name": "Global Feed Exchange (synthetic — off unless FIELDLOT_ENABLE_SYNTHETIC_FEED=1)",
       "maxLinks": 30
     },
     {

@@ -76,6 +76,8 @@ function mailFallback(item, values) {
 	return `mailto:info@agrinexus.eu?subject=${subject}&body=${body}`;
 }
 
+let logisticsItems = DUMMY_LOGISTICS.map((row) => ({ ...row, demo: true }));
+
 function renderLogistics() {
 	const grid = document.getElementById('logistics-grid');
 	if (!grid) return;
@@ -85,8 +87,8 @@ function renderLogistics() {
 	const q = document.getElementById('q')?.value.toLowerCase() || '';
 	const serviceType = document.getElementById('service-type')?.value || '';
 
-	const filtered = DUMMY_LOGISTICS.filter(item => {
-		if (q && !item.title.toLowerCase().includes(q) && !item.desc.toLowerCase().includes(q)) return false;
+	const filtered = logisticsItems.filter(item => {
+		if (q && !item.title.toLowerCase().includes(q) && !String(item.desc || '').toLowerCase().includes(q)) return false;
 		if (serviceType && item.category !== serviceType) return false;
 		return true;
 	});
@@ -105,10 +107,12 @@ function renderLogistics() {
 		card.style.transform = 'translateY(0)';
 		
 		const roleBadge = item.role === 'buy' ? '<span class="listing-role buy">Търси транспорт</span>' : '<span class="listing-role sell">Предлага транспорт</span>';
+		const demoBadge = item.demo ? '<span class="ad-badge">Демо</span>' : '';
 		
 		card.innerHTML = `
 			${item.img ? `<div class="listing-img" style="background-image:url(${item.img})"></div>` : `<div class="listing-img no-img"><span>Няма снимка</span></div>`}
 			<div class="listing-content">
+				${demoBadge}
 				${roleBadge}
 				<h3 class="listing-title">${item.title}</h3>
 				<p class="listing-meta">${item.region} • ${new Date(item.publishedAt).toLocaleDateString()}</p>
@@ -143,7 +147,22 @@ function renderAds() {
 	});
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+	let live = [];
+	try {
+		let tries = 20;
+		while (!window.fetchFirebaseLogistics && tries > 0) {
+			await new Promise((r) => setTimeout(r, 100));
+			tries -= 1;
+		}
+		if (window.fetchFirebaseLogistics) live = await window.fetchFirebaseLogistics(40);
+	} catch (e) {
+		console.error(e);
+	}
+	const demo = DUMMY_LOGISTICS.map((row) => ({ ...row, demo: true }));
+	logisticsItems = [...live, ...demo];
+	const banner = document.getElementById('logistics-demo-banner');
+	if (banner) banner.hidden = live.length > 0;
 	renderLogistics();
 	renderAds();
 
@@ -158,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('logistics-grid')?.addEventListener('click', (event) => {
 		const button = event.target.closest('.logistics-contact-button');
 		if (!button) return;
-		const item = DUMMY_LOGISTICS.find((entry) => entry.id === button.dataset.logisticsId);
+		const item = logisticsItems.find((entry) => entry.id === button.dataset.logisticsId);
 		if (item) openContactDialog(item);
 	});
 

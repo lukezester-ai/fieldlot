@@ -7,23 +7,26 @@
 		"node": ">=20"
 	},
 	"scripts": {
-		"dev": "concurrently -k \"vite\" \"tsx watch server/dev-api.ts\" \"npm run backend:dev\"",
+		"dev": "concurrently -k \"vite\" \"tsx watch server/dev-api.ts\"",
+		"dev:full": "concurrently -k \"vite\" \"tsx watch server/dev-api.ts\" \"npm run backend:dev\"",
 		"backend:dev": "node scripts/run-backend.mjs",
 		"backend:seed": "node scripts/run-backend.mjs --seed-only",
-		"build": "node scripts/sync-images-from-manifest.mjs && vite build",
+		"build": "node scripts/copy-data-to-public.mjs && node scripts/sync-images-from-manifest.mjs && vite build",
 		"sync:listings": "node scripts/sync-gov-listings.mjs",
 		"sync:images": "node scripts/fix-crop-images.mjs && node scripts/sync-images-from-manifest.mjs",
 		"fetch:exchange": "node scripts/fetch-exchange-prices.mjs",
 		"preview": "concurrently -k \"vite preview --port 5174 --strictPort\" \"tsx server/dev-api.ts\"",
 		"typecheck": "tsc --noEmit",
 		"verify": "node scripts/verify-fieldlot.mjs",
-		"test:unit": "tsx --test server/cron-auth.test.ts server/listings-data.test.ts",
+		"test:unit": "tsx --test server/cron-auth.test.ts server/listings-data.test.ts server/admin-auth.test.ts",
 		"test": "npm run typecheck && npm run test:unit && node scripts/smoke-api.mjs",
+		"test:e2e": "playwright test",
 		"test:backend": "node scripts/smoke-backend.mjs",
-		"build:with-listings": "npm run sync:listings && node scripts/sync-images-from-manifest.mjs && vite build"
+		"build:with-listings": "npm run sync:listings && node scripts/copy-data-to-public.mjs && node scripts/sync-images-from-manifest.mjs && vite build"
 	},
 	"devDependencies": {
 		"@capacitor/cli": "^8.3.4",
+		"@playwright/test": "^1.55.1",
 		"@types/node": "^22.10.1",
 		"@vercel/node": "^5.5.28",
 		"concurrently": "^9.1.2",

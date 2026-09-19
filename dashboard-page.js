@@ -1,5 +1,5 @@
 import { auth, db, storage } from "./firebase-init.js";
-import { onAuthStateChanged, updateProfile } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, doc, setDoc, getDoc, deleteDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -108,20 +108,29 @@ function formatDate(value) {
 	return date && !Number.isNaN(date.getTime()) ? date.toLocaleString("bg-BG") : "току-що";
 }
 
-const STATUS_LABELS = { new: "Ново", contacted: "Свързах се", closed: "Приключено" };
+const STATUS_LABELS = {
+	new: "Ново",
+	contacted: "Свързах се",
+	offer: "Оферта",
+	accepted: "Прието",
+	closed: "Приключено",
+};
 
 async function loadInquiries() {
 	if (!currentUser || !inquiriesEl) return;
 	inquiriesEl.innerHTML = '<p class="meta">Зареждане...</p>';
 	try {
-		const q = query(collection(db, "inquiries"), where("listingOwnerId", "==", currentUser.uid));
-		const snapshot = await getDocs(q);
-		const rows = snapshot.docs.map((snap) => ({ id: snap.id, ...snap.data() }))
-			.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-		const newCount = rows.filter((row) => row.status === "new").length;
+		const receivedSnap = await getDocs(query(collection(db, "inquiries"), where("listingOwnerId", "==", currentUser.uid)));
+		const sentSnap = await getDocs(query(collection(db, "inquiries"), where("buyerId", "==", currentUser.uid)));
+		const byId = new Map();
+		[...receivedSnap.docs, ...sentSnap.docs].forEach((snap) => {
+			byId.set(snap.id, { id: snap.id, ...snap.data() });
+		});
+		const rows = [...byId.values()].sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+		const newCount = rows.filter((row) => row.status === "new" && row.listingOwnerId === currentUser.uid).length;
 		inquiryCountEl.textContent = newCount ? `(${newCount})` : "";
 		if (!rows.length) {
-			inquiriesEl.innerHTML = '<p class="meta">Все още няма запитвания по вашите обяви.</p>';
+			inquiriesEl.innerHTML = '<p class="meta">Все още няма запитвания.</p>';
 			return;
 		}
 		inquiriesEl.innerHTML = "";
@@ -133,18 +142,32 @@ async function loadInquiries() {
 }
 
 function createInquiryCard(item) {
+	const isOwner = item.listingOwnerId === currentUser.uid;
 	const card = document.createElement("article");
 	card.className = "inquiry-card";
+	const requestLine = [item.requestQty, item.requestPrice].filter(Boolean).join(" · ");
+	const offerLine = [item.offerQty, item.offerPrice, item.offerIncoterm, item.offerNote].filter(Boolean).join(" · ");
+	const ownerActions = isOwner ? `
+			<button type="button" class="btn btn-secondary" data-status="contacted">Маркирай „Свързах се“</button>
+			<button type="button" class="btn btn-primary" data-offer>Изпрати оферта</button>
+			<button type="button" class="btn btn-secondary" data-status="closed">Приключи</button>
+		` : (
+			item.status === "offer"
+				? `<button type="button" class="btn btn-primary" data-status="accepted">Приеми офертата</button>
+				   <button type="button" class="btn btn-secondary" data-status="closed">Откажи</button>`
+				: `<p class="meta">Изчаквате отговор от продавача.</p>`
+		);
 	card.innerHTML = `
 		<div class="inquiry-card-head">
-			<div><h3>${escapeHtml(item.listingTitle || "Обява")}</h3><div class="inquiry-meta">От: <a href="mailto:${escapeHtml(item.buyerEmail)}">${escapeHtml(item.buyerName || item.buyerEmail)}</a> · ${escapeHtml(formatDate(item.createdAt))}</div></div>
+			<div><h3>${escapeHtml(item.listingTitle || "Обява")}</h3><div class="inquiry-meta">${isOwner ? "От" : "До"}: <a href="mailto:${escapeHtml(item.buyerEmail)}">${escapeHtml(item.buyerName || item.buyerEmail)}</a> · ${escapeHtml(formatDate(item.createdAt))}</div></div>
 			<span class="inquiry-status">${escapeHtml(STATUS_LABELS[item.status] || item.status)}</span>
 		</div>
 		<p class="inquiry-message">${escapeHtml(item.message)}</p>
+		${requestLine ? `<p class="inquiry-meta">Заявка: ${escapeHtml(requestLine)}</p>` : ""}
+		${offerLine ? `<p class="inquiry-meta">Оферта: ${escapeHtml(offerLine)}</p>` : ""}
 		<div class="inquiry-actions">
-			<a class="btn btn-primary" href="mailto:${escapeHtml(item.buyerEmail)}?subject=${encodeURIComponent(`Fieldlot: ${item.listingTitle || "запитване"}`)}">Отговор по имейл</a>
-			<button type="button" class="btn btn-secondary" data-status="contacted">Маркирай „Свързах се“</button>
-			<button type="button" class="btn btn-secondary" data-status="closed">Приключи</button>
+			${isOwner ? `<a class="btn btn-primary" href="mailto:${escapeHtml(item.buyerEmail)}?subject=${encodeURIComponent(`Fieldlot: ${item.listingTitle || "запитване"}`)}">Отговор по имейл</a>` : ""}
+			${ownerActions}
 		</div>`;
 	card.querySelectorAll("button[data-status]").forEach((button) => button.addEventListener("click", async () => {
 		button.disabled = true;
@@ -157,6 +180,26 @@ function createInquiryCard(item) {
 			button.disabled = false;
 		}
 	}));
+	card.querySelector("[data-offer]")?.addEventListener("click", async () => {
+		const offerQty = window.prompt("Количество в офертата:", item.requestQty || item.offerQty || "");
+		if (offerQty == null) return;
+		const offerPrice = window.prompt("Цена:", item.requestPrice || item.offerPrice || "");
+		if (offerPrice == null) return;
+		const offerIncoterm = window.prompt("Incoterm (EXW, DAP…):", item.offerIncoterm || "EXW");
+		try {
+			await updateDoc(doc(db, "inquiries", item.id), {
+				status: "offer",
+				offerQty: String(offerQty).slice(0, 40),
+				offerPrice: String(offerPrice).slice(0, 40),
+				offerIncoterm: String(offerIncoterm || "EXW").slice(0, 20),
+				updatedAt: serverTimestamp(),
+			});
+			await loadInquiries();
+		} catch (error) {
+			console.error("Error sending offer:", error);
+			alert("Офертата не беше записана. Проверете Firestore правилата.");
+		}
+	});
 	return card;
 }
 
@@ -201,6 +244,24 @@ profileForm.addEventListener("submit", async (e) => {
 		}
 
 		await setDoc(doc(db, "users", currentUser.uid), profileData, { merge: true });
+
+		const publicRef = doc(db, "publicProfiles", currentUser.uid);
+		if (profileData.publicConsent) {
+			await setDoc(
+				publicRef,
+				{
+					companyName: profileData.companyName || "",
+					profileType: profileData.profileType || "",
+					profileDesc: profileData.profileDesc || "",
+					profileVideo: profileData.profileVideo || "",
+					certs: profileData.certs || [],
+					...(profileData.profileImageUrl ? { profileImageUrl: profileData.profileImageUrl } : {}),
+				},
+				{ merge: true },
+			);
+		} else {
+			await deleteDoc(publicRef).catch(() => {});
+		}
 		
 		btn.textContent = "Запазено!";
 		setTimeout(() => {
@@ -268,10 +329,25 @@ function createCard(id, item) {
 		</div>
 		<div class="yp-entry-aside">
 			<div class="price">${item.price ? escapeHtml(item.price) : "по договаряне"} <small>лв</small></div>
+			<button class="btn btn-secondary btn-hide" style="padding: 4px 8px; margin-top: 8px;">${item.moderationStatus === "hidden" ? "Покажи" : "Скрий"}</button>
 			<button class="btn btn-secondary btn-delete" style="color: red; border-color: red; background: transparent; padding: 4px 8px; margin-top: 8px;">Изтрий</button>
 		</div>
 	`;
 	
+	const hideBtn = article.querySelector('.btn-hide');
+	hideBtn.addEventListener('click', async (e) => {
+		e.stopPropagation();
+		const next = item.moderationStatus === "hidden" ? "approved" : "hidden";
+		try {
+			await updateDoc(doc(db, "listings", id), { moderationStatus: next });
+			item.moderationStatus = next;
+			hideBtn.textContent = next === "hidden" ? "Покажи" : "Скрий";
+		} catch (err) {
+			console.error("Error hiding listing", err);
+			alert("Статусът не беше обновен.");
+		}
+	});
+
 	const delBtn = article.querySelector('.btn-delete');
 	delBtn.addEventListener('click', async (e) => {
 		e.stopPropagation();

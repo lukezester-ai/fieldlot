@@ -5,21 +5,55 @@ service cloud.firestore {
 
     match /listings/{listingId} {
       allow read: if true;
-      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && !request.resource.data.keys().hasAny(['userEmail', 'email', 'phone'])
+        && request.resource.data.moderationStatus in ['approved', 'hidden'];
+      allow update, delete: if signedIn() && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid
+        && (
+          !request.resource.data.keys().hasAny(['moderationStatus'])
+          || request.resource.data.moderationStatus in ['approved', 'hidden', 'flagged']
+        );
+    }
+
+    match /logistics/{itemId} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && !request.resource.data.keys().hasAny(['userEmail', 'email', 'phone']);
       allow update, delete: if signedIn() && resource.data.userId == request.auth.uid;
     }
 
+    match /reports/{reportId} {
+      allow create: if signedIn()
+        && request.resource.data.reporterId == request.auth.uid
+        && request.resource.data.listingId is string
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() >= 4
+        && request.resource.data.reason.size() <= 500;
+      allow read, update, delete: if false;
+    }
+
     match /users/{userId} {
-      allow read: if true;
-      allow create, update: if signedIn() && request.auth.uid == userId;
+      allow read, create, update: if signedIn() && request.auth.uid == userId;
       allow delete: if false;
+    }
+
+    match /publicProfiles/{userId} {
+      allow read: if true;
+      allow create, update: if signedIn()
+        && request.auth.uid == userId
+        && !request.resource.data.keys().hasAny(['email', 'userEmail', 'phone']);
+      allow delete: if signedIn() && request.auth.uid == userId;
     }
 
     match /inquiries/{inquiryId} {
       allow create: if signedIn()
         && request.resource.data.keys().hasOnly([
           'listingId', 'listingTitle', 'listingOwnerId', 'buyerId',
-          'buyerEmail', 'buyerName', 'message', 'status', 'createdAt', 'updatedAt'
+          'buyerEmail', 'buyerName', 'message', 'status', 'createdAt', 'updatedAt',
+          'requestQty', 'requestPrice', 'requestIncoterm'
         ])
         && request.resource.data.buyerId == request.auth.uid
         && request.resource.data.buyerEmail == request.auth.token.email
@@ -35,10 +69,22 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/listings/$(request.resource.data.listingId)).data.userId == request.resource.data.listingOwnerId;
       allow read: if signedIn()
         && (resource.data.buyerId == request.auth.uid || resource.data.listingOwnerId == request.auth.uid);
-      allow update: if signedIn()
-        && resource.data.listingOwnerId == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
-        && request.resource.data.status in ['new', 'contacted', 'closed'];
+      allow update: if signedIn() && (
+        (
+          resource.data.listingOwnerId == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status', 'updatedAt', 'offerQty', 'offerPrice', 'offerIncoterm', 'offerNote'
+          ])
+          && request.resource.data.status in ['new', 'contacted', 'offer', 'closed']
+        )
+        ||
+        (
+          resource.data.buyerId == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
+          && resource.data.status == 'offer'
+          && request.resource.data.status in ['accepted', 'closed']
+        )
+      );
       allow delete: if false;
     }
   }

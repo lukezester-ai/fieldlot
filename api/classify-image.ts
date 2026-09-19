@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { vercelJsonBody } from '../lib/vercel-json-body.js';
+import { clientIpFromVercelRequest } from '../lib/client-ip.js';
 import { classifyAgroImage } from '../server/fieldlot-vision.js';
+import { assertLlmRouteRateLimit, jsonRateLimitHeaders } from '../server/api-rate-limit.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -12,6 +14,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 	if (req.method !== 'POST') {
 		res.status(405).json({ ok: false, error: 'Методът не е позволен' });
+		return;
+	}
+
+	const limited = assertLlmRouteRateLimit(clientIpFromVercelRequest(req), 'classify');
+	if (!limited.ok) {
+		res.setHeader('Retry-After', jsonRateLimitHeaders()['Retry-After']);
+		res.status(limited.status).json({ ok: false, error: limited.error, hint: limited.hint });
 		return;
 	}
 

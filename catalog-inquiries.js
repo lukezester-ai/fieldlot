@@ -10,6 +10,8 @@ const markup = `
 		<p class="inquiry-listing" id="inquiry-listing"></p>
 		<form id="inquiry-form">
 			<label>Вашето име<input id="inquiry-name" type="text" maxlength="100" required autocomplete="name"></label>
+			<label>Желано количество<input id="inquiry-qty" type="text" maxlength="40" placeholder="напр. 24 т"></label>
+			<label>Цена / Incoterm<input id="inquiry-price" type="text" maxlength="40" placeholder="напр. 420 EUR/t DAP"></label>
 			<label>Съобщение<textarea id="inquiry-message" rows="5" minlength="10" maxlength="1500" required placeholder="Посочете желано количество, доставка и удобен начин за контакт."></textarea></label>
 			<p class="inquiry-feedback" id="inquiry-feedback" role="status"></p>
 			<button class="btn btn-primary" type="submit">Изпрати запитването</button>
@@ -56,7 +58,9 @@ form.addEventListener("submit", async (event) => {
 	submit.textContent = "Изпращане...";
 	feedback.textContent = "";
 	try {
-		await addDoc(collection(db, "inquiries"), {
+		const requestQty = document.getElementById("inquiry-qty").value.trim();
+		const requestPrice = document.getElementById("inquiry-price").value.trim();
+		const payload = {
 			listingId: listing.id,
 			listingTitle: listing.title,
 			listingOwnerId: listing.userId,
@@ -67,7 +71,23 @@ form.addEventListener("submit", async (event) => {
 			status: "new",
 			createdAt: serverTimestamp(),
 			updatedAt: serverTimestamp()
-		});
+		};
+		if (requestQty) payload.requestQty = requestQty;
+		if (requestPrice) payload.requestPrice = requestPrice;
+		await addDoc(collection(db, "inquiries"), payload);
+		fetch("/api/notify-inquiry", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				listingTitle: listing.title,
+				listingId: listing.id,
+				buyerName: payload.buyerName,
+				buyerEmail: payload.buyerEmail,
+				message: payload.message,
+				requestQty,
+				requestPrice,
+			}),
+		}).catch(() => {});
 		feedback.className = "inquiry-feedback success";
 		feedback.textContent = "Запитването е изпратено успешно.";
 		setTimeout(close, 1200);
@@ -83,4 +103,21 @@ form.addEventListener("submit", async (event) => {
 
 backdrop.querySelector(".inquiry-close").addEventListener("click", close);
 backdrop.addEventListener("click", (event) => { if (event.target === backdrop) close(); });
-window.FieldlotInquiries = { open };
+window.FieldlotInquiries = {
+	open,
+	async report(listingId) {
+		if (!auth.currentUser) {
+			alert("Влезте, за да докладвате обява.");
+			return;
+		}
+		const reason = window.prompt("Причина (мин. 4 символа):", "Подозрителна обява");
+		if (!reason || reason.trim().length < 4) return;
+		await addDoc(collection(db, "reports"), {
+			listingId,
+			reason: reason.trim().slice(0, 500),
+			reporterId: auth.currentUser.uid,
+			createdAt: serverTimestamp(),
+		});
+		alert("Докладът е записан за преглед.");
+	},
+};

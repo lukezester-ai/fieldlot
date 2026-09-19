@@ -168,9 +168,9 @@ function injectPublishModal() {
 				desc,
 				imageUrl,
 				userId: auth.currentUser.uid,
-				userEmail: auth.currentUser.email,
 				createdAt: serverTimestamp(),
-				status: "active"
+				status: "active",
+				moderationStatus: "approved",
 			});
 
 			successEl.textContent = "Обявата е публикувана успешно!";

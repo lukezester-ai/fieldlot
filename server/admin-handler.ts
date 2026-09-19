@@ -1,20 +1,84 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { isAdminAuthorized } from './admin-auth.js';
+import {
+	clearAdminSessionCookie,
+	adminSessionCookie,
+	createAdminSessionToken,
+	isAdminAuthorized,
+	isAdminSecretMatch,
+	readAdminSecret,
+} from './admin-auth.js';
+import { assertIpRateLimit } from './api-rate-limit.js';
 import { getRagIndexStatus } from './fieldlot-semantic-rag.js';
 import { loadSourcesConfig } from './listing-sources/index.js';
 import { getListingsSnapshot } from './listings-data.js';
 import { runListingsSyncPipeline } from './sync-listings-pipeline.js';
 
-function unauthorized() {
-	return { ok: false as const, status: 401, error: 'Unauthorized' };
+export type AdminAuthInput = {
+	authorization?: string;
+	cookie?: string;
+};
+
+type AdminResult = {
+	status: number;
+	body: Record<string, unknown>;
+	setCookie?: string;
+};
+
+function unauthorized(): AdminResult {
+	return { status: 401, body: { ok: false, error: 'Unauthorized' } };
+}
+
+function authorized(auth: AdminAuthInput): boolean {
+	return isAdminAuthorized(auth.authorization, auth.cookie);
+}
+
+export async function handleAdminLogin(
+	auth: AdminAuthInput,
+	body: unknown,
+	opts: { clientIp: string | null },
+): Promise<AdminResult> {
+	const limited = assertIpRateLimit({
+		clientIp: opts.clientIp,
+		bucket: 'admin-login',
+		max: 10,
+		windowMs: 15 * 60 * 1000,
+		error: 'Твърде много опити за вход',
+	});
+	if (!limited.ok) {
+		return { status: limited.status, body: { ok: false, error: limited.error, hint: limited.hint } };
+	}
+
+	const fromBody =
+		body && typeof body === 'object' && typeof (body as { token?: unknown }).token === 'string'
+			? (body as { token: string }).token
+			: undefined;
+	const fromBearer = auth.authorization?.startsWith('Bearer ')
+		? auth.authorization.slice(7)
+		: undefined;
+	const token = (fromBody ?? fromBearer ?? '').trim();
+	if (!isAdminSecretMatch(token) || !readAdminSecret()) return unauthorized();
+
+	const session = createAdminSessionToken();
+	if (!session) return unauthorized();
+	return {
+		status: 200,
+		body: { ok: true },
+		setCookie: adminSessionCookie(session),
+	};
+}
+
+export function handleAdminLogout(): AdminResult {
+	return {
+		status: 200,
+		body: { ok: true },
+		setCookie: clearAdminSessionCookie(),
+	};
 }
 
 export async function handleAdminGet(
 	action: string,
-	authHeader: string | undefined,
-): Promise<{ status: number; body: Record<string, unknown> }> {
-	if (!isAdminAuthorized(authHeader)) return { status: 401, body: unauthorized() };
+	auth: AdminAuthInput,
+): Promise<AdminResult> {
+	if (!authorized(auth)) return unauthorized();
 
 	if (action === 'status') {
 		const snap = await getListingsSnapshot(false);
@@ -31,7 +95,7 @@ export async function handleAdminGet(
 				},
 				rag,
 				sources: loadSourcesConfig(),
-				adminConfigured: Boolean(process.env.FIELDLOT_ADMIN_SECRET?.trim()),
+				adminConfigured: Boolean(readAdminSecret()),
 			},
 		};
 	}
@@ -41,10 +105,10 @@ export async function handleAdminGet(
 
 export async function handleAdminPost(
 	action: string,
-	authHeader: string | undefined,
+	auth: AdminAuthInput,
 	body: unknown,
-): Promise<{ status: number; body: Record<string, unknown> }> {
-	if (!isAdminAuthorized(authHeader)) return { status: 401, body: unauthorized() };
+): Promise<AdminResult> {
+	if (!authorized(auth)) return unauthorized();
 
 	if (action === 'sync-listings') {
 		const result = await runListingsSyncPipeline({ writeToDisk: true });
@@ -57,6 +121,7 @@ export async function handleAdminPost(
 				fetchedAt: result.snapshot.fetchedAt,
 				rag: result.rag,
 				wroteFiles: result.wroteFiles,
+				persisted: result.persisted,
 				paths: result.paths,
 			},
 		};
@@ -74,7 +139,7 @@ export async function handleAdminPost(
 		const util = await import('node:util');
 		const execAsync = util.promisify(exec);
 		try {
-			const { stdout, stderr } = await execAsync('npx tsx scripts/curate-ai-images.ts', { cwd: process.cwd() });
+			const { stdout } = await execAsync('npx tsx scripts/curate-ai-images.ts', { cwd: process.cwd() });
 			return { status: 200, body: { ok: true, message: 'AI curation completed\n' + stdout } };
 		} catch (e) {
 			const err = e instanceof Error ? e.message : String(e);
@@ -90,6 +155,8 @@ export async function handleAdminPost(
 		if (!Array.isArray(chunks)) {
 			return { status: 400, body: { ok: false, error: 'chunks array required' } };
 		}
+		const fs = await import('node:fs');
+		const path = await import('node:path');
 		const p = path.join(process.cwd(), 'data/platform-knowledge.json');
 		fs.writeFileSync(p, `${JSON.stringify({ chunks }, null, '\t')}\n`, 'utf8');
 		return { status: 200, body: { ok: true, saved: chunks.length } };
@@ -103,6 +170,8 @@ export async function handleAdminPost(
 		if (!Array.isArray(sources)) {
 			return { status: 400, body: { ok: false, error: 'sources array required' } };
 		}
+		const fs = await import('node:fs');
+		const path = await import('node:path');
 		const p = path.join(process.cwd(), 'data/listing-sources.json');
 		fs.writeFileSync(p, `${JSON.stringify({ sources }, null, '\t')}\n`, 'utf8');
 		return { status: 200, body: { ok: true } };
@@ -111,10 +180,10 @@ export async function handleAdminPost(
 	return { status: 404, body: { ok: false, error: 'Unknown action' } };
 }
 
-export async function handleAdminGetKnowledge(
-	authHeader: string | undefined,
-): Promise<{ status: number; body: Record<string, unknown> }> {
-	if (!isAdminAuthorized(authHeader)) return { status: 401, body: unauthorized() };
+export async function handleAdminGetKnowledge(auth: AdminAuthInput): Promise<AdminResult> {
+	if (!authorized(auth)) return unauthorized();
+	const fs = await import('node:fs');
+	const path = await import('node:path');
 	const p = path.join(process.cwd(), 'data/platform-knowledge.json');
 	const raw = JSON.parse(fs.readFileSync(p, 'utf8')) as { chunks: unknown[] };
 	return { status: 200, body: { ok: true, ...raw } };

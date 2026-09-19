@@ -13,10 +13,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 		const result = await runListingsSyncPipeline({ writeToDisk: false, detailLimit: 40 });
 		res.status(200).json({
 			ok: true,
-			message: 'Обяви обновени (памет + RAG индекс)',
+			message: 'Обяви обновени (памет + отдалечен snapshot, ако е конфигуриран)',
 			fetchedAt: result.snapshot.fetchedAt,
 			count: result.snapshot.count,
 			source: result.snapshot.source,
+			wroteFiles: result.wroteFiles,
+			persisted: result.persisted,
 			rag: result.rag,
 		});
 	} catch (e) {
