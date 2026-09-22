@@ -61,7 +61,16 @@ export async function handleAdminLogin(
 		? auth.authorization.slice(7)
 		: undefined;
 	const token = (fromBody ?? fromBearer ?? '').trim();
-	if (!isAdminSecretMatch(token) || !readAdminSecret()) return unauthorized();
+	if (!isAdminSecretMatch(token) || !readAdminSecret()) {
+		return {
+			status: 401,
+			body: {
+				ok: false,
+				error: 'Unauthorized',
+				hint: 'Изтрий полето и копирай целия ред от .local/admin-secret.txt. Не ползвай скритата стойност от Vercel.',
+			},
+		};
+	}
 
 	const session = createAdminSessionToken();
 	if (!session) return unauthorized();

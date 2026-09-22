@@ -19,3 +19,13 @@ test('article page loads wheat analysis', async ({ page }) => {
 	await page.goto('/article.html?part=1');
 	await expect(page.locator('#article-root h1')).toBeVisible({ timeout: 15_000 });
 });
+
+test('admin login field is visible text so autofill cannot hide a wrong token', async ({
+	page,
+}) => {
+	await page.goto('/admin.html');
+	const token = page.locator('#admin-token');
+	await expect(token).toBeVisible();
+	await expect(token).toHaveAttribute('type', 'text');
+	await expect(token).toHaveAttribute('autocomplete', 'off');
+});

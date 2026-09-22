@@ -1,5 +1,6 @@
 dev/
 backend/
 .local/
+.cursor/
 *.db
 node_modules/.cache/

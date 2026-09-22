@@ -22,7 +22,7 @@ async function apiPost(action, body) {
 		body: JSON.stringify(body ?? {}),
 	});
 	const data = await res.json().catch(() => ({}));
-	if (!res.ok) throw new Error(data.error || data.hint || res.statusText);
+	if (!res.ok) throw new Error(data.hint || data.error || res.statusText);
 	return data;
 }
 
@@ -109,6 +109,12 @@ async function loadReports() {
 		wrap.textContent = e instanceof Error ? e.message : String(e);
 	}
 }
+
+const tokenInput = document.getElementById('admin-token');
+const tokenLen = document.getElementById('token-len');
+tokenInput?.addEventListener('input', () => {
+	if (tokenLen) tokenLen.textContent = `${tokenInput.value.trim().length} знака`;
+});
 
 async function enterAdmin() {
 	showAdmin();

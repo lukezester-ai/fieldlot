@@ -84,9 +84,18 @@
   <body>
     <div id="login-view" class="login-box">
       <h1 style="margin: 0 0 0.5rem">Fieldlot Admin</h1>
-      <p class="muted">Въведете FIELDLOT_ADMIN_SECRET от .env</p>
+      <p class="muted">Копирай целия ред от <code>.local/admin-secret.txt</code>. Не от Vercel.</p>
       <label for="admin-token">Токен</label>
-      <input id="admin-token" type="password" autocomplete="current-password" />
+      <input
+        id="admin-token"
+        name="fieldlot-admin-token"
+        type="text"
+        autocomplete="off"
+        spellcheck="false"
+        autocapitalize="off"
+        inputmode="text"
+      />
+      <p id="token-len" class="muted" style="margin: 0.35rem 0 0">0 знака</p>
       <button type="button" class="btn" id="login-btn">Вход</button>
       <p id="login-err" class="muted" style="color: #e86a6a; margin-top: 0.75rem"></p>
     </div>
