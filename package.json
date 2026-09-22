@@ -18,7 +18,7 @@
 		"preview": "concurrently -k \"vite preview --port 5174 --strictPort\" \"tsx server/dev-api.ts\"",
 		"typecheck": "tsc --noEmit",
 		"verify": "node scripts/verify-fieldlot.mjs",
-		"test:unit": "tsx --test server/cron-auth.test.ts server/listings-data.test.ts server/admin-auth.test.ts server/admin-handler.test.ts server/moderation-store.test.ts",
+		"test:unit": "tsx --test server/cron-auth.test.ts server/listings-data.test.ts server/admin-auth.test.ts server/admin-handler.test.ts server/fieldlot-semantic-rag.test.ts server/moderation-store.test.ts",
 		"test": "npm run typecheck && npm run test:unit && node scripts/smoke-api.mjs",
 		"test:e2e": "playwright test",
 		"test:backend": "node scripts/smoke-backend.mjs",

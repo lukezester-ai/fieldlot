@@ -97,7 +97,7 @@ export async function handleAdminGet(
 
 	if (action === 'status') {
 		const snap = await getListingsSnapshot(false);
-		const rag = getRagIndexStatus();
+		const rag = await getRagIndexStatus();
 		return {
 			status: 200,
 			body: {

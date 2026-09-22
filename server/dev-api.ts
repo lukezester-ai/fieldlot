@@ -104,7 +104,7 @@ const server = http.createServer(async (req, res) => {
 				path: '/api/fieldlot-chat',
 				llmConfigured: isAnyLlmConfigured(),
 				ragEnabled: true,
-				semanticRag: getRagIndexStatus(),
+				semanticRag: await getRagIndexStatus(),
 				agentEnabled: Boolean(upstream?.supportsTools && process.env.FIELDLOT_AGENT_DISABLED !== '1'),
 				listingCount: getAllListings().length,
 			});

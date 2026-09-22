@@ -3,6 +3,7 @@ import path from 'node:path';
 import platformKnowledge from '../data/platform-knowledge.json' with { type: 'json' };
 import type { FieldlotListing } from './borsa-listings-fetcher.js';
 import { listingCrop, normalizeCategory } from './fieldlot-categories.js';
+import { loadNamedJson, persistNamedJson, type PersistBackend } from './json-blob-store.js';
 
 const INDEX_PATH = path.join(process.cwd(), 'data/fieldlot-rag-index.json');
 const MISTRAL_EMBED_URL = 'https://api.mistral.ai/v1/embeddings';
@@ -33,6 +34,26 @@ type RagIndexFile = {
 	model: string;
 	chunks: RagChunk[];
 };
+
+type RebuildPersistHooks = {
+	persist?: (name: string, data: unknown) => Promise<PersistBackend>;
+	writeDisk?: (index: RagIndexFile) => void;
+};
+
+let cachedIndex: RagIndexFile | null = null;
+
+export function resetRagIndexCacheForTests(): void {
+	cachedIndex = null;
+}
+
+function isRagIndexFile(data: unknown): data is RagIndexFile {
+	return Boolean(data && typeof data === 'object' && Array.isArray((data as RagIndexFile).chunks));
+}
+
+function writeIndexToDisk(index: RagIndexFile): void {
+	fs.mkdirSync(path.dirname(INDEX_PATH), { recursive: true });
+	fs.writeFileSync(INDEX_PATH, `${JSON.stringify(index, null, '\t')}\n`, 'utf8');
+}
 
 function readMistralKey(): string {
 	return (process.env.MISTRAL_API_KEY ?? '').trim();
@@ -114,10 +135,14 @@ export function buildChunksFromListings(listings: FieldlotListing[]): RagChunk[]
 	return chunks;
 }
 
-export async function rebuildFieldlotRagIndex(listings: FieldlotListing[]): Promise<{
+export async function rebuildFieldlotRagIndex(
+	listings: FieldlotListing[],
+	hooks?: RebuildPersistHooks,
+): Promise<{
 	ok: boolean;
 	chunkCount: number;
 	embedded: number;
+	persisted?: PersistBackend;
 	error?: string;
 }> {
 	const chunks = buildChunksFromListings(listings);
@@ -141,18 +166,26 @@ export async function rebuildFieldlotRagIndex(listings: FieldlotListing[]): Prom
 		model: key ? process.env.MISTRAL_EMBED_MODEL?.trim() || 'mistral-embed' : 'keyword-only',
 		chunks,
 	};
+	const persist = hooks?.persist ?? persistNamedJson;
+	const writeDisk = hooks?.writeDisk ?? writeIndexToDisk;
+	const persisted = await persist('fieldlot-rag-index', index);
+	cachedIndex = index;
+	let diskError: string | undefined;
 	try {
-		fs.mkdirSync(path.dirname(INDEX_PATH), { recursive: true });
-		fs.writeFileSync(INDEX_PATH, `${JSON.stringify(index, null, '\t')}\n`, 'utf8');
+		writeDisk(index);
 	} catch (e) {
+		diskError = e instanceof Error ? e.message : String(e);
+	}
+	if (persisted === 'memory' && diskError) {
 		return {
 			ok: false,
 			chunkCount: chunks.length,
 			embedded,
-			error: e instanceof Error ? e.message : String(e),
+			persisted,
+			error: diskError,
 		};
 	}
-	return { ok: true, chunkCount: chunks.length, embedded };
+	return { ok: true, chunkCount: chunks.length, embedded, persisted };
 }
 
 function isSyntheticRagChunk(c: RagChunk): boolean {
@@ -162,14 +195,31 @@ function isSyntheticRagChunk(c: RagChunk): boolean {
 	return /Global Feed|GlobalFeed/.test(`${c.title} ${c.text}`);
 }
 
-function readIndex(): RagIndexFile | null {
+function filterIndex(index: RagIndexFile): RagIndexFile {
+	if (!index?.chunks) return index;
+	return { ...index, chunks: index.chunks.filter((c) => !isSyntheticRagChunk(c)) };
+}
+
+function readIndexFromDisk(): RagIndexFile | null {
 	try {
 		const index = JSON.parse(fs.readFileSync(INDEX_PATH, 'utf8')) as RagIndexFile;
-		if (!index?.chunks) return index;
-		return { ...index, chunks: index.chunks.filter((c) => !isSyntheticRagChunk(c)) };
+		return isRagIndexFile(index) ? index : null;
 	} catch {
 		return null;
 	}
+}
+
+async function loadIndex(): Promise<RagIndexFile | null> {
+	if (cachedIndex) return filterIndex(cachedIndex);
+	const named = await loadNamedJson('fieldlot-rag-index');
+	if (isRagIndexFile(named)) {
+		cachedIndex = named;
+		return filterIndex(named);
+	}
+	const disk = readIndexFromDisk();
+	if (!disk) return null;
+	cachedIndex = disk;
+	return filterIndex(disk);
 }
 
 function keywordScore(query: string, text: string): number {
@@ -188,7 +238,7 @@ export async function searchFieldlotSemanticRag(
 ): Promise<FieldlotRagHit[]> {
 	const q = query.trim();
 	if (q.length < 2) return [];
-	const index = readIndex();
+	const index = await loadIndex();
 	if (!index?.chunks?.length) return [];
 
 	const withEmb = index.chunks.filter((c) => c.embedding?.length);
@@ -247,8 +297,13 @@ export function formatSemanticHitsForPrompt(hits: FieldlotRagHit[], locale: 'bg'
 	return `${head}\n${lines.join('\n')}`;
 }
 
-export function getRagIndexStatus(): { exists: boolean; updatedAt?: string; chunks: number; embedded: number } {
-	const index = readIndex();
+export async function getRagIndexStatus(): Promise<{
+	exists: boolean;
+	updatedAt?: string;
+	chunks: number;
+	embedded: number;
+}> {
+	const index = await loadIndex();
 	if (!index) return { exists: false, chunks: 0, embedded: 0 };
 	const embedded = index.chunks.filter((c) => c.embedding?.length).length;
 	return {
