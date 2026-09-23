@@ -69,6 +69,31 @@ export function assertLlmRouteRateLimit(
 	});
 }
 
-export function jsonRateLimitHeaders(retryAfterSec = 60): Record<string, string> {
+export function assertPublicGetRateLimit(clientIp: string | null): RateLimitOk | RateLimitDenied {
+  const max = Number(process.env.FIELDLOT_PUBLIC_GET_RATE_LIMIT_MAX ?? '20');
+  const windowMs = Number(process.env.FIELDLOT_PUBLIC_GET_RATE_LIMIT_WINDOW_MS ?? '60000');
+  return assertIpRateLimit({
+    clientIp,
+    bucket: 'public-get',
+    max,
+    windowMs,
+    error: 'Твърде много заявки към публичен ресурс',
+    hint: 'Опитай по-късно',
+  });
+}
+
+export function assertRegisterInterestRateLimit(clientIp: string | null): RateLimitOk | RateLimitDenied {
+  const max = Number(process.env.FIELDLOT_REGISTER_INTEREST_RATE_LIMIT_MAX ?? '5');
+  const windowMs = Number(process.env.FIELDLOT_REGISTER_INTEREST_RATE_LIMIT_WINDOW_MS ?? '60000');
+  return assertIpRateLimit({
+    clientIp,
+    bucket: 'register-interest',
+    max,
+    windowMs,
+    error: 'Твърде много заявки за интерес',
+    hint: 'Опитай след минута',
+  });
+}
+
 	return { 'Retry-After': String(retryAfterSec) };
 }

@@ -20,7 +20,7 @@ import { lookupFirebaseIdToken } from './firebase-id-token.js';
 import { registerMailbox } from './mailbox-store.js';
 import { fetchExchangeSnapshot, getExchangeSnapshotCached } from './exchange-prices.js';
 import { isAnyLlmConfigured, resolveTextChatUpstream } from './llm-upstream.js';
-import { assertLlmRouteRateLimit, assertIpRateLimit } from './api-rate-limit.js';
+import { assertLlmRouteRateLimit, assertIpRateLimit, assertPublicGetRateLimit, assertRegisterInterestRateLimit } from './api-rate-limit.js';
 
 function clientIpFromNodeRequest(req: http.IncomingMessage): string | null {
 	const realIp = req.headers['x-real-ip'];
@@ -52,7 +52,10 @@ async function readJson(req: http.IncomingMessage): Promise<unknown> {
 
 function send(res: http.ServerResponse, status: number, body: unknown): void {
 	res.statusCode = status;
-	res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', process.env.FIELDLOT_ALLOWED_ORIGINS ?? '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
 	res.end(JSON.stringify(body));
 }
 
@@ -60,11 +63,14 @@ const server = http.createServer(async (req, res) => {
 	const url = new URL(req.url || '/', 'http://127.0.0.1');
 	const path = url.pathname.replace(/\/$/, '') || '/';
 
-	if (req.method === 'OPTIONS') {
-		res.statusCode = 204;
-		res.end();
-		return;
-	}
+if (req.method === 'OPTIONS') {
+	res.setHeader('Access-Control-Allow-Origin', process.env.FIELDLOT_ALLOWED_ORIGINS ?? '*');
+	res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+	res.statusCode = 204;
+	res.end();
+	return;
+}
 
 	try {
 		if (path === '/' && req.method === 'GET') {
@@ -77,6 +83,13 @@ const server = http.createServer(async (req, res) => {
 		}
 
 		if (path === '/api/listings' && req.method === 'GET') {
+			const clientIp = clientIpFromNodeRequest(req);
+			const limited = assertPublicGetRateLimit(clientIp);
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { error: limited.error, hint: limited.hint });
+				return;
+			}
 			const refresh = url.searchParams.get('refresh') === '1';
 			const snap = await getListingsSnapshot(refresh);
 			const hidden = new Set(await getHiddenListingIds());
