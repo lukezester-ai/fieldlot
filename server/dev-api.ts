@@ -99,6 +99,14 @@ if (req.method === 'OPTIONS') {
 		}
 
 		if (path === '/api/exchange-prices' && req.method === 'GET') {
+			const clientIp = clientIpFromNodeRequest(req);
+			const limited = assertPublicGetRateLimit(clientIp);
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { error: limited.error, hint: limited.hint });
+				return;
+			}
+
 			const force = url.searchParams.get('refresh') === '1';
 			try {
 				const snap = force ? await fetchExchangeSnapshot() : await getExchangeSnapshotCached();
@@ -288,6 +296,13 @@ if (req.method === 'OPTIONS') {
 		}
 
 		if (path === '/api/register-interest' && req.method === 'POST') {
+			const clientIp = clientIpFromNodeRequest(req);
+			const limited = assertRegisterInterestRateLimit(clientIp);
+			if (!limited.ok) {
+				res.setHeader('Retry-After', '60');
+				send(res, limited.status, { error: limited.error, hint: limited.hint });
+				return;
+			}
 			const body = await readJson(req);
 			if (body === null) {
 				send(res, 400, { error: 'Invalid JSON' });

@@ -95,5 +95,11 @@ export function assertRegisterInterestRateLimit(clientIp: string | null): RateLi
   });
 }
 
-	return { 'Retry-After': String(retryAfterSec) };
+export function jsonRateLimitHeaders(): Record<string, string> {
+  // Fallback Retry-After header (seconds). Adjust if needed.
+  return { 'Retry-After': '60' };
 }
+
+
+
+
