@@ -69,17 +69,20 @@ export function assertLlmRouteRateLimit(
 	});
 }
 
-export function assertPublicGetRateLimit(clientIp: string | null): RateLimitOk | RateLimitDenied {
-  const max = Number(process.env.FIELDLOT_PUBLIC_GET_RATE_LIMIT_MAX ?? '20');
-  const windowMs = Number(process.env.FIELDLOT_PUBLIC_GET_RATE_LIMIT_WINDOW_MS ?? '60000');
-  return assertIpRateLimit({
-    clientIp,
-    bucket: 'public-get',
-    max,
-    windowMs,
-    error: 'Твърде много заявки към публичен ресурс',
-    hint: 'Опитай по-късно',
-  });
+export function assertPublicGetRateLimit(
+	clientIp: string | null,
+	route = 'public',
+): RateLimitOk | RateLimitDenied {
+	const max = Number(process.env.FIELDLOT_PUBLIC_GET_RATE_LIMIT_MAX ?? '20');
+	const windowMs = Number(process.env.FIELDLOT_PUBLIC_GET_RATE_LIMIT_WINDOW_MS ?? '60000');
+	return assertIpRateLimit({
+		clientIp,
+		bucket: `public-get:${route}`,
+		max,
+		windowMs,
+		error: 'Твърде много заявки към публичен ресурс',
+		hint: 'Опитай по-късно',
+	});
 }
 
 export function assertRegisterInterestRateLimit(clientIp: string | null): RateLimitOk | RateLimitDenied {

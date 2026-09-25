@@ -10,14 +10,14 @@ function getCorsHeaders(response: any) {
 }
 
 test.describe('P0 Security Slice – CORS & Rate Limits', () => {
-  const base = process.env.FIELDLOT_API_URL ?? 'http://127.0.0.1:3000';
+  const base = process.env.FIELDLOT_API_URL ?? 'http://127.0.0.1:5174';
 
   test('CORS headers are present on normal GET', async ({ request }) => {
     const res = await request.get(`${base}/api/listings`);
     expect(res.status()).toBe(200);
     const cors = getCorsHeaders(res);
     expect(cors.origin).toBe(process.env.FIELDLOT_ALLOWED_ORIGINS || '*');
-    expect(cors.methods).toBe('GET,OPTIONS,POST,PUT,DELETE');
+    expect(cors.methods).toBe('GET,POST,OPTIONS');
     expect(cors.headers).toContain('Content-Type');
   });
 
@@ -26,7 +26,7 @@ test.describe('P0 Security Slice – CORS & Rate Limits', () => {
     expect(res.status()).toBe(204);
     const cors = getCorsHeaders(res);
     expect(cors.origin).toBe(process.env.FIELDLOT_ALLOWED_ORIGINS || '*');
-    expect(cors.methods).toBe('GET,OPTIONS,POST,PUT,DELETE');
+    expect(cors.methods).toBe('GET,POST,OPTIONS');
     expect(cors.headers).toContain('Content-Type');
   });
 
