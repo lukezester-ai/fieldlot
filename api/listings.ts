@@ -1,12 +1,30 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { clientIpFromVercelRequest } from '../lib/client-ip.js';
+import { applyCorsHeaders, isCorsPreflight } from '../server/api-cors.js';
+import { assertPublicGetRateLimit, jsonRateLimitHeaders } from '../server/api-rate-limit.js';
 import { getListingsSnapshot } from '../server/listings-data.js';
 import { getHiddenListingIds } from '../server/moderation-store.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+	applyCorsHeaders(res);
+
+	if (isCorsPreflight(req.method)) {
+		res.status(204).end();
+		return;
+	}
+
 	if (req.method !== 'GET') {
 		res.status(405).json({ error: 'Method not allowed' });
 		return;
 	}
+
+	const limited = assertPublicGetRateLimit(clientIpFromVercelRequest(req), 'listings');
+	if (!limited.ok) {
+		res.setHeader('Retry-After', jsonRateLimitHeaders()['Retry-After']);
+		res.status(limited.status).json({ error: limited.error, hint: limited.hint });
+		return;
+	}
+
 	const refresh = req.query.refresh === '1';
 	try {
 		const snap = await getListingsSnapshot(refresh);
